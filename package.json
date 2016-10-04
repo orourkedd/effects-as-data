@@ -4,7 +4,7 @@
   "description": "Express complex async workflows using only pure functions.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/orourkedd/purefn/issues"
   },
-  "homepage": "https://github.com/orourkedd/purefn#readme"
+  "homepage": "https://github.com/orourkedd/purefn#readme",
+  "devDependencies": {
+    "mocha": "^3.1.0"
+  }
 }

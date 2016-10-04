@@ -1,0 +1,5 @@
+describe('purefn', () => {
+  it('should', () => {
+
+  })
+})
