@@ -4,7 +4,8 @@
   "description": "Express complex async workflows using only pure functions.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/**/*.spec.js"
+    "test": "mocha src/**/*.spec.js",
+    "watch-test": "mocha src/**/*.spec.js -watch"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,19 @@
     "chai": "^3.5.0",
     "mocha": "^3.1.0",
     "sinon": "^1.17.6"
+  },
+  "dependencies": {
+    "ramda": "^0.22.1",
+    "safe-errors": "0.0.3"
+  },
+  "standard": {
+    "globals": [
+      "it",
+      "describe",
+      "beforeEach",
+      "afterEach",
+      "before",
+      "after"
+    ]
   }
 }
