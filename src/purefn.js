@@ -1,6 +1,6 @@
 const { map, curry, zip, merge, filter, flatten, reduce, difference } = require('ramda')
 const { toArray } = require('./util')
-const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe']
+const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic']
 
 const runAction = curry((plugins, action) => {
   let plugin = plugins[action.type]
@@ -89,6 +89,10 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
         return Promise.all(mapResults).then((results) => {
           return run(addToContext(newState, action.contextKey, results))
         })
+      }
+
+      if (action.type === 'panic') {
+        return Promise.reject(action.error)
       }
     }
 
