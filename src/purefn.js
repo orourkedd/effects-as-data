@@ -1,5 +1,5 @@
 const { map, curry, zip, merge, filter, flatten, reduce, difference } = require('ramda')
-const { toArray } = require('./util')
+const { toArray, toPromise } = require('./util')
 const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic', 'end', 'addToContext']
 
 const runAction = curry((plugins, action) => {
@@ -9,7 +9,8 @@ const runAction = curry((plugins, action) => {
     throw new Error(`"${action.type}" is not a registered plugin.`)
   }
 
-  return plugin(action.payload)
+  let pluginResult = plugin(action.payload)
+  return toPromise(pluginResult)
   .then((payload) => {
     return {
       success: true,

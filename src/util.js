@@ -8,6 +8,15 @@ function toArray (a) {
   }
 }
 
+function toPromise (v) {
+  if (!v || !v.then) {
+    return Promise.resolve(v)
+  }
+
+  return v
+}
+
 module.exports = {
-  toArray
+  toArray,
+  toPromise
 }

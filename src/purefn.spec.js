@@ -16,6 +16,7 @@ const { testMap } = require('./test/pipes/test-map')
 const { testPanic } = require('./test/pipes/test-panic')
 const { testEnd } = require('./test/pipes/test-end')
 const { addToContext } = require('./actions')
+const { logPlugin, log } = require('./plugins/log')
 
 describe('purefn', () => {
   describe('runAction', () => {
@@ -193,6 +194,25 @@ describe('purefn', () => {
       deep(normalizePipe(fn1), [fn1])
       deep(normalizePipe([fn1, [fn2, fn3]]), [fn1, fn2, fn3])
       deep(normalizePipe([fn1, fn2, fn3]), [fn1, fn2, fn3])
+    })
+  })
+
+  describe('logPlugin', () => {
+    it('should console.log message', () => {
+      let plugins = {
+        log: logPlugin
+      }
+
+      let fn = () => log('hi')
+
+      stub(console, 'info')
+      return runPipe(plugins, fn, {}).then(() => {
+        assert(console.info.calledWith('hi'), 'console.info was not called with "hi"')
+        console.info.restore()
+      }).catch((e) => {
+        console.info.restore()
+        throw e
+      })
     })
   })
 
