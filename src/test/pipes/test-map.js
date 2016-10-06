@@ -10,12 +10,28 @@ function getUsers2 ({context}) {
   return setPayload(context.usersWithNames)
 }
 
-function addNames ({payload}) {
+function addNames1 ({payload}) {
   let user = merge(payload, {
-    name: `User ${payload.id}`
+    name: `Us`
   })
   return setPayload(user)
 }
+
+function addNames2 ({payload}) {
+  let user = merge(payload, {
+    name: `${payload.name}er`
+  })
+  return setPayload(user)
+}
+
+function addNames3 ({payload}) {
+  let user = merge(payload, {
+    name: `${payload.name} ${payload.id}`
+  })
+  return setPayload(user)
+}
+
+const addNames = [addNames1, addNames2, addNames3]
 
 module.exports = {
   testMap: [getUsers1, getUsers2],

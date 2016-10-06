@@ -4,7 +4,8 @@ const {
   emptyState,
   runPipe,
   normalizePipe,
-  normalizeState
+  normalizeState,
+  buildPipes
 } = require('./purefn')
 const { stub } = require('sinon')
 const assert = require('chai').assert
@@ -87,6 +88,26 @@ describe('purefn', () => {
     })
   })
 
+  describe('buildPipes', () => {
+    it('should be able to run a pipe', () => {
+      let plugins = {
+        test1: test1Plugin
+      }
+
+      let pipes = {
+        test1: test1Pipe
+      }
+
+      let { test1 } = buildPipes(plugins, pipes)
+
+      return test1().then((state) => {
+        deep(state.payload, {
+          result: 'test1-result'
+        })
+      })
+    })
+  })
+
   describe('runPipe', () => {
     it('should be able to run a pipe', () => {
       let plugins = {
@@ -112,6 +133,25 @@ describe('purefn', () => {
 
       return runPipe(plugins, fn, emptyState()).then((state) => {
         deep(state.errors[action.contextKey], error)
+      })
+    })
+
+    it.skip('should perform all actions before returning', () => {
+      let pipe = []
+
+      pipe.push(() => addToContext({
+        one: 1
+      }))
+
+      pipe.push(() => addToContext({
+        two: 2
+      }))
+
+      return runPipe({}, pipe, emptyState()).then((state) => {
+        deep(state.context, {
+          one: 1,
+          two: 2
+        })
       })
     })
 
@@ -180,6 +220,25 @@ describe('purefn', () => {
 
         return runPipe(plugins, fn, {}).then(({context}) => {
           deep(context, added)
+        })
+      })
+
+      it('should allow multiple addToContext actions', () => {
+        let pipe = []
+
+        pipe.push(() => addToContext({
+          one: 1
+        }))
+
+        pipe.push(() => addToContext({
+          two: 2
+        }))
+
+        return runPipe({}, pipe, emptyState()).then((state) => {
+          deep(state.context, {
+            one: 1,
+            two: 2
+          })
         })
       })
     })

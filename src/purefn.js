@@ -1,4 +1,4 @@
-const { map, curry, zip, merge, filter, flatten, reduce, difference } = require('ramda')
+const { map, curry, zip, merge, filter, flatten, reduce, difference, toPairs } = require('ramda')
 const { toArray, toPromise } = require('./util')
 const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic', 'end', 'addToContext']
 
@@ -94,7 +94,7 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
 
       if (action.type === 'addToContext') {
         let newContext = merge(newState.context, action.value)
-        return merge(newState, {
+        newState = merge(newState, {
           context: newContext
         })
       }
@@ -150,11 +150,22 @@ const emptyState = () => {
   }
 }
 
+const buildPipes = (plugins, pipes) => {
+  let pairs = toPairs(pipes)
+  return reduce((p, [key, pipe]) => {
+    p[key] = (state = {}) => {
+      return runPipe(plugins, pipe, state)
+    }
+    return p
+  }, {}, pairs)
+}
+
 module.exports = {
   runAction,
   runActions,
   emptyState,
   runPipe,
   normalizePipe,
-  normalizeState
+  normalizeState,
+  buildPipes
 }
