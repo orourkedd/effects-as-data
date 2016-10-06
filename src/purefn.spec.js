@@ -15,6 +15,7 @@ const { testCall } = require('./test/pipes/test-call')
 const { testMap } = require('./test/pipes/test-map')
 const { testPanic } = require('./test/pipes/test-panic')
 const { testEnd } = require('./test/pipes/test-end')
+const { addToContext } = require('./actions')
 
 describe('purefn', () => {
   describe('runAction', () => {
@@ -162,6 +163,22 @@ describe('purefn', () => {
 
         return runPipe(plugins, testEnd, {}).then(({payload}) => {
           deep(payload, 2)
+        })
+      })
+    })
+
+    describe('addToContext', () => {
+      it('should add to context', () => {
+        let { plugins } = setup()
+
+        let added = {
+          foo: 'bar'
+        }
+
+        let fn = () => addToContext(added)
+
+        return runPipe(plugins, fn, {}).then(({context}) => {
+          deep(context, added)
         })
       })
     })
