@@ -14,6 +14,7 @@ const { test1Pipe } = require('./test/pipes/test1')
 const { testCall } = require('./test/pipes/test-call')
 const { testMap } = require('./test/pipes/test-map')
 const { testPanic } = require('./test/pipes/test-panic')
+const { testEnd } = require('./test/pipes/test-end')
 
 describe('purefn', () => {
   describe('runAction', () => {
@@ -143,7 +144,7 @@ describe('purefn', () => {
       })
     })
 
-    describe('testPanic', () => {
+    describe('panic', () => {
       it('should error out on panic', () => {
         let { plugins } = setup()
 
@@ -151,6 +152,16 @@ describe('purefn', () => {
           throw new Error('This should not be called')
         }).catch((err) => {
           deep(err.message, 'Something bad happened!')
+        })
+      })
+    })
+
+    describe('end', () => {
+      it('should be able to abort pipe', () => {
+        let { plugins } = setup()
+
+        return runPipe(plugins, testEnd, {}).then(({payload}) => {
+          deep(payload, 2)
         })
       })
     })
