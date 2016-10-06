@@ -18,6 +18,9 @@ const { testPanic } = require('./test/pipes/test-panic')
 const { testEnd } = require('./test/pipes/test-end')
 const { addToContext } = require('./actions')
 const { logPlugin, log } = require('./plugins/log')
+const { doubleCall } = require('./test/pipes/double-call')
+const { passPayload } = require('./test/pipes/pass-payload')
+const { merge } = require('ramda')
 
 describe('purefn', () => {
   describe('runAction', () => {
@@ -121,6 +124,40 @@ describe('purefn', () => {
       })
     })
 
+    it('should pass the payload through the pipe', () => {
+      let payload = {
+        foo: 'bar'
+      }
+
+      return runPipe({}, passPayload, payload).then((state) => {
+        deep(state.payload, payload)
+      })
+    })
+
+    it('should pass the context through the pipe', () => {
+      let expectedState = merge(emptyState(), {
+        context: {
+          foo: 'bar'
+        }
+      })
+
+      return runPipe({}, passPayload, expectedState).then((state) => {
+        deep(state.context, expectedState.context)
+      })
+    })
+
+    it('should pass the errors through the pipe', () => {
+      let expectedState = merge(emptyState(), {
+        errors: {
+          foo: new Error('foo!')
+        }
+      })
+
+      return runPipe({}, passPayload, expectedState).then((state) => {
+        deep(state.errors, expectedState.errors)
+      })
+    })
+
     it('should write errors to the error object', () => {
       let error = new Error('nope')
       let plugins = {
@@ -136,21 +173,11 @@ describe('purefn', () => {
       })
     })
 
-    it.skip('should perform all actions before returning', () => {
-      let pipe = []
-
-      pipe.push(() => addToContext({
-        one: 1
-      }))
-
-      pipe.push(() => addToContext({
-        two: 2
-      }))
-
-      return runPipe({}, pipe, emptyState()).then((state) => {
-        deep(state.context, {
-          one: 1,
-          two: 2
+    it('should perform all actions before returning', () => {
+      return runPipe({}, doubleCall, emptyState()).then((state) => {
+        deep(state.payload, {
+          c1: true,
+          c2: true
         })
       })
     })

@@ -1,4 +1,4 @@
-const { map, curry, zip, merge, filter, flatten, reduce, difference, toPairs } = require('ramda')
+const { map, last, pluck, curry, zip, merge, mergeAll, filter, flatten, reduce, difference, toPairs } = require('ramda')
 const { toArray, toPromise } = require('./util')
 const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic', 'end', 'addToContext']
 
@@ -68,17 +68,18 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
 
     const run = (state) => runPipe(plugins, pipe, state, index + 1)
 
-    for (let i = 0; i < pureFnActions.length; i++) {
-      let action = pureFnActions[i]
+    let queue = pureFnActions.map((action) => {
       if (action.type === 'setPayload') {
-        newState = merge(newState, {
+        return {
           payload: action.payload
-        })
+        }
       }
 
       if (action.type === 'call') {
         return runPipe(plugins, action.pipe, action.state).then((state) => {
-          return run(addToContext(newState, action.contextKey, state))
+          return {
+            context: mergeKey(newState.context, action.contextKey, state)
+          }
         })
       }
 
@@ -88,15 +89,17 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
         }, action.state)
 
         return Promise.all(mapResults).then((results) => {
-          return run(addToContext(newState, action.contextKey, results))
+          return {
+            context: mergeKey(newState.context, action.contextKey, results)
+          }
         })
       }
 
       if (action.type === 'addToContext') {
         let newContext = merge(newState.context, action.value)
-        newState = merge(newState, {
+        return {
           context: newContext
-        })
+        }
       }
 
       if (action.type === 'panic') {
@@ -104,19 +107,46 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
       }
 
       if (action.type === 'end') {
-        return newState
+        return {
+          end: true
+        }
       }
-    }
+    })
 
-    return run(newState)
+    let promises = map((q) => {
+      return toPromise(q)
+    }, queue)
+    return Promise.all(promises).then((patches) => {
+      let pluckContexts = pluck(['context'])
+      let pluckErrors = pluck(['errors'])
+      let contexts = pluckContexts(patches)
+      let errors = pluckErrors(patches)
+      let { end } = mergeAll(patches)
+      let newContext = merge(newState.context, mergeAll(contexts))
+      let newPayload = reduce((p, c) => {
+        if (c.payload) {
+          return c.payload
+        }
+        return p
+      }, {}, [].concat(newState, patches))
+      let newErrors = merge(newState.errors, mergeAll(errors))
+      let n = {
+        context: newContext,
+        errors: newErrors,
+        payload: newPayload
+      }
+      if (end === true) {
+        return n
+      }
+      return run(n)
+    })
   })
 })
 
-function addToContext (state, key, value) {
+function mergeKey (context, key, value) {
   let patch = {}
   patch[key] = value
-  let context = merge(state.context, patch)
-  return merge(state, {context})
+  return merge(context, patch)
 }
 
 function normalizeState (state) {
