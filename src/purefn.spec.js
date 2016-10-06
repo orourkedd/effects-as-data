@@ -3,13 +3,16 @@ const {
   runActions,
   emptyState,
   runPipe,
-  normalizePipe
+  normalizePipe,
+  normalizeState
 } = require('./purefn')
 const { stub } = require('sinon')
 const assert = require('chai').assert
-const deep = assert.deepEqual
+const { deepEqual: deep } = assert
 const { test1Plugin, test1 } = require('./test/plugins/test1')
 const { test1Pipe } = require('./test/pipes/test1')
+const { testCall } = require('./test/pipes/test-call')
+const { testMap } = require('./test/pipes/test-map')
 
 describe('purefn', () => {
   describe('runAction', () => {
@@ -34,6 +37,21 @@ describe('purefn', () => {
         deep(result.success, false)
         deep(result.error, error)
       })
+    })
+
+    it('should throw if plugin is not registered', () => {
+      let action = {
+        type: 'notRegistered'
+      }
+
+      try {
+        runAction({}, action)
+      } catch (e) {
+        deep(e.message, '"notRegistered" is not a registered plugin.')
+        return
+      }
+
+      throw new Error('Exception was not thrown.')
     })
   })
 
@@ -92,6 +110,37 @@ describe('purefn', () => {
         deep(state.errors[action.contextKey], error)
       })
     })
+
+    describe('call', () => {
+      it('should call subpipe', () => {
+        let { plugins } = setup()
+
+        let expectedState = {
+          foo: 'bar',
+          sub: 'pipe'
+        }
+
+        return runPipe(plugins, testCall, expectedState).then((state) => {
+          deep(state.payload, expectedState)
+        })
+      })
+    })
+
+    describe('mapPipe', () => {
+      it('should be able to map a pipe over results', () => {
+        let { plugins } = setup()
+
+        return runPipe(plugins, testMap, {}).then((state) => {
+          let expectedPayload = [
+            {id: 1, name: 'User 1'},
+            {id: 2, name: 'User 2'},
+            {id: 3, name: 'User 3'}
+          ]
+
+          deep(state.payload.map(s => s.payload), expectedPayload)
+        })
+      })
+    })
   })
 
   describe('normalizePipe', () => {
@@ -103,6 +152,33 @@ describe('purefn', () => {
       deep(normalizePipe(fn1), [fn1])
       deep(normalizePipe([fn1, [fn2, fn3]]), [fn1, fn2, fn3])
       deep(normalizePipe([fn1, fn2, fn3]), [fn1, fn2, fn3])
+    })
+  })
+
+  describe('normalizeState', () => {
+    it('should convert value to state object', () => {
+      let state = normalizeState(1)
+      deep(state, {
+        context: {},
+        payload: 1,
+        errors: {}
+      })
+    })
+
+    it('should not change state object', () => {
+      let s1 = {
+        context: {},
+        payload: 1,
+        errors: {}
+      }
+
+      let state = normalizeState(s1)
+      deep(state, s1)
+    })
+
+    it('should return an empty state if value is falsey', () => {
+      let state = normalizeState()
+      deep(state, emptyState())
     })
   })
 })

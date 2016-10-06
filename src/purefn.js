@@ -1,9 +1,14 @@
 const { map, curry, zip, merge, filter, flatten, reduce, difference } = require('ramda')
 const { toArray } = require('./util')
-const PUREFN_ACTIONS = ['setPayload']
+const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe']
 
 const runAction = curry((plugins, action) => {
   let plugin = plugins[action.type]
+
+  if (typeof plugin === 'undefined') {
+    throw new Error(`"${action.type}" is not a registered plugin.`)
+  }
+
   return plugin(action.payload)
   .then((payload) => {
     return {
@@ -41,7 +46,8 @@ const runActions = curry((plugins, actions) => {
   })
 })
 
-const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
+const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
+  let state = normalizeState(stateRaw)
   let pipe = normalizePipe(pipeRaw)
   if (index >= pipe.length) {
     return Promise.resolve(state)
@@ -59,17 +65,57 @@ const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
     let errors = merge(state.errors, statePatch.errors)
     let newState = merge(state, {context, errors})
 
-    pureFnActions.forEach((action) => {
+    const run = (state) => runPipe(plugins, pipe, state, index + 1)
+
+    for (let i = 0; i < pureFnActions.length; i++) {
+      let action = pureFnActions[i]
       if (action.type === 'setPayload') {
         newState = merge(newState, {
           payload: action.payload
         })
       }
-    })
 
-    return runPipe(plugins, pipe, newState, index + 1)
+      if (action.type === 'call') {
+        return runPipe(plugins, action.pipe, action.state).then((state) => {
+          return run(addToContext(newState, action.contextKey, state))
+        })
+      }
+
+      if (action.type === 'mapPipe') {
+        let mapResults = map((s) => {
+          return runPipe(plugins, action.pipe, s)
+        }, action.state)
+
+        return Promise.all(mapResults).then((results) => {
+          return run(addToContext(newState, action.contextKey, results))
+        })
+      }
+    }
+
+    return run(newState)
   })
 })
+
+function addToContext (state, key, value) {
+  let patch = {}
+  patch[key] = value
+  let context = merge(state.context, patch)
+  return merge(state, {context})
+}
+
+function normalizeState (state) {
+  if (!state) {
+    return emptyState()
+  }
+
+  if (state.context && state.errors && state.payload) {
+    return state
+  }
+
+  return merge(emptyState(), {
+    payload: state
+  })
+}
 
 function isPureFnAction ({type}) {
   return PUREFN_ACTIONS.indexOf(type) > -1
@@ -93,5 +139,6 @@ module.exports = {
   runActions,
   emptyState,
   runPipe,
-  normalizePipe
+  normalizePipe,
+  normalizeState
 }
