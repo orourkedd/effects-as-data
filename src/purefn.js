@@ -12,10 +12,10 @@ const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
     return p
   }, {}, keys(plugins))
 
-  return doRunPipe(wrappedPlugins, pipeRaw, state, index)
+  return runPipeRecursive(wrappedPlugins, pipeRaw, state, index)
 })
 
-const doRunPipe = curry((plugins, pipeRaw, state, index = 0) => {
+const runPipeRecursive = curry((plugins, pipeRaw, state, index = 0) => {
   let state1 = normalizeState(state)
   let pipe = normalizePipe(pipeRaw)
 
@@ -30,7 +30,7 @@ const doRunPipe = curry((plugins, pipeRaw, state, index = 0) => {
   return runActions(merge(defaultPlugins, plugins), results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
-    return shouldEnd ? state2 : doRunPipe(plugins, pipe, state2, index + 1)
+    return shouldEnd ? state2 : runPipeRecursive(plugins, pipe, state2, index + 1)
   })
 })
 
@@ -63,14 +63,14 @@ const stateActionHandler = (plugins, action) => {
 }
 
 const callActionHandler = (plugins, action) => {
-  return doRunPipe(plugins, action.pipe, action.state).then((state) => {
+  return runPipeRecursive(plugins, action.pipe, action.state).then((state) => {
     return addToContext(keyed(action.contextKey, state))
   })
 }
 
 const mapPipeActionHandler = (plugins, action) => {
   let mapResults = map((s) => {
-    return doRunPipe(plugins, action.pipe, s)
+    return runPipeRecursive(plugins, action.pipe, s)
   }, action.state)
 
   return Promise.all(mapResults).then((results) => {
