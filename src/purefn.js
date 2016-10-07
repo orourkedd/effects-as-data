@@ -70,12 +70,18 @@ const addToContext = (key, value) => {
   }
 }
 
-const addToErrors = (key, value) => {
+const addToErrors = (key, error) => {
   let patch = {}
-  patch[key] = value
+  patch[key] = error
   return {
     type: 'addToErrors',
     value: patch
+  }
+}
+
+const end = () => {
+  return {
+    type: 'end'
   }
 }
 
@@ -94,32 +100,20 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
   let pluginActions = difference(resultsAsArray, pureFnActions)
 
   return runActions(plugins, pluginActions).then((actions) => {
-    // let context = merge(state.context, statePatch.context)
-    // let errors = merge(state.errors, statePatch.errors)
-    // let newState = merge(state, {context, errors})
-    let newState = state
-
     const run = (state) => runPipe(plugins, pipe, state, index + 1)
 
     let queue = actions.concat(pureFnActions).map((action) => {
       if (action.type === 'setPayload') {
-        return {
-          payload: action.payload
-        }
+        return action
       }
 
       if (action.type === 'addToErrors') {
-        let newErrors = merge(newState.errors, action.value)
-        return {
-          errors: newErrors
-        }
+        return action
       }
 
       if (action.type === 'call') {
         return runPipe(plugins, action.pipe, action.state).then((state) => {
-          return {
-            context: mergeKey(newState.context, action.contextKey, state)
-          }
+          return addToContext(action.contextKey, state)
         })
       }
 
@@ -129,56 +123,52 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
         }, action.state)
 
         return Promise.all(mapResults).then((results) => {
-          return {
-            context: mergeKey(newState.context, action.contextKey, results)
-          }
+          return addToContext(action.contextKey, results)
         })
       }
 
       if (action.type === 'addToContext') {
-        let newContext = merge(newState.context, action.value)
-        return {
-          context: newContext
-        }
+        return action
       }
 
       if (action.type === 'panic') {
-        return Promise.reject(action.error)
+        throw action.error
       }
 
       if (action.type === 'end') {
-        return {
-          end: true
-        }
+        return end()
       }
     })
 
-    let promises = map((q) => {
-      return toPromise(q)
-    }, queue)
-    return Promise.all(promises).then((patches) => {
-      let pluckContexts = pluck(['context'])
-      let pluckErrors = pluck(['errors'])
-      let contexts = pluckContexts(patches)
-      let errors = pluckErrors(patches)
-      let { end } = mergeAll(patches)
-      let newContext = merge(newState.context, mergeAll(contexts))
-      let newPayload = reduce((p, c) => {
-        if (c.payload) {
-          return c.payload
+    return Promise.all(queue).then((actions) => {
+      //  state actions
+      let newState = reduce((p, action) => {
+        switch (action.type) {
+          case 'setPayload':
+            return merge(p, {payload: action.payload})
+
+          case 'addToContext':
+            return merge(p, {
+              context: merge(p.context, action.value)
+            })
+
+          case 'addToErrors':
+            return merge(p, {
+              errors: merge(p.errors, action.value)
+            })
+
+          default:
+            return p
         }
-        return p
-      }, {}, [].concat(newState, patches))
-      let newErrors = merge(newState.errors, mergeAll(errors))
-      let n = {
-        context: newContext,
-        errors: newErrors,
-        payload: newPayload
+      }, state, actions)
+
+      let shouldEnd = actions.some((a) => a.type === 'end')
+
+      if (shouldEnd) {
+        return newState
+      } else {
+        return run(newState)
       }
-      if (end === true) {
-        return n
-      }
-      return run(n)
     })
   })
 })
