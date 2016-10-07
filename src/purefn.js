@@ -1,4 +1,16 @@
-const { map, last, pluck, curry, zip, merge, mergeAll, filter, flatten, reduce, difference, toPairs } = require('ramda')
+const {
+  map,
+  pluck,
+  curry,
+  zip,
+  merge,
+  mergeAll,
+  filter,
+  flatten,
+  reduce,
+  difference,
+  toPairs
+} = require('ramda')
 const { toArray, toPromise } = require('./util')
 const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic', 'end', 'addToContext']
 
@@ -29,23 +41,43 @@ const runActions = curry((plugins, actions) => {
   let actionRunner = runAction(plugins)
   let promises = map(actionRunner, actions)
   return Promise.all(promises).then((results) => {
-    let response = {
-      context: {},
-      errors: {}
-    }
     let pairs = zip(actions, results)
-    let resultsForState = reduce((p, [action, result]) => {
+    let resultsForState = map(([action, result]) => {
       if (result.success === true) {
-        p.context[action.contextKey] = result.payload
+        return addToContext(action.contextKey, result.payload)
       } else {
-        p.errors[action.contextKey] = result.error
+        return addToErrors(action.contextKey, result.error)
       }
-      return p
-    }, response, pairs)
+    }, pairs)
 
     return resultsForState
   })
 })
+
+const setPayload = (payload) => {
+  return {
+    type: 'setPayload',
+    payload
+  }
+}
+
+const addToContext = (key, value) => {
+  let patch = {}
+  patch[key] = value
+  return {
+    type: 'addToContext',
+    value: patch
+  }
+}
+
+const addToErrors = (key, value) => {
+  let patch = {}
+  patch[key] = value
+  return {
+    type: 'addToErrors',
+    value: patch
+  }
+}
 
 const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
   let state = normalizeState(stateRaw)
@@ -61,17 +93,25 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
   let pureFnActions = filter(isPureFnAction, resultsAsArray)
   let pluginActions = difference(resultsAsArray, pureFnActions)
 
-  return runActions(plugins, pluginActions).then((statePatch) => {
-    let context = merge(state.context, statePatch.context)
-    let errors = merge(state.errors, statePatch.errors)
-    let newState = merge(state, {context, errors})
+  return runActions(plugins, pluginActions).then((actions) => {
+    // let context = merge(state.context, statePatch.context)
+    // let errors = merge(state.errors, statePatch.errors)
+    // let newState = merge(state, {context, errors})
+    let newState = state
 
     const run = (state) => runPipe(plugins, pipe, state, index + 1)
 
-    let queue = pureFnActions.map((action) => {
+    let queue = actions.concat(pureFnActions).map((action) => {
       if (action.type === 'setPayload') {
         return {
           payload: action.payload
+        }
+      }
+
+      if (action.type === 'addToErrors') {
+        let newErrors = merge(newState.errors, action.value)
+        return {
+          errors: newErrors
         }
       }
 

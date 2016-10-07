@@ -23,7 +23,7 @@ const { passPayload } = require('./test/pipes/pass-payload')
 const { merge } = require('ramda')
 
 describe('purefn', () => {
-  describe('runAction', () => {
+  describe.skip('runAction', () => {
     it('should write results to the context object', () => {
       let { action1, plugins } = setup('test-result1')
       return runAction(plugins, action1).then((result) => {
@@ -63,7 +63,7 @@ describe('purefn', () => {
     })
   })
 
-  describe('runActions', () => {
+  describe.skip('runActions', () => {
     it('should run multiple actions and return an array of results', () => {
       let { plugins } = setup('test-result1', 'test-result2')
       let action1 = testAction('test1', 'tr1')
