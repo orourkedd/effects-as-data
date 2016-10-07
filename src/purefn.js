@@ -15,7 +15,7 @@ const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
   return runPipeRecursive(wrappedPlugins, pipeRaw, state, index)
 })
 
-const runPipeRecursive = curry((plugins, pipeRaw, state, index = 0) => {
+const runPipeRecursive = (plugins, pipeRaw, state, index = 0) => {
   let state1 = normalizeState(state)
   let pipe = normalizePipe(pipeRaw)
 
@@ -32,7 +32,7 @@ const runPipeRecursive = curry((plugins, pipeRaw, state, index = 0) => {
     let shouldEnd = actions.some((a) => a.type === 'end')
     return shouldEnd ? state2 : runPipeRecursive(plugins, pipe, state2, index + 1)
   })
-})
+}
 
 function runActions (plugins, actions) {
   // let promises = map(routeActionToHandler(plugins), actions)
