@@ -293,7 +293,9 @@ describe('purefn', () => {
       let fn = () => log('hi')
 
       stub(console, 'info')
+      console.log('stub info')
       return runPipe(plugins, fn, {}).then(() => {
+        console.log('assret on info')
         assert(console.info.calledWith('hi'), 'console.info was not called with "hi"')
         console.info.restore()
       }).catch((e) => {

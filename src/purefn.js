@@ -1,9 +1,21 @@
-const { map, curry, merge, flatten, reduce, toPairs } = require('ramda')
+const { map, keys, curry, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
 const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
+  let wrappedPlugins = reduce((p, name) => {
+    p[name] = (allPlugins, action) => {
+      let result = plugins[name](action.payload)
+      return resultToStateAction(action, result)
+    }
+    return p
+  }, {}, keys(plugins))
+
+  return doRunPipe(wrappedPlugins, pipeRaw, state, index)
+})
+
+const doRunPipe = curry((plugins, pipeRaw, state, index = 0) => {
   let state1 = normalizeState(state)
   let pipe = normalizePipe(pipeRaw)
 
@@ -15,22 +27,25 @@ const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
   let result = fn(state1)
   let results = toArray(result)
 
-  return runActions(plugins, results).then((actions) => {
+  return runActions(merge(defaultPlugins, plugins), results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
-    return shouldEnd ? state2 : runPipe(plugins, pipe, state2, index + 1)
+    return shouldEnd ? state2 : doRunPipe(plugins, pipe, state2, index + 1)
   })
 })
 
 function runActions (plugins, actions) {
-  let promises = map(routeActionToHandler(plugins), actions)
+  // let promises = map(routeActionToHandler(plugins), actions)
+  let promises = map((action) => {
+    return plugins[action.type](plugins, action)
+  }, actions)
   return Promise.all(promises)
 }
 
-const routeActionToHandler = curry((plugins, action) => {
-  let handler = defaultPlugins[action.type] || runAction
-  return handler(plugins, action)
-})
+// const routeActionToHandler = curry((plugins, action) => {
+//   let handler = defaultPlugins[action.type] || runAction
+//   return handler(plugins, action)
+// })
 
 const runAction = curry((plugins, action) => {
   let plugin = plugins[action.type]
@@ -48,14 +63,14 @@ const stateActionHandler = (plugins, action) => {
 }
 
 const callActionHandler = (plugins, action) => {
-  return runPipe(plugins, action.pipe, action.state).then((state) => {
+  return doRunPipe(plugins, action.pipe, action.state).then((state) => {
     return addToContext(keyed(action.contextKey, state))
   })
 }
 
 const mapPipeActionHandler = (plugins, action) => {
   let mapResults = map((s) => {
-    return runPipe(plugins, action.pipe, s)
+    return doRunPipe(plugins, action.pipe, s)
   }, action.state)
 
   return Promise.all(mapResults).then((results) => {
