@@ -15,9 +15,7 @@ const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
   let result = fn(state1)
   let results = toArray(result)
 
-  let allPlugins = merge(defaultPlugins, plugins)
-
-  return runActions(allPlugins, results).then((actions) => {
+  return runActions(plugins, results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
     return shouldEnd ? state2 : runPipe(plugins, pipe, state2, index + 1)
