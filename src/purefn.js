@@ -4,14 +4,7 @@ const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
 const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
-  let wrappedPlugins = reduce((p, name) => {
-    p[name] = (allPlugins, action) => {
-      let result = plugins[name](action.payload)
-      return resultToStateAction(action, result)
-    }
-    return p
-  }, {}, keys(plugins))
-
+  let wrappedPlugins = wrapPlugins(plugins)
   return runPipeRecursive(wrappedPlugins, pipeRaw, state, index)
 })
 
@@ -32,6 +25,16 @@ const runPipeRecursive = (plugins, pipeRaw, state, index = 0) => {
     let shouldEnd = actions.some((a) => a.type === 'end')
     return shouldEnd ? state2 : runPipeRecursive(plugins, pipe, state2, index + 1)
   })
+}
+
+function wrapPlugins (plugins) {
+  return reduce((p, name) => {
+    p[name] = (allPlugins, action) => {
+      let result = plugins[name](action.payload)
+      return resultToStateAction(action, result)
+    }
+    return p
+  }, {}, keys(plugins))
 }
 
 function runActions (plugins, actions) {
