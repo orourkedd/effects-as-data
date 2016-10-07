@@ -220,6 +220,7 @@ describe('purefn', () => {
         return runPipe(plugins, testPanic, {}).then((state) => {
           throw new Error('This should not be called')
         }).catch((err) => {
+          console.log(err)
           deep(err.message, 'Something bad happened!')
         })
       })

@@ -4,6 +4,7 @@ const { panic } = require('./panic')
 const { end } = require('./end')
 const { addToContext } = require('./context')
 const { call } = require('./call')
+const { addToErrors } = require('./errors')
 
 module.exports = {
   setPayload,
@@ -11,5 +12,6 @@ module.exports = {
   panic,
   end,
   addToContext,
+  addToErrors,
   call
 }

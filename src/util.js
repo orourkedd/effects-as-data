@@ -16,7 +16,14 @@ function toPromise (v) {
   return v
 }
 
+function keyed (key, value) {
+  let patch = {}
+  patch[key] = value
+  return patch
+}
+
 module.exports = {
   toArray,
-  toPromise
+  toPromise,
+  keyed
 }

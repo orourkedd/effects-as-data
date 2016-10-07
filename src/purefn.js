@@ -1,18 +1,38 @@
-const {
-  map,
-  pluck,
-  curry,
-  zip,
-  merge,
-  mergeAll,
-  filter,
-  flatten,
-  reduce,
-  difference,
-  toPairs
-} = require('ramda')
-const { toArray, toPromise } = require('./util')
-const PUREFN_ACTIONS = ['setPayload', 'call', 'mapPipe', 'panic', 'end', 'addToContext']
+const { map, curry, merge, flatten, reduce, toPairs } = require('ramda')
+const { toArray, toPromise, keyed } = require('./util')
+const { stateReducer } = require('./state-reducer')
+const { addToContext, addToErrors } = require('./actions')
+
+const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
+  let state1 = normalizeState(state)
+  let pipe = normalizePipe(pipeRaw)
+
+  if (isEndOfPipe(pipe, index)) {
+    return Promise.resolve(state1)
+  }
+
+  let fn = pipeFn(pipe, index)
+  let result = fn(state1)
+  let results = toArray(result)
+
+  let allPlugins = merge(defaultPlugins, plugins)
+
+  return runActions(allPlugins, results).then((actions) => {
+    let state2 = stateReducer(state1, actions)
+    let shouldEnd = actions.some((a) => a.type === 'end')
+    return shouldEnd ? state2 : runPipe(plugins, pipe, state2, index + 1)
+  })
+})
+
+function runActions (plugins, actions) {
+  let promises = map(routeActionToHandler(plugins), actions)
+  return Promise.all(promises)
+}
+
+const routeActionToHandler = curry((plugins, action) => {
+  let handler = defaultPlugins[action.type] || runAction
+  return handler(plugins, action)
+})
 
 const runAction = curry((plugins, action) => {
   let plugin = plugins[action.type]
@@ -22,169 +42,59 @@ const runAction = curry((plugins, action) => {
   }
 
   let pluginResult = plugin(action.payload)
+  return resultToStateAction(action, pluginResult)
+})
+
+const stateActionHandler = (plugins, action) => {
+  return action
+}
+
+const callActionHandler = (plugins, action) => {
+  return runPipe(plugins, action.pipe, action.state).then((state) => {
+    return addToContext(keyed(action.contextKey, state))
+  })
+}
+
+const mapPipeActionHandler = (plugins, action) => {
+  let mapResults = map((s) => {
+    return runPipe(plugins, action.pipe, s)
+  }, action.state)
+
+  return Promise.all(mapResults).then((results) => {
+    return addToContext(keyed(action.contextKey, results))
+  })
+}
+
+const panicActionHandler = (plugins, action) => {
+  return Promise.reject(action.error)
+}
+
+const defaultPlugins = {
+  setPayload: stateActionHandler,
+  addToErrors: stateActionHandler,
+  addToContext: stateActionHandler,
+  end: stateActionHandler,
+  call: callActionHandler,
+  mapPipe: mapPipeActionHandler,
+  panic: panicActionHandler
+}
+
+function resultToStateAction (action, pluginResult) {
   return toPromise(pluginResult)
   .then((payload) => {
-    return {
-      success: true,
-      payload
-    }
+    return addToContext(keyed(action.contextKey, payload))
   })
   .catch((error) => {
-    return {
-      success: false,
-      error
-    }
-  })
-})
-
-const runActions = curry((plugins, actions) => {
-  let actionRunner = runAction(plugins)
-  let promises = map(actionRunner, actions)
-  return Promise.all(promises).then((results) => {
-    let pairs = zip(actions, results)
-    let resultsForState = map(([action, result]) => {
-      if (result.success === true) {
-        return addToContext(action.contextKey, result.payload)
-      } else {
-        return addToErrors(action.contextKey, result.error)
-      }
-    }, pairs)
-
-    return resultsForState
-  })
-})
-
-const setPayload = (payload) => {
-  return {
-    type: 'setPayload',
-    payload
-  }
-}
-
-const addToContext = (key, value) => {
-  let patch = {}
-  patch[key] = value
-  return {
-    type: 'addToContext',
-    value: patch
-  }
-}
-
-const addToErrors = (key, error) => {
-  let patch = {}
-  patch[key] = error
-  return {
-    type: 'addToErrors',
-    value: patch
-  }
-}
-
-const end = () => {
-  return {
-    type: 'end'
-  }
-}
-
-const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
-  let state = normalizeState(stateRaw)
-  let pipe = normalizePipe(pipeRaw)
-  if (index >= pipe.length) {
-    return Promise.resolve(state)
-  }
-
-  let fn = pipe[index]
-  let results = fn(state)
-  let resultsAsArray = toArray(results)
-
-  let pureFnActions = filter(isPureFnAction, resultsAsArray)
-  let pluginActions = difference(resultsAsArray, pureFnActions)
-
-  return runActions(plugins, pluginActions).then((actions) => {
-    const run = (state) => runPipe(plugins, pipe, state, index + 1)
-
-    let queue = normalizeActions(plugins, actions.concat(pureFnActions))
-
-    return Promise.all(queue).then((actions) => {
-      //  state actions
-      let newState = applyActionsToState(state, actions)
-
-      let shouldEnd = actions.some((a) => a.type === 'end')
-
-      if (shouldEnd) {
-        return newState
-      } else {
-        return run(newState)
-      }
-    })
-  })
-})
-
-function applyActionsToState (state, actions) {
-  return reduce((p, action) => {
-    switch (action.type) {
-      case 'setPayload':
-        return merge(p, {payload: action.payload})
-
-      case 'addToContext':
-        return merge(p, {
-          context: merge(p.context, action.value)
-        })
-
-      case 'addToErrors':
-        return merge(p, {
-          errors: merge(p.errors, action.value)
-        })
-
-      default:
-        return p
-    }
-  }, state, actions)
-}
-
-function normalizeActions (plugins, actions) {
-  return actions.map((action) => {
-    if (action.type === 'setPayload') {
-      return action
-    }
-
-    if (action.type === 'addToErrors') {
-      return action
-    }
-
-    if (action.type === 'call') {
-      return runPipe(plugins, action.pipe, action.state).then((state) => {
-        return addToContext(action.contextKey, state)
-      })
-    }
-
-    if (action.type === 'mapPipe') {
-      let mapResults = map((s) => {
-        return runPipe(plugins, action.pipe, s)
-      }, action.state)
-
-      return Promise.all(mapResults).then((results) => {
-        return addToContext(action.contextKey, results)
-      })
-    }
-
-    if (action.type === 'addToContext') {
-      return action
-    }
-
-    if (action.type === 'panic') {
-      throw action.error
-    }
-
-    if (action.type === 'end') {
-      return end()
-    }
+    return addToErrors(keyed(action.contextKey, error))
   })
 }
 
-function mergeKey (context, key, value) {
-  let patch = {}
-  patch[key] = value
-  return merge(context, patch)
+function isEndOfPipe (pipe, i) {
+  return i >= pipe.length
+}
+
+function pipeFn (pipe, i) {
+  return pipe[i]
 }
 
 function normalizeState (state) {
@@ -199,10 +109,6 @@ function normalizeState (state) {
   return merge(emptyState(), {
     payload: state
   })
-}
-
-function isPureFnAction ({type}) {
-  return PUREFN_ACTIONS.indexOf(type) > -1
 }
 
 function normalizePipe (pipe) {
@@ -230,7 +136,6 @@ const buildPipes = (plugins, pipes) => {
 
 module.exports = {
   runAction,
-  runActions,
   emptyState,
   runPipe,
   normalizePipe,
