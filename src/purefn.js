@@ -102,65 +102,11 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
   return runActions(plugins, pluginActions).then((actions) => {
     const run = (state) => runPipe(plugins, pipe, state, index + 1)
 
-    let queue = actions.concat(pureFnActions).map((action) => {
-      if (action.type === 'setPayload') {
-        return action
-      }
-
-      if (action.type === 'addToErrors') {
-        return action
-      }
-
-      if (action.type === 'call') {
-        return runPipe(plugins, action.pipe, action.state).then((state) => {
-          return addToContext(action.contextKey, state)
-        })
-      }
-
-      if (action.type === 'mapPipe') {
-        let mapResults = map((s) => {
-          return runPipe(plugins, action.pipe, s)
-        }, action.state)
-
-        return Promise.all(mapResults).then((results) => {
-          return addToContext(action.contextKey, results)
-        })
-      }
-
-      if (action.type === 'addToContext') {
-        return action
-      }
-
-      if (action.type === 'panic') {
-        throw action.error
-      }
-
-      if (action.type === 'end') {
-        return end()
-      }
-    })
+    let queue = normalizeActions(plugins, actions.concat(pureFnActions))
 
     return Promise.all(queue).then((actions) => {
       //  state actions
-      let newState = reduce((p, action) => {
-        switch (action.type) {
-          case 'setPayload':
-            return merge(p, {payload: action.payload})
-
-          case 'addToContext':
-            return merge(p, {
-              context: merge(p.context, action.value)
-            })
-
-          case 'addToErrors':
-            return merge(p, {
-              errors: merge(p.errors, action.value)
-            })
-
-          default:
-            return p
-        }
-      }, state, actions)
+      let newState = applyActionsToState(state, actions)
 
       let shouldEnd = actions.some((a) => a.type === 'end')
 
@@ -172,6 +118,68 @@ const runPipe = curry((plugins, pipeRaw, stateRaw, index = 0) => {
     })
   })
 })
+
+function applyActionsToState (state, actions) {
+  return reduce((p, action) => {
+    switch (action.type) {
+      case 'setPayload':
+        return merge(p, {payload: action.payload})
+
+      case 'addToContext':
+        return merge(p, {
+          context: merge(p.context, action.value)
+        })
+
+      case 'addToErrors':
+        return merge(p, {
+          errors: merge(p.errors, action.value)
+        })
+
+      default:
+        return p
+    }
+  }, state, actions)
+}
+
+function normalizeActions (plugins, actions) {
+  return actions.map((action) => {
+    if (action.type === 'setPayload') {
+      return action
+    }
+
+    if (action.type === 'addToErrors') {
+      return action
+    }
+
+    if (action.type === 'call') {
+      return runPipe(plugins, action.pipe, action.state).then((state) => {
+        return addToContext(action.contextKey, state)
+      })
+    }
+
+    if (action.type === 'mapPipe') {
+      let mapResults = map((s) => {
+        return runPipe(plugins, action.pipe, s)
+      }, action.state)
+
+      return Promise.all(mapResults).then((results) => {
+        return addToContext(action.contextKey, results)
+      })
+    }
+
+    if (action.type === 'addToContext') {
+      return action
+    }
+
+    if (action.type === 'panic') {
+      throw action.error
+    }
+
+    if (action.type === 'end') {
+      return end()
+    }
+  })
+}
 
 function mergeKey (context, key, value) {
   let patch = {}
