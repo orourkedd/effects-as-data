@@ -2,10 +2,10 @@ const {
   runAction,
   runActions,
   emptyState,
-  runPipe,
+  run,
   normalizePipe,
   normalizeState,
-  buildPipes
+  setup
 } = require('./effects-as-data')
 const { stub } = require('sinon')
 const assert = require('chai').assert
@@ -25,7 +25,7 @@ const { merge } = require('ramda')
 describe('effects-as-data', () => {
   describe.skip('runAction', () => {
     it('should write results to the context object', () => {
-      let { action1, plugins } = setup('test-result1')
+      let { action1, plugins } = setupEAD('test-result1')
       return runAction(plugins, action1).then((result) => {
         assert(plugins.test1.calledWith(action1.payload), 'plugin was not called with action payload')
         deep(result.success, true)
@@ -65,7 +65,7 @@ describe('effects-as-data', () => {
 
   describe.skip('runActions', () => {
     it('should run multiple actions and return an array of results', () => {
-      let { plugins } = setup('test-result1', 'test-result2')
+      let { plugins } = setupEAD('test-result1', 'test-result2')
       let action1 = testAction('test1', 'tr1')
       let action2 = testAction('test2', 'tr2')
       let actions = [action1, action2]
@@ -91,7 +91,7 @@ describe('effects-as-data', () => {
     })
   })
 
-  describe('buildPipes', () => {
+  describe('setup', () => {
     it('should be able to run a pipe', () => {
       let plugins = {
         test1: test1Plugin
@@ -101,7 +101,7 @@ describe('effects-as-data', () => {
         test1: test1Pipe
       }
 
-      let { test1 } = buildPipes(plugins, pipes)
+      let { test1 } = setup(plugins, pipes)
 
       return test1().then((state) => {
         deep(state.payload, {
@@ -111,13 +111,13 @@ describe('effects-as-data', () => {
     })
   })
 
-  describe('runPipe', () => {
+  describe('run', () => {
     it('should be able to run a pipe', () => {
       let plugins = {
         test1: test1Plugin
       }
 
-      return runPipe(plugins, test1Pipe, emptyState()).then((state) => {
+      return run(plugins, test1Pipe, emptyState()).then((state) => {
         deep(state.payload, {
           result: 'test1-result'
         })
@@ -129,7 +129,7 @@ describe('effects-as-data', () => {
         foo: 'bar'
       }
 
-      return runPipe({}, passPayload, payload).then((state) => {
+      return run({}, passPayload, payload).then((state) => {
         deep(state.payload, payload)
       })
     })
@@ -141,7 +141,7 @@ describe('effects-as-data', () => {
         }
       })
 
-      return runPipe({}, passPayload, expectedState).then((state) => {
+      return run({}, passPayload, expectedState).then((state) => {
         deep(state.context, expectedState.context)
       })
     })
@@ -153,7 +153,7 @@ describe('effects-as-data', () => {
         }
       })
 
-      return runPipe({}, passPayload, expectedState).then((state) => {
+      return run({}, passPayload, expectedState).then((state) => {
         deep(state.errors, expectedState.errors)
       })
     })
@@ -168,13 +168,13 @@ describe('effects-as-data', () => {
 
       let fn = () => action
 
-      return runPipe(plugins, fn, emptyState()).then((state) => {
+      return run(plugins, fn, emptyState()).then((state) => {
         deep(state.errors[action.contextKey], error)
       })
     })
 
     it('should perform all actions before returning', () => {
-      return runPipe({}, doubleCall, emptyState()).then((state) => {
+      return run({}, doubleCall, emptyState()).then((state) => {
         deep(state.payload, {
           c1: true,
           c2: true
@@ -184,14 +184,14 @@ describe('effects-as-data', () => {
 
     describe('call', () => {
       it('should call subpipe', () => {
-        let { plugins } = setup()
+        let { plugins } = setupEAD()
 
         let expectedState = {
           foo: 'bar',
           sub: 'pipe'
         }
 
-        return runPipe(plugins, testCall, expectedState).then((state) => {
+        return run(plugins, testCall, expectedState).then((state) => {
           deep(state.payload, expectedState)
         })
       })
@@ -199,9 +199,9 @@ describe('effects-as-data', () => {
 
     describe('mapPipe', () => {
       it('should be able to map a pipe over results', () => {
-        let { plugins } = setup()
+        let { plugins } = setupEAD()
 
-        return runPipe(plugins, testMap, {}).then((state) => {
+        return run(plugins, testMap, {}).then((state) => {
           let expectedPayload = [
             {id: 1, name: 'User 1'},
             {id: 2, name: 'User 2'},
@@ -215,9 +215,9 @@ describe('effects-as-data', () => {
 
     describe('panic', () => {
       it('should error out on panic', () => {
-        let { plugins } = setup()
+        let { plugins } = setupEAD()
 
-        return runPipe(plugins, testPanic, {}).then((state) => {
+        return run(plugins, testPanic, {}).then((state) => {
           throw new Error('This should not be called')
         }).catch((err) => {
           deep(err.message, 'Something bad happened!')
@@ -227,9 +227,9 @@ describe('effects-as-data', () => {
 
     describe('end', () => {
       it('should be able to abort pipe', () => {
-        let { plugins } = setup()
+        let { plugins } = setupEAD()
 
-        return runPipe(plugins, testEnd, {}).then(({payload}) => {
+        return run(plugins, testEnd, {}).then(({payload}) => {
           deep(payload, 2)
         })
       })
@@ -237,7 +237,7 @@ describe('effects-as-data', () => {
 
     describe('addToContext', () => {
       it('should add to context', () => {
-        let { plugins } = setup()
+        let { plugins } = setupEAD()
 
         let added = {
           foo: 'bar'
@@ -245,7 +245,7 @@ describe('effects-as-data', () => {
 
         let fn = () => addToContext(added)
 
-        return runPipe(plugins, fn, {}).then(({context}) => {
+        return run(plugins, fn, {}).then(({context}) => {
           deep(context, added)
         })
       })
@@ -261,7 +261,7 @@ describe('effects-as-data', () => {
           two: 2
         }))
 
-        return runPipe({}, pipe, emptyState()).then((state) => {
+        return run({}, pipe, emptyState()).then((state) => {
           deep(state.context, {
             one: 1,
             two: 2
@@ -292,7 +292,7 @@ describe('effects-as-data', () => {
       let fn = () => log('hi')
 
       stub(console, 'info')
-      return runPipe(plugins, fn, {}).then(() => {
+      return run(plugins, fn, {}).then(() => {
         assert(console.info.calledWith('hi'), 'console.info was not called with "hi"')
         console.info.restore()
       }).catch((e) => {
@@ -330,7 +330,7 @@ describe('effects-as-data', () => {
   })
 })
 
-function setup (testPluginResult1, testPluginResult2) {
+function setupEAD (testPluginResult1, testPluginResult2) {
   let action1 = testAction('test1')
   let action2 = testAction('test2')
   let plugins = {

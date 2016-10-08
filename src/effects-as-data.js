@@ -3,12 +3,12 @@ const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
-const runPipe = curry((plugins, pipeRaw, state, index = 0) => {
+const run = curry((plugins, pipeRaw, state, index = 0) => {
   let wrappedPlugins = wrapPlugins(plugins)
-  return runPipeRecursive(wrappedPlugins, pipeRaw, state, index)
+  return runRecursive(wrappedPlugins, pipeRaw, state, index)
 })
 
-const runPipeRecursive = (plugins, pipeRaw, state, index = 0) => {
+const runRecursive = (plugins, pipeRaw, state, index = 0) => {
   let state1 = normalizeState(state)
   let pipe = normalizePipe(pipeRaw)
 
@@ -23,7 +23,7 @@ const runPipeRecursive = (plugins, pipeRaw, state, index = 0) => {
   return runActions(merge(defaultPlugins, plugins), results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
-    return shouldEnd ? state2 : runPipeRecursive(plugins, pipe, state2, index + 1)
+    return shouldEnd ? state2 : runRecursive(plugins, pipe, state2, index + 1)
   })
 }
 
@@ -66,14 +66,14 @@ const stateActionHandler = (plugins, action) => {
 }
 
 const callActionHandler = (plugins, action) => {
-  return runPipeRecursive(plugins, action.pipe, action.state).then((state) => {
+  return runRecursive(plugins, action.pipe, action.state).then((state) => {
     return addToContext(keyed(action.contextKey, state))
   })
 }
 
 const mapPipeActionHandler = (plugins, action) => {
   let mapResults = map((s) => {
-    return runPipeRecursive(plugins, action.pipe, s)
+    return runRecursive(plugins, action.pipe, s)
   }, action.state)
 
   return Promise.all(mapResults).then((results) => {
@@ -140,11 +140,11 @@ const emptyState = () => {
   }
 }
 
-const buildPipes = (plugins, pipes) => {
+const setup = (plugins, pipes) => {
   let pairs = toPairs(pipes)
   return reduce((p, [key, pipe]) => {
     p[key] = (state = {}) => {
-      return runPipe(plugins, pipe, state)
+      return run(plugins, pipe, state)
     }
     return p
   }, {}, pairs)
@@ -153,8 +153,8 @@ const buildPipes = (plugins, pipes) => {
 module.exports = {
   runAction,
   emptyState,
-  runPipe,
+  run,
   normalizePipe,
   normalizeState,
-  buildPipes
+  setup
 }
