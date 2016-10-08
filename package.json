@@ -1,5 +1,5 @@
 {
-  "name": "purefn",
+  "name": "effects-as-data",
   "version": "0.0.1",
   "description": "Express complex async workflows using only pure functions.",
   "main": "index.js",
