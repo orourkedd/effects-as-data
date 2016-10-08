@@ -1,1 +1,1 @@
-module.exports = require('./src/effects-as-data')
+module.exports = require('./lib/effects-as-data')
