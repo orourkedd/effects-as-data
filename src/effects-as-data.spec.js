@@ -6,7 +6,7 @@ const {
   normalizePipe,
   normalizeState,
   buildPipes
-} = require('./purefn')
+} = require('./effects-as-data')
 const { stub } = require('sinon')
 const assert = require('chai').assert
 const { deepEqual: deep } = assert
@@ -22,7 +22,7 @@ const { doubleCall } = require('./test/pipes/double-call')
 const { passPayload } = require('./test/pipes/pass-payload')
 const { merge } = require('ramda')
 
-describe('purefn', () => {
+describe('effects-as-data', () => {
   describe.skip('runAction', () => {
     it('should write results to the context object', () => {
       let { action1, plugins } = setup('test-result1')

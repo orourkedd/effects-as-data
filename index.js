@@ -1,1 +1,1 @@
-module.exports = require('./src/purefn')
+module.exports = require('./src/effects-as-data')

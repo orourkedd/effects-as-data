@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/orourkedd/purefn.git"
+    "url": "git+https://github.com/orourkedd/effects-as-data.git"
   },
   "author": "orourkedd",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/orourkedd/purefn/issues"
+    "url": "https://github.com/orourkedd/effects-as-data/issues"
   },
-  "homepage": "https://github.com/orourkedd/purefn#readme",
+  "homepage": "https://github.com/orourkedd/effects-as-data#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.1.0",
