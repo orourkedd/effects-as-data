@@ -23,8 +23,8 @@ const runRecursive = (plugins, pipe, state, ec) => {
 
   return runActions(plugins, results, ec).then((actions) => {
     let state2 = stateReducer(state1, actions)
-    let controlFlowAction = actions.find((a) => ['end'].indexOf(a.type) > -1)
     let ec1 = incrementECIndex(ec)
+    let controlFlowAction = findControlFlowAction(actions)
     let ec2 = applyControlFlowAction(controlFlowAction, ec1)
 
     if (ec2.end) {
@@ -33,6 +33,11 @@ const runRecursive = (plugins, pipe, state, ec) => {
 
     return runRecursive(plugins, pipe1, state2, ec2)
   })
+}
+
+const findControlFlowAction = (actions) => {
+  let controlFlowActionTypes = ['end']
+  return actions.find(({type}) => controlFlowActionTypes.indexOf(type) > -1)
 }
 
 const applyControlFlowAction = (action = {}, ec) => {
