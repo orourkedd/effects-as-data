@@ -27,16 +27,21 @@ const runRecursive = (plugins, pipe, state, ec) => {
     let controlFlowAction = findControlFlowAction(actions)
     let ec2 = applyControlFlowAction(controlFlowAction, ec1)
 
-    if (ec2.end) {
+    if (ec2.flow === 'end') {
       return state2
     }
+
+    //  example for the future:
+    // if (ec2.flow === 'recurse') {
+    //   //  do recursion
+    // }
 
     return runRecursive(plugins, pipe1, state2, ec2)
   })
 }
 
 const findControlFlowAction = (actions) => {
-  let controlFlowActionTypes = ['end']
+  let controlFlowActionTypes = ['end', 'recurse', 'fork']
   return actions.find(({type}) => controlFlowActionTypes.indexOf(type) > -1)
 }
 
@@ -44,11 +49,13 @@ const applyControlFlowAction = (action = {}, ec) => {
   switch (action.type) {
     case 'end':
       return merge(ec, {
-        end: true
+        flow: 'end'
       })
 
     default:
-      return ec
+      return merge(ec, {
+        flow: 'continue'
+      })
   }
 }
 
