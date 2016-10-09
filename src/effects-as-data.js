@@ -8,22 +8,22 @@ const run = (plugins, pipeRaw, state, index = 0) => {
   return runRecursive(allPlugins, pipeRaw, state, index)
 }
 
-const runRecursive = (plugins, pipeRaw, state, index = 0) => {
+const runRecursive = (plugins, pipe, state, index = 0) => {
   let state1 = normalizeState(state)
-  let pipe = normalizePipe(pipeRaw)
+  let pipe1 = normalizePipe(pipe)
 
-  if (isEndOfPipe(pipe, index)) {
+  if (isEndOfPipe(pipe1, index)) {
     return Promise.resolve(state1)
   }
 
-  let fn = pipeFn(pipe, index)
+  let fn = pipeFn(pipe1, index)
   let result = fn(state1)
   let results = toArray(result)
 
   return runActions(plugins, results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
-    return shouldEnd ? state2 : runRecursive(plugins, pipe, state2, index + 1)
+    return shouldEnd ? state2 : runRecursive(plugins, pipe1, state2, index + 1)
   })
 }
 
