@@ -33,7 +33,7 @@ const runRecursive = (plugins, pipe, state, ec) => {
 
     //  example for the future:
     // if (ec2.flow === 'recurse') {
-    //   //  do recursion
+    //   //  do pipe recursion
     // }
 
     return runRecursive(plugins, pipe1, state2, ec2)
