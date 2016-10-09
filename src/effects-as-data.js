@@ -1,12 +1,12 @@
-const { map, curry, merge, flatten, reduce, toPairs } = require('ramda')
+const { map, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
-const run = curry((plugins, pipeRaw, state, index = 0) => {
+const run = (plugins, pipeRaw, state, index = 0) => {
   let allPlugins = merge(defaultPlugins, plugins)
   return runRecursive(allPlugins, pipeRaw, state, index)
-})
+}
 
 const runRecursive = (plugins, pipeRaw, state, index = 0) => {
   let state1 = normalizeState(state)
@@ -27,7 +27,7 @@ const runRecursive = (plugins, pipeRaw, state, index = 0) => {
   })
 }
 
-function runActions (plugins, actions) {
+const runActions = (plugins, actions) => {
   let promises = map((action) => {
     return plugins[action.type](plugins, action)
   }, actions)
@@ -68,7 +68,7 @@ const defaultPlugins = {
   panic: panicActionHandler
 }
 
-function resultToStateAction (action, pluginResult) {
+const resultToStateAction = (action, pluginResult) => {
   return toPromise(pluginResult)
   .then((payload) => {
     return addToContext(keyed(action.contextKey, payload))
@@ -78,15 +78,15 @@ function resultToStateAction (action, pluginResult) {
   })
 }
 
-function isEndOfPipe (pipe, i) {
+const isEndOfPipe = (pipe, i) => {
   return i >= pipe.length
 }
 
-function pipeFn (pipe, i) {
+const pipeFn = (pipe, i) => {
   return pipe[i]
 }
 
-function normalizeState (state) {
+const normalizeState = (state) => {
   if (!state) {
     return emptyState()
   }
@@ -100,7 +100,7 @@ function normalizeState (state) {
   })
 }
 
-function normalizePipe (pipe) {
+const normalizePipe = (pipe) => {
   let pipeAsArray = toArray(pipe)
   return flatten(pipeAsArray)
 }
