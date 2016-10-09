@@ -28,23 +28,11 @@ const runRecursive = (plugins, pipeRaw, state, index = 0) => {
 }
 
 function runActions (plugins, actions) {
-  // let promises = map(routeActionToHandler(plugins), actions)
   let promises = map((action) => {
     return plugins[action.type](plugins, action)
   }, actions)
   return Promise.all(promises)
 }
-
-const runAction = curry((plugins, action) => {
-  let plugin = plugins[action.type]
-
-  if (typeof plugin === 'undefined') {
-    throw new Error(`"${action.type}" is not a registered plugin.`)
-  }
-
-  let pluginResult = plugin(action.payload)
-  return resultToStateAction(action, pluginResult)
-})
 
 const stateActionHandler = (plugins, action) => {
   return action
@@ -143,7 +131,6 @@ const simplePlugin = (fn) => {
 }
 
 module.exports = {
-  runAction,
   emptyState,
   run,
   normalizePipe,
