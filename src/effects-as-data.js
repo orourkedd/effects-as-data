@@ -1,35 +1,64 @@
-const { map, merge, flatten, reduce, toPairs } = require('ramda')
+const { map, merge, flatten, reduce, toPairs, pipe: rPipe } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
-const run = (plugins, pipeRaw, state, index = 0) => {
-  let allPlugins = merge(defaultPlugins, plugins)
-  return runRecursive(allPlugins, pipeRaw, state, index)
+const run = (plugins, pipeRaw, state, parentEC) => {
+  let ec = newExecutionContext(parentEC)
+  const allPlugins = merge(defaultPlugins, plugins)
+  return runRecursive(allPlugins, pipeRaw, state, ec)
 }
 
-const runRecursive = (plugins, pipe, state, index = 0) => {
+const runRecursive = (plugins, pipe, state, ec) => {
   let state1 = normalizeState(state)
   let pipe1 = normalizePipe(pipe)
 
-  if (isEndOfPipe(pipe1, index)) {
+  if (isEndOfPipe(pipe1, ec)) {
     return Promise.resolve(state1)
   }
 
-  let fn = pipeFn(pipe1, index)
+  let fn = pipeFn(pipe1, ec)
   let result = fn(state1)
   let results = toArray(result)
 
-  return runActions(plugins, results).then((actions) => {
+  return runActions(plugins, results, ec).then((actions) => {
     let state2 = stateReducer(state1, actions)
-    let shouldEnd = actions.some((a) => a.type === 'end')
-    return shouldEnd ? state2 : runRecursive(plugins, pipe1, state2, index + 1)
+    let controlFlowAction = actions.find((a) => ['end'].indexOf(a.type) > -1)
+    let ec1 = rPipe(
+      incrementECIndex,
+      (ec) => applyControlFlowAction(controlFlowAction, ec)
+    )(ec)
+
+    if (ec1.end) {
+      return state2
+    }
+
+    return runRecursive(plugins, pipe1, state2, ec1)
   })
 }
 
-const runActions = (plugins, actions) => {
+const applyControlFlowAction = (action = {}, ec) => {
+  switch (action.type) {
+    case 'end':
+      return merge(ec, {
+        end: true
+      })
+
+    default:
+      return ec
+  }
+}
+
+const newExecutionContext = (parent) => {
+  return {
+    index: 0,
+    parent
+  }
+}
+
+const runActions = (plugins, actions, ec) => {
   let promises = map((action) => {
-    return plugins[action.type](plugins, action)
+    return plugins[action.type](plugins, action, ec)
   }, actions)
   return Promise.all(promises)
 }
@@ -38,15 +67,15 @@ const stateActionHandler = (plugins, action) => {
   return action
 }
 
-const callActionHandler = (plugins, action) => {
-  return runRecursive(plugins, action.pipe, action.state).then((state) => {
+const callActionHandler = (plugins, action, ec) => {
+  return run(plugins, action.pipe, action.state, ec).then((state) => {
     return addToContext(keyed(action.contextKey, state))
   })
 }
 
-const mapPipeActionHandler = (plugins, action) => {
+const mapPipeActionHandler = (plugins, action, ec) => {
   let mapResults = map((s) => {
-    return runRecursive(plugins, action.pipe, s)
+    return run(plugins, action.pipe, s, ec)
   }, action.state)
 
   return Promise.all(mapResults).then((results) => {
@@ -78,12 +107,18 @@ const resultToStateAction = (action, pluginResult) => {
   })
 }
 
-const isEndOfPipe = (pipe, i) => {
-  return i >= pipe.length
+const incrementECIndex = (executionContext) => {
+  return merge(executionContext, {
+    index: executionContext.index + 1
+  })
 }
 
-const pipeFn = (pipe, i) => {
-  return pipe[i]
+const isEndOfPipe = (pipe, ec) => {
+  return ec.index >= pipe.length
+}
+
+const pipeFn = (pipe, ec) => {
+  return pipe[ec.index]
 }
 
 const normalizeState = (state) => {

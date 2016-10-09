@@ -21,6 +21,7 @@ const { addToContext } = require('./actions')
 const { logPlugin, log } = require('./plugins/log')
 const { doubleCall } = require('./test/pipes/double-call')
 const { passPayload } = require('./test/pipes/pass-payload')
+const { childEC } = require('./test/pipes/child-ec')
 const { merge } = require('ramda')
 
 describe('effects-as-data', () => {
@@ -180,6 +181,12 @@ describe('effects-as-data', () => {
           c1: true,
           c2: true
         })
+      })
+    })
+
+    it('should correctly pass the execution context to a child pipe', () => {
+      return run({}, childEC, emptyState()).then(({payload}) => {
+        deep(payload.value, 12)
       })
     })
 
