@@ -1,3 +1,5 @@
+const { simplePlugin } = require('../effects-as-data')
+
 function logPlugin ({message}) {
   console.info(message)
 }
@@ -12,6 +14,6 @@ function log (message) {
 }
 
 module.exports = {
-  logPlugin,
+  logPlugin: simplePlugin(logPlugin),
   log
 }

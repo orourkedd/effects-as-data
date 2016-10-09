@@ -5,7 +5,8 @@ const {
   run,
   normalizePipe,
   normalizeState,
-  setup
+  setup,
+  simplePlugin
 } = require('./effects-as-data')
 const { stub } = require('sinon')
 const assert = require('chai').assert
@@ -161,7 +162,7 @@ describe('effects-as-data', () => {
     it('should write errors to the error object', () => {
       let error = new Error('nope')
       let plugins = {
-        test1: () => Promise.reject(error)
+        test1: simplePlugin(() => Promise.reject(error))
       }
 
       let action = test1('result')

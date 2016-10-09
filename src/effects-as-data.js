@@ -1,11 +1,11 @@
-const { map, keys, curry, merge, flatten, reduce, toPairs } = require('ramda')
+const { map, curry, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
 const run = curry((plugins, pipeRaw, state, index = 0) => {
-  let wrappedPlugins = wrapPlugins(plugins)
-  return runRecursive(wrappedPlugins, pipeRaw, state, index)
+  let allPlugins = merge(defaultPlugins, plugins)
+  return runRecursive(allPlugins, pipeRaw, state, index)
 })
 
 const runRecursive = (plugins, pipeRaw, state, index = 0) => {
@@ -20,21 +20,11 @@ const runRecursive = (plugins, pipeRaw, state, index = 0) => {
   let result = fn(state1)
   let results = toArray(result)
 
-  return runActions(merge(defaultPlugins, plugins), results).then((actions) => {
+  return runActions(plugins, results).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let shouldEnd = actions.some((a) => a.type === 'end')
     return shouldEnd ? state2 : runRecursive(plugins, pipe, state2, index + 1)
   })
-}
-
-function wrapPlugins (plugins) {
-  return reduce((p, name) => {
-    p[name] = (allPlugins, action) => {
-      let result = plugins[name](action.payload)
-      return resultToStateAction(action, result)
-    }
-    return p
-  }, {}, keys(plugins))
 }
 
 function runActions (plugins, actions) {
@@ -44,11 +34,6 @@ function runActions (plugins, actions) {
   }, actions)
   return Promise.all(promises)
 }
-
-// const routeActionToHandler = curry((plugins, action) => {
-//   let handler = defaultPlugins[action.type] || runAction
-//   return handler(plugins, action)
-// })
 
 const runAction = curry((plugins, action) => {
   let plugin = plugins[action.type]
@@ -150,11 +135,19 @@ const setup = (plugins, pipes) => {
   }, {}, pairs)
 }
 
+const simplePlugin = (fn) => {
+  return function (plugins, action) {
+    let result = fn(action.payload)
+    return resultToStateAction(action, result)
+  }
+}
+
 module.exports = {
   runAction,
   emptyState,
   run,
   normalizePipe,
   normalizeState,
-  setup
+  setup,
+  simplePlugin
 }

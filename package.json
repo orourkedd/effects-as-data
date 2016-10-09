@@ -4,11 +4,12 @@
   "description": "Express complex async workflows using only pure functions.",
   "main": "index.js",
   "scripts": {
-    "precommit": "npm run lint; npm run transpile; npm test",
+    "precommit": "npm run lint; npm run transpile; npm run test-lib",
     "transpile": "rm -rf ./lib; babel ./src --out-dir ./lib --source-maps",
     "lint": "standard",
-    "test": "mocha lib/**/*.spec.js",
-    "watch-test": "mocha lib/**/*.spec.js -watch"
+    "test": "mocha src/**/*.spec.js",
+    "test-lib": "mocha lib/**/*.spec.js",
+    "watch-test": "mocha src/**/*.spec.js -watch"
   },
   "repository": {
     "type": "git",
