@@ -1,4 +1,4 @@
-const { map, merge, flatten, reduce, toPairs, pipe: rPipe } = require('ramda')
+const { map, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
@@ -24,16 +24,14 @@ const runRecursive = (plugins, pipe, state, ec) => {
   return runActions(plugins, results, ec).then((actions) => {
     let state2 = stateReducer(state1, actions)
     let controlFlowAction = actions.find((a) => ['end'].indexOf(a.type) > -1)
-    let ec1 = rPipe(
-      incrementECIndex,
-      (ec) => applyControlFlowAction(controlFlowAction, ec)
-    )(ec)
+    let ec1 = incrementECIndex(ec)
+    let ec2 = applyControlFlowAction(controlFlowAction, ec1)
 
-    if (ec1.end) {
+    if (ec2.end) {
       return state2
     }
 
-    return runRecursive(plugins, pipe1, state2, ec1)
+    return runRecursive(plugins, pipe1, state2, ec2)
   })
 }
 
