@@ -5,6 +5,7 @@ const { end } = require('./end')
 const { addToContext } = require('./context')
 const { call } = require('./call')
 const { addToErrors } = require('./errors')
+const { interpolate } = require('./interpolate')
 
 module.exports = {
   setPayload,
@@ -13,5 +14,6 @@ module.exports = {
   end,
   addToContext,
   addToErrors,
-  call
+  call,
+  interpolate
 }

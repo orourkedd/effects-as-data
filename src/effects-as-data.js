@@ -1,47 +1,41 @@
-const { map, merge, flatten, reduce, toPairs } = require('ramda')
+const { map, insert, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 
 const run = (plugins, pipeRaw, state, parentEC) => {
-  let ec = newExecutionContext(parentEC)
+  let pipe = normalizePipe(pipeRaw)
+  let ec = newExecutionContext(pipe, parentEC)
+  let state1 = normalizeState(state)
   const allPlugins = merge(defaultPlugins, plugins)
-  return runRecursive(allPlugins, pipeRaw, state, ec)
+  return runRecursive(allPlugins, state1, ec)
 }
 
-const runRecursive = (plugins, pipe, state, ec) => {
-  let state1 = normalizeState(state)
-  let pipe1 = normalizePipe(pipe)
-
-  if (isEndOfPipe(pipe1, ec)) {
-    return Promise.resolve(state1)
+const runRecursive = (plugins, state, ec) => {
+  if (isEndOfPipe(ec)) {
+    return Promise.resolve(state)
   }
 
-  let fn = pipeFn(pipe1, ec)
-  let result = fn(state1)
+  let fn = pipeFn(ec)
+  let result = fn(state)
   let results = toArray(result)
 
   return runActions(plugins, results, ec).then((actions) => {
-    let state2 = stateReducer(state1, actions)
+    let state1 = stateReducer(state, actions)
     let ec1 = incrementECIndex(ec)
     let controlFlowAction = findControlFlowAction(actions)
     let ec2 = applyControlFlowAction(controlFlowAction, ec1)
 
     if (ec2.flow === 'end') {
-      return state2
+      return state1
     }
 
-    //  example for the future:
-    // if (ec2.flow === 'recurse') {
-    //   //  do pipe recursion
-    // }
-
-    return runRecursive(plugins, pipe1, state2, ec2)
+    return runRecursive(plugins, state1, ec2)
   })
 }
 
 const findControlFlowAction = (actions) => {
-  let controlFlowActionTypes = ['end', 'recurse', 'fork']
+  let controlFlowActionTypes = ['end', 'interpolate']
   return actions.find(({type}) => controlFlowActionTypes.indexOf(type) > -1)
 }
 
@@ -52,6 +46,10 @@ const applyControlFlowAction = (action = {}, ec) => {
         flow: 'end'
       })
 
+    case 'interpolate':
+      let newPipe = insert(ec.index, action.pipe, ec.pipe)
+      return modifyPipe(ec, flatten(newPipe))
+
     default:
       return merge(ec, {
         flow: 'continue'
@@ -59,11 +57,25 @@ const applyControlFlowAction = (action = {}, ec) => {
   }
 }
 
-const newExecutionContext = (parent) => {
+const newExecutionContext = (pipe, parent) => {
   return {
     index: 0,
-    parent
+    parent,
+    pipe
   }
+}
+
+const incrementECIndex = (ec) => {
+  return merge(ec, {
+    index: ec.index + 1
+  })
+}
+
+const modifyPipe = (ec, pipe) => {
+  return merge(ec, {
+    originalPipe: ec.pipe,
+    pipe
+  })
 }
 
 const runActions = (plugins, actions, ec) => {
@@ -104,7 +116,8 @@ const defaultPlugins = {
   end: stateActionHandler,
   call: callActionHandler,
   mapPipe: mapPipeActionHandler,
-  panic: panicActionHandler
+  panic: panicActionHandler,
+  interpolate: stateActionHandler
 }
 
 const resultToStateAction = (action, pluginResult) => {
@@ -117,18 +130,12 @@ const resultToStateAction = (action, pluginResult) => {
   })
 }
 
-const incrementECIndex = (executionContext) => {
-  return merge(executionContext, {
-    index: executionContext.index + 1
-  })
+const isEndOfPipe = (ec) => {
+  return ec.index >= ec.pipe.length
 }
 
-const isEndOfPipe = (pipe, ec) => {
-  return ec.index >= pipe.length
-}
-
-const pipeFn = (pipe, ec) => {
-  return pipe[ec.index]
+const pipeFn = (ec) => {
+  return ec.pipe[ec.index]
 }
 
 const normalizeState = (state) => {

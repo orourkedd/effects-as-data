@@ -1,6 +1,4 @@
 const {
-  runAction,
-  runActions,
   emptyState,
   run,
   normalizePipe,
@@ -22,67 +20,10 @@ const { logPlugin, log } = require('./plugins/log')
 const { doubleCall } = require('./test/pipes/double-call')
 const { passPayload } = require('./test/pipes/pass-payload')
 const { childEC } = require('./test/pipes/child-ec')
+const { interpolationTest } = require('./test/pipes/interpolate')
 const { merge } = require('ramda')
 
 describe('effects-as-data', () => {
-  describe.skip('runAction', () => {
-    it('should write results to the context object', () => {
-      let { action1, plugins } = setupEAD('test-result1')
-      return runAction(plugins, action1).then((result) => {
-        assert(plugins.test1.calledWith(action1.payload), 'plugin was not called with action payload')
-        deep(result.success, true)
-        deep(result.payload, 'test-result1')
-      })
-    })
-
-    it('should write errors to the error object', () => {
-      let error = new Error('nope')
-      let plugins = {
-        test1: () => Promise.reject(error)
-      }
-
-      let action = test1('result')
-
-      return runAction(plugins, action).then((result) => {
-        deep(result.success, false)
-        deep(result.error, error)
-      })
-    })
-
-    it('should throw if plugin is not registered', () => {
-      let action = {
-        type: 'notRegistered'
-      }
-
-      try {
-        runAction({}, action)
-      } catch (e) {
-        deep(e.message, '"notRegistered" is not a registered plugin.')
-        return
-      }
-
-      throw new Error('Exception was not thrown.')
-    })
-  })
-
-  describe.skip('runActions', () => {
-    it('should run multiple actions and return an array of results', () => {
-      let { plugins } = setupEAD('test-result1', 'test-result2')
-      let action1 = testAction('test1', 'tr1')
-      let action2 = testAction('test2', 'tr2')
-      let actions = [action1, action2]
-      return runActions(plugins, actions).then((result) => {
-        deep(result, {
-          context: {
-            tr1: 'test-result1',
-            tr2: 'test-result2'
-          },
-          errors: {}
-        })
-      })
-    })
-  })
-
   describe('emptyState', () => {
     it('return an empty state object', () => {
       deep(emptyState(), {
@@ -187,6 +128,20 @@ describe('effects-as-data', () => {
     it('should correctly pass the execution context to a child pipe', () => {
       return run({}, childEC, emptyState()).then(({payload}) => {
         deep(payload.value, 12)
+      })
+    })
+
+    describe('interpolate', () => {
+      it('should run pipe without interpolation', () => {
+        return run({}, interpolationTest, {doInterpolation: false}).then((state) => {
+          deep(state.payload.value, 3)
+        })
+      })
+
+      it('should iterpolate pipe segment and pass state through', () => {
+        return run({}, interpolationTest, {doInterpolation: true}).then((state) => {
+          deep(state.payload.value, 5)
+        })
       })
     })
 
