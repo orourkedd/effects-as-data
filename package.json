@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Express complex async workflows using only pure functions.",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "ramda": "^0.22.1",
-    "safe-errors": "0.0.3"
+    "safe-errors": "0.5.0"
   },
   "standard": {
     "ignore": "lib",
