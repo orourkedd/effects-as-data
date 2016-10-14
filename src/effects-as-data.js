@@ -2,6 +2,8 @@ const { map, insert, merge, flatten, reduce, toPairs } = require('ramda')
 const { toArray, toPromise, keyed } = require('./util')
 const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
+const { resultToContext } = require('./helpers/result-to-context')
+const { resultToPayload } = require('./helpers/result-to-payload')
 
 const run = (plugins, pipeRaw, state, parentEC) => {
   let pipe = normalizePipe(pipeRaw)
@@ -188,5 +190,7 @@ module.exports = {
   normalizePipe,
   normalizeState,
   setup,
-  simplePlugin
+  simplePlugin,
+  resultToContext,
+  resultToPayload
 }
