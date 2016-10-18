@@ -4,6 +4,14 @@ const { stateReducer } = require('./state-reducer')
 const { addToContext, addToErrors } = require('./actions')
 const { resultToContext } = require('./helpers/result-to-context')
 const { resultToPayload } = require('./helpers/result-to-payload')
+const { endWithPayload } = require('./helpers/end-with-payload')
+const { endWithPayloadIfTruthy } = require('./helpers/end-with-payload-if-truthy')
+const { pickPayload } = require('./helpers/pick-payload')
+const { pickContext } = require('./helpers/pick-context')
+const { pickErrors } = require('./helpers/pick-errors')
+const { validateExists } = require('./helpers/validate-exists')
+const { panicIfError } = require('./helpers/panic-if-error')
+const actions = require('./actions')
 
 const run = (plugins, pipeRaw, state, parentEC) => {
   let pipe = normalizePipe(pipeRaw)
@@ -184,7 +192,7 @@ const simplePlugin = (fn) => {
   }
 }
 
-module.exports = {
+const exported = {
   emptyState,
   run,
   normalizePipe,
@@ -192,5 +200,14 @@ module.exports = {
   setup,
   simplePlugin,
   resultToContext,
-  resultToPayload
+  resultToPayload,
+  endWithPayload,
+  endWithPayloadIfTruthy,
+  pickPayload,
+  pickContext,
+  pickErrors,
+  validateExists,
+  panicIfError
 }
+
+module.exports = merge(actions, exported)
