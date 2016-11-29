@@ -1,4 +1,5 @@
-const { deepEqual } = require('chai').assert
+const assert = require('chai').assert
+const { deepEqual } = assert
 const {
   map,
   prop,
@@ -26,6 +27,8 @@ const resultEqual = (actual, expected) => {
 }
 
 const testFn = (fn, expected, index = 0, previousOutput = null) => {
+  checkForExpectedTypeMismatches(expected)
+
   const [input, expectedOutput] = expected[index]
   let g
   if (fn.next) {
@@ -47,18 +50,17 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   }
 }
 
-// const checkForArrays = (expected) => {
-//   for (let i = 0; i < expected.length; i++) {
-//     if (i + 1 >= expected.length) return
-//     let output = expected[i][1]
-//     let nextInput = expected[i + 1][0]
-//     console.log('o:', output)
-//     console.log('i:', nextInput)
-//     if (Array.isArray(output) !== Array.isArray(nextInput)) {
-//       throw new Error('If you yield to an array, an array will be returned.')
-//     }
-//   }
-// }
+const checkForExpectedTypeMismatches = (expected) => {
+  for (let i = 0; i < expected.length; i++) {
+    if (i + 1 >= expected.length) return
+    let output = expected[i][1]
+    let nextInput = expected[i + 1][0]
+
+    if (Array.isArray(output)) {
+      assert(Array.isArray(nextInput), 'If an array of actions is yielded, it will return an array of results.')
+    }
+  }
+}
 
 const testIt = (fn, expected) => {
   return function () {
