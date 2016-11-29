@@ -3,12 +3,10 @@ const {
   map,
   prop,
   toArray,
-  zip,
   curry,
   normalizeToSuccess
 } = require('./util')
-const { handleActions } = require('../src/handle-actions')
-const { runTest, run } = require('../src/run')
+const { runTest } = require('../src/run')
 
 const testHandlers = (fn, payload, actionHandlers, expectedActions) => {
   return runTest(actionHandlers, fn, payload)
@@ -28,8 +26,6 @@ const resultEqual = (actual, expected) => {
 }
 
 const testFn = (fn, expected, index = 0, previousOutput = null) => {
-  // checkForArrays(expected)
-
   const [input, expectedOutput] = expected[index]
   let g
   if (fn.next) {
@@ -51,20 +47,20 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   }
 }
 
-const checkForArrays = (expected) => {
-  for (let i = 0; i < expected.length; i++) {
-    if (i + 1 >= expected.length) return
-    let output = expected[i][1]
-    let nextInput = expected[i + 1][0]
-    console.log('o:', output)
-    console.log('i:', nextInput)
-    if (Array.isArray(output) !== Array.isArray(nextInput)) {
-      throw new Error('If you yield to an array, an array will be returned.')
-    }
-  }
-}
+// const checkForArrays = (expected) => {
+//   for (let i = 0; i < expected.length; i++) {
+//     if (i + 1 >= expected.length) return
+//     let output = expected[i][1]
+//     let nextInput = expected[i + 1][0]
+//     console.log('o:', output)
+//     console.log('i:', nextInput)
+//     if (Array.isArray(output) !== Array.isArray(nextInput)) {
+//       throw new Error('If you yield to an array, an array will be returned.')
+//     }
+//   }
+// }
 
-const testIt =(fn, expected) => {
+const testIt = (fn, expected) => {
   return function () {
     let expectedLog = expected()
     testFn(fn, expectedLog)

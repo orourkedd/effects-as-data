@@ -1,18 +1,15 @@
 const {
-  toArray,
-  toPromise,
   unwrapArgs,
   curry,
-  prop,
-  map
+  prop
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
 const run = (actionHandlers, fn, payload = null) => {
-  return runAll(actionHandlers, fn, payload).then(prop('payload'))
+  return runComplete(actionHandlers, fn, payload).then(prop('payload'))
 }
 
-const runAll = (actionHandlers, fn, payload = null) => {
+const runComplete = (actionHandlers, fn, payload = null) => {
   let g = fn(payload)
   const actionHandler = handleActions(run, actionHandlers)
   return runner(actionHandler, g, payload)
@@ -71,8 +68,8 @@ const newExecutionContext = () => {
 module.exports = {
   runner,
   run: curry(run),
-  runAll: curry(runAll),
-  runTest: curry(runAll),
+  runComplete: curry(runComplete),
+  runTest: curry(runComplete),
   cleanLog,
   newExecutionContext
 }

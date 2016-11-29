@@ -3,13 +3,8 @@ const {
   toPromise,
   curry,
   map,
-  has,
-  success,
-  failure,
-  normalizeToSuccess,
   normalizeListToSuccess,
-  normalizeToFailure,
-  isProtocol
+  normalizeToFailure
 } = require('./util')
 
 const handleActions = (run, handlers, actions) => {
