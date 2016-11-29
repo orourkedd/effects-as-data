@@ -16,9 +16,9 @@ const {
   success,
   failure,
   map,
-  call,
   prop
 } = require('../util')
+const { call } = require('../actions')
 
 const testSendEmail = testIt(sendEmails)
 const testSendEmailsToUsers = testIt(sendEmailsToUsers)

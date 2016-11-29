@@ -2,18 +2,16 @@ const {
   cacheGet,
   cacheSet,
   httpGet,
-  httpPost,
   log,
   logError,
   sendEmail
 } = require('./actions')
 const {
-  isSuccess,
   isFailure,
   map,
-  call,
   prop
 } = require('../util')
+const { call } = require('../actions')
 
 function * getUsers () {
   let cachedUsers = yield cacheGet('users')

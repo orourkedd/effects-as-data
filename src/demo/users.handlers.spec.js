@@ -8,7 +8,8 @@ const {
   logError,
   sendEmail
 } = require('./actions')
-const { success, failure, map, call, merge } = require('../util')
+const { success, failure, map, merge } = require('../util')
+const { call } = require('../actions')
 
 const testGetUsers = testHandlers(getUsers, undefined)
 const testSendEmail = testHandlers(sendEmails)

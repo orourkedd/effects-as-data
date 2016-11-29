@@ -51,14 +51,6 @@ function isFailure (p) {
   return p.success === false
 }
 
-function call (fn, payload) {
-  return {
-    type: 'call',
-    fn,
-    payload
-  }
-}
-
 const normalizeToSuccess = (p) => {
   if (isProtocol(p)) return p
   return success(p)
@@ -94,7 +86,6 @@ module.exports = {
   isSuccess,
   failure,
   isFailure,
-  call,
   merge,
   normalizeToSuccess,
   normalizeListToSuccess,
