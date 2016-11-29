@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/actions/end.js"],"names":[],"mappings":";;AAAA,SAAS,GAAG,GAAI;AACd,SAAO;AACL,QAAI,EAAE,KAAK;GACZ,CAAA;CACF;;AAED,MAAM,CAAC,OAAO,GAAG;AACf,KAAG,EAAH,GAAG;CACJ,CAAA","file":"end.js","sourcesContent":["function end () {\n  return {\n    type: 'end'\n  }\n}\n\nmodule.exports = {\n  end\n}\n"]}

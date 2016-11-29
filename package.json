@@ -1,47 +1,27 @@
 {
   "name": "effects-as-data",
-  "version": "0.3.0",
-  "description": "Express complex async workflows using only pure functions.",
-  "main": "index.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/run.js",
   "scripts": {
-    "precommit": "npm run lint; npm run transpile; npm run test-lib",
-    "transpile": "rm -rf ./lib; babel ./src --out-dir ./lib --source-maps",
-    "lint": "standard",
-    "test": "mocha src/**/*.spec.js",
-    "test-lib": "mocha lib/**/*.spec.js",
-    "watch-test": "mocha src/**/*.spec.js -watch"
+    "test": "jest",
+    "demo": "node demo",
+    "transpile": "babel src --out-dir lib --source-maps"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/orourkedd/effects-as-data.git"
-  },
-  "author": "orourkedd",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/orourkedd/effects-as-data/issues"
-  },
-  "homepage": "https://github.com/orourkedd/effects-as-data#readme",
-  "devDependencies": {
-    "babel-core": "^6.17.0",
-    "babel-preset-es2015": "^6.16.0",
-    "chai": "^3.5.0",
-    "husky": "^0.11.8",
-    "mocha": "^3.1.0",
-    "sinon": "^1.17.6"
-  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "ramda": "^0.22.1",
-    "safe-errors": "0.5.0"
+    "ramda": "^0.22.1"
   },
-  "standard": {
-    "ignore": "lib",
-    "globals": [
-      "it",
-      "describe",
-      "beforeEach",
-      "afterEach",
-      "before",
-      "after"
-    ]
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-jest": "^17.0.2",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-async-functions": "^6.8.0",
+    "babel-plugin-transform-regenerator": "^6.16.1",
+    "babel-preset-es2015": "^6.18.0",
+    "chai": "^3.5.0",
+    "jest-cli": "^17.0.3",
+    "simple-protocol-http": "^0.5.0"
   }
 }

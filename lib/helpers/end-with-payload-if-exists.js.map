@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/helpers/end-with-payload-if-exists.js"],"names":[],"mappings":";;eAA2B,OAAO,CAAC,oBAAoB,CAAC;;IAAhD,cAAc,YAAd,cAAc;;AAEtB,SAAS,sBAAsB,CAAE,GAAG,EAAE,EAErC","file":"end-with-payload-if-exists.js","sourcesContent":["const { endWithPayload } = require('./end-with-payload')\n\nfunction endWithPayloadIfTruthy (key) {\n\n}\n"]}

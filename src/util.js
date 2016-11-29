@@ -1,14 +1,27 @@
-function toArray (a) {
-  if (typeof a === 'undefined') {
-    return []
-  } else if (Array.isArray(a)) {
-    return a
+const {
+  curry,
+  map,
+  prop,
+  pick,
+  zip,
+  has,
+  merge
+} = require('ramda')
+
+const unwrapArgs = (a) => {
+  if (!Array.isArray(a)) return a
+  if (a.length === 1) {
+    return a[0]
   } else {
-    return [a]
+    return a
   }
 }
 
-function toPromise (v) {
+const toArray = (a) => {
+  return Array.isArray(a) ? a : [a]
+}
+
+const toPromise = (v) => {
   if (!v || !v.then) {
     return Promise.resolve(v)
   }
@@ -16,14 +29,75 @@ function toPromise (v) {
   return v
 }
 
-function keyed (key, value) {
-  let patch = {}
-  patch[key] = value
-  return patch
+function success (payload) {
+  return {
+    success: true,
+    payload
+  }
+}
+
+function isSuccess (p) {
+  return p.success === true
+}
+
+function failure (error) {
+  return {
+    success: false,
+    error
+  }
+}
+
+function isFailure (p) {
+  return p.success === false
+}
+
+function call (fn, payload) {
+  return {
+    type: 'call',
+    fn,
+    payload
+  }
+}
+
+const normalizeToSuccess = (p) => {
+  if (isProtocol(p)) return p
+  return success(p)
+}
+
+const normalizeListToSuccess = map(normalizeToSuccess)
+
+const normalizeToFailure = (p) => {
+  if (isProtocol(p)) return p
+  return failure(p)
+}
+
+const isProtocol = (p) => {
+  if (!p) return false
+  const hasSuccess = has('success')
+  const hasPayload = has('payload')
+  const hasError = has('error')
+  if (hasSuccess(p) && (hasPayload(p) || hasError(p))) return true
+  return false
 }
 
 module.exports = {
+  unwrapArgs,
   toArray,
   toPromise,
-  keyed
+  curry,
+  map,
+  prop,
+  pick,
+  zip,
+  has,
+  success,
+  isSuccess,
+  failure,
+  isFailure,
+  call,
+  merge,
+  normalizeToSuccess,
+  normalizeListToSuccess,
+  normalizeToFailure,
+  isProtocol
 }
