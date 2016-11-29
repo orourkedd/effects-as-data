@@ -170,11 +170,35 @@ describe('util.js', () => {
         payload: 'foo'
       }
       deepEqual(isProtocol(s1), true)
+
+      const s2 = {
+        success: true,
+        payload: undefined
+      }
+      deepEqual(isProtocol(s2), true)
+
+      const s3 = {
+        success: true,
+        payload: undefined,
+        random: true
+      }
+      deepEqual(isProtocol(s3), true)
+
+      const s4 = {
+        success: false,
+        error: new Error('what?')
+      }
+      deepEqual(isProtocol(s4), true)
     })
 
     it('should return false if object is a protocol object', () => {
       const s1 = 'foo'
       deepEqual(isProtocol(s1), false)
+
+      const s2 = {success: true}
+      deepEqual(isProtocol(s2), false)
+
+      deepEqual(isProtocol(undefined), false)
     })
   })
 })
