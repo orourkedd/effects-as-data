@@ -25,7 +25,7 @@ const handleActions = (run, handlers, actions) => {
       } else {
         value = plugin
       }
-      return toPromise(value)
+      return toPromise(value).catch(normalizeToFailure)
     }, a1)
 
     return Promise.all(p).then(normalizeListToSuccess)

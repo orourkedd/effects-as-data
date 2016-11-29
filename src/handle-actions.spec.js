@@ -55,5 +55,72 @@ describe('handle-actions.js', () => {
         fn
       })
     })
+
+    it('should normalize results to success objects', async () => {
+      const a = {
+        type: 'test'
+      }
+      const handlers = {
+        test: 'foo'
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results[0], {
+        success: true,
+        payload: 'foo'
+      })
+    })
+
+    it('should support handlers as functions returning values', async () => {
+      const a = {
+        type: 'test'
+      }
+      const handlers = {
+        test: () => 'foo'
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results[0].payload, 'foo')
+    })
+
+    it('should support handlers returning promises', async () => {
+      const a = {
+        type: 'test'
+      }
+      const handlers = {
+        test: () => Promise.resolve('foo')
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results[0].payload, 'foo')
+    })
+
+    it('should support handlers returning values', async () => {
+      const a = {
+        type: 'test'
+      }
+      const handlers = {
+        test: 'foo'
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results[0].payload, 'foo')
+    })
+
+    it('should handle promise rejections and return a failure object', async () => {
+      const a = {
+        type: 'test'
+      }
+      const error = new Error('nope')
+      const handlers = {
+        test: Promise.reject(error)
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results, [{
+        success: false,
+        error
+      }])
+    })
   })
 })
