@@ -6,7 +6,7 @@ npm i --save effects-as-data
 ```
 
 ### Try It
-You can run the code below using this command.  You can see the code in `src/demo/repos.js`
+You can run the code below using this command.  You can see the code [here](https://github.com/orourkedd/effects-as-data/blob/master/src/demo/repos.js)
 ```sh
 npm run demo
 ```
