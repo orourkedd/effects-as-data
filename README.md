@@ -8,14 +8,13 @@ npm i --save effects-as-data
 ### Usage
 #### Action Creators
 First, create some action creators:
-```
+```js
 const httpGet = (url) => {
   return {
     type: 'httpGet',
     url
   }
 }
-
 ```
 
 #### Action Handlers
