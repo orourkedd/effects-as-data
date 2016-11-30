@@ -15,6 +15,14 @@ const httpGet = (url) => {
     url
   }
 }
+
+const httpPost = (url, payload) => {
+  return {
+    type: 'httpPost',
+    url,
+    payload
+  }
+}
 ```
 
 ### Action Handlers
@@ -24,29 +32,46 @@ const httpGetActionHandler = (action) => {
   return fetch(action.url)
     .then((response) => response.json())
 }
+
+const httpPostActionHandler = (action) => {
+  return fetch(action.url, {
+    method: 'POST',
+    body: action.payload
+  })
+  .then((response) => response.json())
+}
 ```
 
 ### Pure Functions for Business Logic
 Third, define a pure function that `effects-as-data` can use to perform your business logic:
 ```js
-const { httpGet } = require('./actions')
+const { httpGet, httpPost } = require('./actions')
 
-const getUsers = function * () {
+const updateUsers = function * () {
   const users = yield httpGet('/api/v1/users')
-  return users
+  const updatedUsers = map((user) => {
+    return merge(user, {
+      fullname: `${user.firstname} ${user.lastname}`
+    })
+  }, users)
+  const result = yield httpPost('/api/v1/users', updatedUsers)
+  return result
 }
 ```
 
 ### Test
 Fourth, test your business logic using logic-less tests:
 ```js
-const { getUsers } = require('./users')
+const { updateUsers } = require('./users')
 const { httpGet } = require('./actions')
 const { testIt } = require('effects-as-data/lib/test')
 
-it('should get users', testIt(getUsers, () => {
+it('should get users', testIt(updateUsers, () => {
+  const users = [{id: 1, firstname: 'John', lastname: 'Doe'}]
+  const updatedUsers = [{id: 1, firstname: 'John', lastname: 'Doe', fullname: 'John Doe'}]
   return [
-    [undefined, httpGet('/api/v1/users')]
+    [undefined, httpGet('/api/v1/users')],
+    [users, httpPost('/api/v1/users', updatedUsers)]
   ]
 })
 ```
@@ -54,15 +79,16 @@ it('should get users', testIt(getUsers, () => {
 ### Wire It Up
 Fifth, wire it all up:
 ```js
-const { httpGetActionHandler } = require('./action-handlers')
+const { httpGetActionHandler, httpPostActionHandler } = require('./action-handlers')
 const { run } = require('effects-as-data')
-const { getUsers } = require('./users')
+const { updateUsers } = require('./users')
 
 const handlers = {
-  httpGet: httpGetActionHandler
+  httpGet: httpGetActionHandler,
+  httpPost: httpPostActionHandler
 }
 
-run(handlers, getUsers).then((users) => {
+run(handlers, updateUsers).then((users) => {
   console.log('Users:', users)
 })
 ```
