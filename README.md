@@ -27,7 +27,7 @@ const httpGetActionHandler = (action) => {
 ```
 
 ### Pure Functions for Business Logic
-Third, define a pure function that effects-as-data can use to perform your business logic:
+Third, define a pure function that `effects-as-data` can use to perform your business logic:
 ```js
 const { httpGet } = require('./actions')
 
