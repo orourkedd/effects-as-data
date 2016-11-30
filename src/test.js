@@ -3,27 +3,18 @@ const { deepEqual } = assert
 const {
   map,
   prop,
-  toArray,
   curry,
   normalizeToSuccess
 } = require('./util')
 const { runTest } = require('../src/run')
 
-const testHandlers = (fn, payload, actionHandlers, expectedActions) => {
+const testHandlers = (fn, payload, actionHandlers, expectedOutput) => {
   return runTest(actionHandlers, fn, payload)
   .then(({payload: actualPayload, log}) => {
-    const actualActions = map(prop('actions'), log)
-    const actionLength = Math.max(actualActions.length, expectedActions.length)
-    const expectedPayload = expectedActions.pop()
-    for (let i = 0; i < actionLength; i++) {
-      resultEqual(actualActions[i], expectedActions[i])
-    }
-    deepEqual(actualPayload, expectedPayload)
+    const outputPicker = prop(1)
+    const actualOutput = map(outputPicker, log)
+    deepEqual(actualOutput, expectedOutput)
   })
-}
-
-const resultEqual = (actual, expected) => {
-  deepEqual(toArray(actual), toArray(expected))
 }
 
 const testFn = (fn, expected, index = 0, previousOutput = null) => {

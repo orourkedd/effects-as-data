@@ -6,7 +6,8 @@ const {
   zip,
   has,
   merge,
-  props
+  props,
+  append
 } = require('ramda')
 
 const unwrapArgs = (a) => {
@@ -84,6 +85,7 @@ module.exports = {
   props,
   zip,
   has,
+  append,
   success,
   isSuccess,
   failure,

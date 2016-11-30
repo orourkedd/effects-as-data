@@ -2,8 +2,8 @@ const {
   unwrapArgs,
   curry,
   prop,
-  pick,
-  map
+  toPromise,
+  append
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
@@ -17,55 +17,48 @@ const runComplete = (actionHandlers, fn, payload = null) => {
   return runner(actionHandler, g, payload)
 }
 
-const runner = (handleActions, g, args, ec) => {
-  ec = ec || newExecutionContext()
-  let { value, done } = g.next(args)
-
-  let ecResult = {
-    actions: [],
-    results: [],
-    isArray: false
-  }
-
-  ecResult.isArray = Array.isArray(value)
-
-  if (done) {
-    const log = cleanLog(ec.log)
-    return Promise.resolve({
-      payload: value,
-      ec,
-      log
-    })
-  }
-
-  if (Array.isArray(value)) {
-    ecResult.actions = value
-  } else {
-    ecResult.actions.push(value)
-  }
-
-  return handleActions(value).then((args1) => {
-    ecResult.results.push(args1)
-    ec.log.push(ecResult)
-    let args2 = ecResult.isArray ? args1 : unwrapArgs(args1)
-    return runner(handleActions, g, args2, ec)
-  })
+const runner = async (handleActions, g, input, el) => {
+  const el1 = getExecutionLog(el)
+  let { output, done } = nextOutput(g, input)
+  const returnResultsAsArray = Array.isArray(output)
+  const el2 = addToExecutionLog(el1, input, output)
+  if (done) return buildPayload(el2, output)
+  const actionResults1 = await handleActions(output)
+  const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
+  return runner(handleActions, g, actionResults2, el2)
 }
 
-const logPicker = pick(['actions', 'results'])
-const cleanLog = map(logPicker)
-
-const newExecutionContext = () => {
+const nextOutput = (g, input) => {
+  let { value: output, done } = g.next(input)
   return {
-    log: []
+    output,
+    done
   }
+}
+
+const addToExecutionLog = (el, input, output) => {
+  const entry = newExecutionLogEntry(input, output)
+  return append(entry, el)
+}
+
+const newExecutionLogEntry = (input, output) => {
+  return [input, output]
+}
+
+const getExecutionLog = (el) => {
+  return el || []
+}
+
+const buildPayload = (log, payload) => {
+  return toPromise({
+    payload,
+    log
+  })
 }
 
 module.exports = {
   runner,
   run: curry(run),
   runComplete: curry(runComplete),
-  runTest: curry(runComplete),
-  cleanLog,
-  newExecutionContext
+  runTest: curry(runComplete)
 }
