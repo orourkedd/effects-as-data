@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "demo": "node demo",
+    "demo": "npm run transpile; node lib/demo/repos.js",
     "transpile": "babel src --out-dir lib --source-maps"
   },
   "author": "",
@@ -20,8 +20,10 @@
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-functions": "^6.8.0",
     "babel-plugin-transform-regenerator": "^6.16.1",
+    "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
     "chai": "^3.5.0",
+    "isomorphic-fetch": "^2.2.1",
     "jest-cli": "^17.0.3",
     "simple-protocol-http": "^0.5.0",
     "sinon": "^1.17.6"

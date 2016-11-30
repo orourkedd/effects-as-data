@@ -6,7 +6,7 @@ const {
   curry,
   normalizeToSuccess
 } = require('./util')
-const { runTest } = require('../src/run')
+const { runTest } = require('./run')
 
 const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
   let {log} = await runTest(actionHandlers, fn, payload)

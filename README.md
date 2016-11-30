@@ -5,6 +5,9 @@
 npm i --save effects-as-data
 ```
 
+### Try It
+You can run the code below using `npm run demo`
+
 ## Usage
 ### Action Creators
 First, create some action creators:
@@ -16,11 +19,11 @@ const httpGet = (url) => {
   }
 }
 
-const httpPut = (url, payload) => {
+const writeFile = (path, data) => {
   return {
-    type: 'httpPut',
-    url,
-    payload
+    type: 'writeFile',
+    path,
+    data
   }
 }
 ```
@@ -28,67 +31,72 @@ const httpPut = (url, payload) => {
 ### Action Handlers
 Second, create handlers for the actions:
 ```js
+const fetch = require('isomorphic-fetch')
+const { writeFile } = require('fs')
+
 const httpGetActionHandler = (action) => {
   return fetch(action.url)
     .then((response) => response.json())
 }
 
-const httpPutActionHandler = (action) => {
-  return fetch(action.url, {
-    method: 'POST',
-    body: action.payload
+const writeFileActionHandler = (action) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(action.path, action.data, {encoding: 'utf8'}, (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
   })
-  .then((response) => response.json())
 }
 ```
 
 ### Pure Functions for Business Logic
 Third, define a pure function that `effects-as-data` can use to perform your business logic:
 ```js
-const { httpGet, httpPut } = require('./actions')
+const { httpGet, writeFile } = require('./actions')
 
-const updateUsers = function * () {
-  const users = yield httpGet('/api/v1/users')
-  const updatedUsers = map((user) => {
-    return merge(user, {
-      fullname: `${user.firstname} ${user.lastname}`
-    })
-  }, users)
-  const result = yield httpPut('/api/v1/users', updatedUsers)
+const saveRepositories = function * () {
+  const repos = yield httpGet('https://api.github.com/repositories')
+  const result = yield writeFile('repos.json', JSON.stringify(repos))
   return result
 }
 ```
 
-### Test
+### Test It
 Fourth, test your business logic using logic-less tests:
 ```js
-const { updateUsers } = require('./users')
+const { saveRepositories } = require('./users')
 const { httpGet } = require('./actions')
 const { testIt } = require('effects-as-data/lib/test')
 
-it('should get users', testIt(updateUsers, () => {
-  const users = [{id: 1, firstname: 'John', lastname: 'Doe'}]
-  const updatedUsers = [{id: 1, firstname: 'John', lastname: 'Doe', fullname: 'John Doe'}]
+it('should get users', testIt(saveRepositories, () => {
+  const repos = [{id: 1}]
   return [
     [undefined, httpGet('/api/v1/users')],
-    [users, httpPut('/api/v1/users', updatedUsers)]
+    [repos, writeFile('repos.json', JSON.stringify(repos))]
   ]
 })
 ```
 
-### Wire It Up
+### Wire It Up and Run It
 Fifth, wire it all up:
 ```js
-const { httpGetActionHandler, httpPutActionHandler } = require('./action-handlers')
+const { httpGetActionHandler, writeFileActionHandler } = require('./action-handlers')
 const { run } = require('effects-as-data')
-const { updateUsers } = require('./users')
+const { saveRepositories } = require('./users')
+const { readFileSync } = require('fs')
 
 const handlers = {
   httpGet: httpGetActionHandler,
-  httpPut: httpPutActionHandler
+  writeFile: writeFileActionHandler
 }
 
-run(handlers, updateUsers).then((users) => {
-  console.log('Users:', users)
+run(handlers, saveRepositories).then(() => {
+  console.log('Repos Written To Disk')
+  const contents = readFileSync('repos.json', {encoding: 'utf8'})
+  const json = JSON.parse(contents)
+  console.log(JSON.stringify(json, true, 2))
 })
 ```
