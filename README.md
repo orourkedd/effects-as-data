@@ -16,9 +16,9 @@ const httpGet = (url) => {
   }
 }
 
-const httpPost = (url, payload) => {
+const httpPut = (url, payload) => {
   return {
-    type: 'httpPost',
+    type: 'httpPut',
     url,
     payload
   }
@@ -33,7 +33,7 @@ const httpGetActionHandler = (action) => {
     .then((response) => response.json())
 }
 
-const httpPostActionHandler = (action) => {
+const httpPutActionHandler = (action) => {
   return fetch(action.url, {
     method: 'POST',
     body: action.payload
@@ -45,7 +45,7 @@ const httpPostActionHandler = (action) => {
 ### Pure Functions for Business Logic
 Third, define a pure function that `effects-as-data` can use to perform your business logic:
 ```js
-const { httpGet, httpPost } = require('./actions')
+const { httpGet, httpPut } = require('./actions')
 
 const updateUsers = function * () {
   const users = yield httpGet('/api/v1/users')
@@ -54,7 +54,7 @@ const updateUsers = function * () {
       fullname: `${user.firstname} ${user.lastname}`
     })
   }, users)
-  const result = yield httpPost('/api/v1/users', updatedUsers)
+  const result = yield httpPut('/api/v1/users', updatedUsers)
   return result
 }
 ```
@@ -71,7 +71,7 @@ it('should get users', testIt(updateUsers, () => {
   const updatedUsers = [{id: 1, firstname: 'John', lastname: 'Doe', fullname: 'John Doe'}]
   return [
     [undefined, httpGet('/api/v1/users')],
-    [users, httpPost('/api/v1/users', updatedUsers)]
+    [users, httpPut('/api/v1/users', updatedUsers)]
   ]
 })
 ```
@@ -79,13 +79,13 @@ it('should get users', testIt(updateUsers, () => {
 ### Wire It Up
 Fifth, wire it all up:
 ```js
-const { httpGetActionHandler, httpPostActionHandler } = require('./action-handlers')
+const { httpGetActionHandler, httpPutActionHandler } = require('./action-handlers')
 const { run } = require('effects-as-data')
 const { updateUsers } = require('./users')
 
 const handlers = {
   httpGet: httpGetActionHandler,
-  httpPost: httpPostActionHandler
+  httpPut: httpPutActionHandler
 }
 
 run(handlers, updateUsers).then((users) => {
