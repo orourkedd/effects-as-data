@@ -4,6 +4,7 @@ logs
 npm-debug.log*
 
 /lib
+/repos.json
 
 # Runtime data
 pids
