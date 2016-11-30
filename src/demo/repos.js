@@ -1,8 +1,8 @@
 require('babel-polyfill')
 const { run } = require('../index')
-const { readFileSync } = require('fs')
 const fetch = require('isomorphic-fetch')
 const fs = require('fs')
+const { join } = require('path')
 const { testIt } = require('../test')
 const { success, failure, isFailure } = require('../util')
 
@@ -78,8 +78,5 @@ const handlers = {
 }
 
 run(handlers, saveRepositories).then(() => {
-  console.log('Repos Written To Disk')
-  const contents = readFileSync('repos.json', {encoding: 'utf8'})
-  const json = JSON.parse(contents)
-  console.log(json)
+  console.log('Repos Written From Github To File:', join(__dirname, '../../repos.json'))
 })
