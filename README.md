@@ -69,7 +69,7 @@ const saveRepositories = function * () {
 ```
 
 ### Test It
-Fourth, test your business logic using logic-less tests:
+Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pairs.
 ```js
 const { saveRepositories } = require('./users')
 const { httpGet } = require('./actions')
