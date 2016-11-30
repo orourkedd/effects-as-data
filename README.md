@@ -19,7 +19,7 @@ const httpGet = (url) => {
 
 #### Action Handlers
 Second, create handlers for the actions:
-```
+```js
 const httpGetActionHandler = (action) => {
   return fetch(action.url)
     .then((response) => response.json())
@@ -28,7 +28,7 @@ const httpGetActionHandler = (action) => {
 
 #### Pure Functions for Business Logic
 Third, define a pure function that effects-as-data can use to perform your business logic:
-```
+```js
 const { httpGet } = require('./actions')
 
 const getUsers = function * () {
@@ -39,7 +39,7 @@ const getUsers = function * () {
 
 #### Test
 Fourth, test your business logic using logic-less tests:
-```
+```js
 const { getUsers } = require('./users')
 const { testIt } = require('effects-as-data/lib/test')
 
@@ -52,7 +52,7 @@ it('should get users', testIt(getUsers, () => {
 
 #### Wire It Up
 Fifth, wire it all up:
-```
+```js
 const { httpGetActionHandler } = require('./action-handlers')
 const { run } = require('effects-as-data')
 const { getUsers } = require('./users')
