@@ -41,6 +41,7 @@ const getUsers = function * () {
 Fourth, test your business logic using logic-less tests:
 ```js
 const { getUsers } = require('./users')
+const { httpGet } = require('./actions')
 const { testIt } = require('effects-as-data/lib/test')
 
 it('should get users', testIt(getUsers, () => {
