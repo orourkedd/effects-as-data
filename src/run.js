@@ -1,7 +1,9 @@
 const {
   unwrapArgs,
   curry,
-  prop
+  prop,
+  pick,
+  map
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
@@ -50,14 +52,8 @@ const runner = (handleActions, g, args, ec) => {
   })
 }
 
-const cleanLog = (log) => {
-  return log.map(({actions, results}) => {
-    return {
-      actions,
-      results
-    }
-  })
-}
+const logPicker = pick(['actions', 'results'])
+const cleanLog = map(logPicker)
 
 const newExecutionContext = () => {
   return {
