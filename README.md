@@ -6,7 +6,10 @@ npm i --save effects-as-data
 ```
 
 ### Try It
-You can run the code below using `npm run demo`
+You can run the code below using:
+```sh
+npm run demo
+```
 
 ## Usage
 ### Action Creators
