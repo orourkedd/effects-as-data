@@ -88,7 +88,7 @@ const userInputHandler = (action) => {
 ```
 
 ### Pure Functions for Business Logic
-Third, define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  This function does a lot and would normally be difficult to test:
+Third, define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  The function below does a lot and would normally be difficult to test:
 * Reads user input (a Github username).
 * Does a GET request to Github for the user's repositories.
 * Prints the user's repositories in a formatted list
@@ -130,11 +130,13 @@ it('should get user repos and write file', testIt(saveRepositories, () => {
   const repos = [{name: 'test', git_url: 'git://...'}]
   const reposListFormatted = 'test: git://...'
   const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
+  //  3 log actions return 3 success results
+  const printResult = [success(), success(), success()]
   return [
     ['repos.json', userInput('\nEnter a github username: ')],
     ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
     [repos, printRepository(reposListFormatted, 'orourkedd')],
-    [[], writeFile('repos.json', JSON.stringify(repos))],
+    [printResult, writeFile('repos.json', JSON.stringify(repos))],
     [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
     [undefined, writeFileResult]
   ]
