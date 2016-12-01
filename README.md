@@ -47,7 +47,7 @@ const userInput = (question) => {
 ```
 
 ### Action Handlers
-Second, create handlers for the actions:
+Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.
 ```js
 const httpGetActionHandler = (action) => {
   return get(action.url)
@@ -88,7 +88,12 @@ const userInputHandler = (action) => {
 ```
 
 ### Pure Functions for Business Logic
-Third, define a pure function that `effects-as-data` can use to perform your business logic:
+Third, define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  This function does a lot and would normally be difficult to test:
+* Reads user input.
+* Does a GET request to Github
+* Prints a user's repositories in a formatted list
+* Writes the user's repositories to a file.
+
 ```js
 const saveRepositories = function * (filename) {
   const {payload: username} = yield userInput('\nEnter a github username: ')
