@@ -180,14 +180,14 @@ Expected:
 {
   "type": "writeFile",
   "path": "wrong-file.json",
-  "data": "[{\"name\":\"test\",\"git_url\":\"git://...\"}]"
+  "data": ...
 }
 
 Actual:
 {
   "type": "writeFile",
   "path": "repos.json",
-  "data": "[{\"name\":\"test\",\"git_url\":\"git://...\"}]"
+  "data": ...
 }
 ```
 
