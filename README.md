@@ -167,6 +167,31 @@ it('should log file write error and return failure', testIt(saveRepositories, ()
 }))
 ```
 
+### Debug
+If your tests are failing, you get a message like this:
+
+```
+AssertionError: expected { Object (type, path, ...) } to deeply equal { Object (type, path, ...) }
+
+
+Error on step 4
+============================
+
+Expected:
+{
+  "type": "writeFile",
+  "path": "wrong-file.json",
+  "data": "[{\"name\":\"test\",\"git_url\":\"git://...\"}]"
+}
+
+Actual:
+{
+  "type": "writeFile",
+  "path": "repos.json",
+  "data": "[{\"name\":\"test\",\"git_url\":\"git://...\"}]"
+}
+```
+
 ### Wire It Up and Run It
 Fifth, wire it all up:
 ```js

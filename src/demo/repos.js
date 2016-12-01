@@ -116,7 +116,7 @@ testIt(saveRepositories, () => {
     ['repos.json', userInput('\nEnter a github username: ')],
     ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
     [repos, printRepository(reposListFormatted, 'orourkedd')],
-    [[], writeFile('repos.json', JSON.stringify(repos))],
+    [[], writeFile('wrong-file.json', JSON.stringify(repos))],
     [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
     [undefined, writeFileResult]
   ]
