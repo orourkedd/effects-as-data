@@ -23,6 +23,13 @@ const httpGet = (url) => {
   }
 }
 
+const log = (message) => {
+  return {
+    type: 'log',
+    message
+  }
+}
+
 const writeFile = (path, data) => {
   return {
     type: 'writeFile',
@@ -30,17 +37,20 @@ const writeFile = (path, data) => {
     data
   }
 }
+
+const userInput = (question) => {
+  return {
+    type: 'userInput',
+    question
+  }
+}
 ```
 
 ### Action Handlers
 Second, create handlers for the actions:
 ```js
-const fetch = require('isomorphic-fetch')
-const { writeFile } = require('fs')
-
 const httpGetActionHandler = (action) => {
-  return fetch(action.url)
-    .then((response) => response.json())
+  return get(action.url)
 }
 
 const writeFileActionHandler = (action) => {
@@ -49,8 +59,29 @@ const writeFileActionHandler = (action) => {
       if (err) {
         reject(err)
       } else {
-        resolve()
+        resolve({
+          realpath: path.resolve(action.path),
+          path: action.path
+        })
       }
+    })
+  })
+}
+
+const logHandler = (action) => {
+  console.log(action.message)
+}
+
+const userInputHandler = (action) => {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+
+  return new Promise((resolve) => {
+    rl.question(action.question, (answer) => {
+      resolve(answer)
+      rl.close()
     })
   })
 }
@@ -59,48 +90,85 @@ const writeFileActionHandler = (action) => {
 ### Pure Functions for Business Logic
 Third, define a pure function that `effects-as-data` can use to perform your business logic:
 ```js
-const { httpGet, writeFile } = require('./actions')
+const saveRepositories = function * (filename) {
+  const {payload: username} = yield userInput('\nEnter a github username: ')
+  const repos = yield httpGet(`https://api.github.com/users/${username}/repos`)
+  if (isFailure(repos)) return repos
+  const list = buildList(repos.payload)
+  yield printRepository(list, username)
+  const writeResult = yield writeFile(filename, JSON.stringify(repos.payload))
+  if (isFailure(writeResult)) return writeResult
+  yield log(`\nRepos Written From Github To File: ${writeResult.payload.realpath}`)
+  return writeResult
+}
 
-const saveRepositories = function * () {
-  const repos = yield httpGet('https://api.github.com/repositories')
-  const result = yield writeFile('repos.json', JSON.stringify(repos))
-  return result
+const printRepository = (list, username) => {
+  return [
+    log(`\nRepositories for ${username}`),
+    log(`=============================================`),
+    log(list)
+  ]
+}
+
+const buildList = (repos) => {
+  const l1 = map(pick(['name', 'git_url']), repos)
+  const l2 = map(({name, git_url}) => `${name}: ${git_url}`, l1)
+  const l3 = l2.join('\n')
+  return l3
 }
 ```
 
 ### Test It
 Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.
 ```js
-const { saveRepositories } = require('./users')
-const { httpGet } = require('./actions')
-const { testIt } = require('effects-as-data/lib/test')
-
-it('should get users', testIt(saveRepositories, () => {
-  const repos = [{id: 1}]
+it('should get user repos and write file', testIt(saveRepositories, () => {
+  const repos = [{name: 'test', git_url: 'git://...'}]
+  const reposListFormatted = 'test: git://...'
+  const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
   return [
-    [undefined, httpGet('/api/v1/users')],
-    [repos, writeFile('repos.json', JSON.stringify(repos))]
+    ['repos.json', userInput('\nEnter a github username: ')],
+    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+    [repos, printRepository(reposListFormatted, 'orourkedd')],
+    [[], writeFile('repos.json', JSON.stringify(repos))],
+    [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
+    [undefined, writeFileResult]
   ]
-})
+}))
+
+it('should log http error and return failure', testIt(saveRepositories, () => {
+  const httpError = new Error('http error!')
+  return [
+    ['repos.json', userInput('\nEnter a github username: ')],
+    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+    [failure(httpError), failure(httpError)]
+  ]
+}))
+
+it('should log file write error and return failure', testIt(saveRepositories, () => {
+  const repos = [{name: 'test', git_url: 'git://...'}]
+  const reposListFormatted = 'test: git://...'
+  const writeError = new Error('write error!')
+  //  3 log actions return 3 success results
+  const printResult = [success(), success(), success()]
+  return [
+    ['repos.json', userInput('\nEnter a github username: ')],
+    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+    [repos, printRepository(reposListFormatted, 'orourkedd')],
+    [printResult, writeFile('repos.json', JSON.stringify(repos))],
+    [failure(writeError), failure(writeError)]
+  ]
+}))
 ```
 
 ### Wire It Up and Run It
 Fifth, wire it all up:
 ```js
-const { httpGetActionHandler, writeFileActionHandler } = require('./action-handlers')
-const { run } = require('effects-as-data')
-const { saveRepositories } = require('./users')
-const { readFileSync } = require('fs')
-
 const handlers = {
   httpGet: httpGetActionHandler,
-  writeFile: writeFileActionHandler
+  writeFile: writeFileActionHandler,
+  log: logHandler,
+  userInput: userInputHandler
 }
 
-run(handlers, saveRepositories).then(() => {
-  console.log('Repos Written To Disk')
-  const contents = readFileSync('repos.json', {encoding: 'utf8'})
-  const json = JSON.parse(contents)
-  console.log(JSON.stringify(json, true, 2))
-})
+run(handlers, saveRepositories, 'repos.json').catch(console.error)
 ```

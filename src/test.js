@@ -33,7 +33,23 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
     normalizedInput = normalizeToSuccess(input)
   }
   let { value: actualOutput, done } = g.next(normalizedInput)
-  deepEqual(actualOutput, expectedOutput)
+  try {
+    deepEqual(actualOutput, expectedOutput)
+  } catch (e) {
+    let errorMessage = [e.message, '\n']
+
+    errorMessage.push(`Error on step ${index + 1}`)
+    errorMessage.push('============================')
+    errorMessage.push('\nExpected:')
+    errorMessage.push(JSON.stringify(expectedOutput, true, 2))
+
+    errorMessage.push('\nActual:')
+    errorMessage.push(JSON.stringify(actualOutput, true, 2))
+    errorMessage.push('\n')
+    e.message = errorMessage.join('\n')
+
+    throw e
+  }
   if (!done || index + 1 < expected.length) {
     testFn(g, expected, index + 1, actualOutput)
   }
