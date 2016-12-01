@@ -173,7 +173,6 @@ If your tests are failing, you get a message like this:
 ```
 AssertionError: expected { Object (type, path, ...) } to deeply equal { Object (type, path, ...) }
 
-
 Error on step 4
 ============================
 
