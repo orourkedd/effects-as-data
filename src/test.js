@@ -38,7 +38,7 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   } catch (e) {
     let errorMessage = [e.message, '\n']
 
-    errorMessage.push(`Error on step ${index + 1}`)
+    errorMessage.push(`Error on Step ${index + 1}`)
     errorMessage.push('============================')
     errorMessage.push('\nExpected:')
     errorMessage.push(JSON.stringify(expectedOutput, true, 2))
