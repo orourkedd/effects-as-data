@@ -179,14 +179,14 @@ Error on Step 4
 Expected:
 {
   "type": "writeFile",
-  "path": "wrong-file.json",
+  "path": "repos.json",
   "data": ...
 }
 
 Actual:
 {
   "type": "writeFile",
-  "path": "repos.json",
+  "path": "wrong-file.json",
   "data": ...
 }
 ```
