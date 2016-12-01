@@ -91,7 +91,7 @@ const userInputHandler = (action) => {
 Third, define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  The function below does a lot and would normally be difficult to test:
 * Reads user input (a Github username).
 * Does a GET request to Github for the user's repositories.
-* Prints the user's repositories in a formatted list
+* Prints the user's repositories in a formatted list.
 * Writes the user's repositories to a file.
 
 ```js
