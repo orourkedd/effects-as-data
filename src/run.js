@@ -17,15 +17,16 @@ const runComplete = (actionHandlers, fn, payload = null) => {
   return runner(actionHandler, g, payload)
 }
 
-const runner = async (handleActions, g, input, el) => {
+const runner = (handleActions, g, input, el) => {
   const el1 = getExecutionLog(el)
   let { output, done } = nextOutput(g, input)
   const returnResultsAsArray = Array.isArray(output)
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
-  const actionResults1 = await handleActions(output)
-  const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
-  return runner(handleActions, g, actionResults2, el2)
+  return handleActions(output).then((actionResults1) => {
+    const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
+    return runner(handleActions, g, actionResults2, el2)
+  })
 }
 
 const nextOutput = (g, input) => {

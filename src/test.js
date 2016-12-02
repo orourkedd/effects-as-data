@@ -9,10 +9,11 @@ const {
 const { runTest } = require('./run')
 
 const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
-  let {log} = await runTest(actionHandlers, fn, payload)
-  const outputPicker = prop(1)
-  const actualOutput = map(outputPicker, log)
-  deepEqual(actualOutput, expectedOutput)
+  return runTest(actionHandlers, fn, payload).then(({log}) => {
+    const outputPicker = prop(1)
+    const actualOutput = map(outputPicker, log)
+    deepEqual(actualOutput, expectedOutput)
+  })
 }
 
 const testFn = (fn, expected, index = 0, previousOutput = null) => {
