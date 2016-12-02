@@ -1,3 +1,4 @@
+require('babel-polyfill')
 const { run } = require('./run')
 const { call } = require('./actions')
 
