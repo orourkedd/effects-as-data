@@ -1,4 +1,4 @@
-const assert = require('chai').assert
+const assert = require('assert')
 const { deepEqual } = assert
 const {
   map,
