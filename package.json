@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.4.15",
+  "version": "1.4.16",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "demo": "npm run transpile; node lib/demo/repos.js",
     "transpile": "babel src --out-dir lib --source-maps",
     "precommit": "standard; npm run transpile && npm test && uver && git add -A",
-    "deploy": "standard; npm run transpile && npm test && npm publish",
+    "deploy": "standard && npm run transpile && npm test",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard",
     "lint": "standard"
