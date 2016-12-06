@@ -1,7 +1,7 @@
 {
   "name": "effects-as-data",
-  "version": "1.4.1",
-  "description": "",
+  "version": "1.4.2",
+  "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -9,8 +9,8 @@
     "transpile": "babel src --out-dir lib --source-maps",
     "precommit": "npm run transpile && npm test && uver && git add -A"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "orourkedd",
+  "license": "MIT",
   "dependencies": {
     "ramda": "^0.22.1"
   },
