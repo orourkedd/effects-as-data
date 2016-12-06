@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "scripts": {
@@ -28,6 +28,7 @@
     "jest-cli": "^17.0.3",
     "simple-protocol-http": "^0.5.0",
     "sinon": "^1.17.6",
+    "standard": "^8.6.0",
     "uver-cli": "^1.1.0"
   },
   "standard": {
