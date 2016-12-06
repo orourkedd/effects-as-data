@@ -24,11 +24,11 @@ function sendEmail ({user}) {
 }
 
 function log (message) {
-  // console.log(message)
+  console.log(message)
 }
 
 function logError (error) {
-  // console.error(error)
+  console.error(error)
 }
 
 module.exports = {
@@ -37,7 +37,6 @@ module.exports = {
   httpGet,
   httpPost,
   sendEmail,
-  cacheSet,
   log,
   logError
 }

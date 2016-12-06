@@ -9,7 +9,8 @@ const {
   normalizeToSuccess,
   normalizeListToSuccess,
   normalizeToFailure,
-  isProtocol
+  isProtocol,
+  map
 } = require('./util')
 const { deepEqual } = require('assert')
 
@@ -159,6 +160,22 @@ describe('util.js', () => {
       const value = 'foo'
       const actual = normalizeToFailure(failure(value))
       const expected = failure(value)
+      deepEqual(actual, expected)
+    })
+  })
+
+  describe('#normalizeListToSuccess', () => {
+    it('should normalize list to success objects', () => {
+      const list = [1, 2, 3]
+      const expected = map(success, list)
+      const actual = normalizeListToSuccess(list)
+      deepEqual(actual, expected)
+    })
+
+    it('should not double wrap objects', () => {
+      const list = [1, success(2), failure(3)]
+      const expected = [success(1), success(2), failure(3)]
+      const actual = normalizeListToSuccess(list)
       deepEqual(actual, expected)
     })
   })
