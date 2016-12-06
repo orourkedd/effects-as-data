@@ -1,12 +1,13 @@
 {
   "name": "effects-as-data",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
     "demo": "npm run transpile; node lib/demo/repos.js",
-    "transpile": "babel src --out-dir lib --source-maps"
+    "transpile": "babel src --out-dir lib --source-maps",
+    "precommit": "npm run transpile && npm test && uver && git add -A"
   },
   "author": "",
   "license": "ISC",
@@ -22,9 +23,11 @@
     "babel-plugin-transform-regenerator": "^6.16.1",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
+    "husky": "^0.11.9",
     "jest-cli": "^17.0.3",
     "simple-protocol-http": "^0.5.0",
-    "sinon": "^1.17.6"
+    "sinon": "^1.17.6",
+    "uver-cli": "^1.1.0"
   },
   "standard": {
     "parser": "babel-eslint",
