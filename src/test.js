@@ -19,7 +19,7 @@ const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
 const testFn = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
 
-  const [input, expectedOutput] = expected[index]
+  const [input, expectedOutput] = expected[index] || []
   let g
   if (fn.next) {
     g = fn
