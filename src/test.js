@@ -63,7 +63,7 @@ const checkForExpectedTypeMismatches = (expected) => {
     let nextInput = expected[i + 1][0]
 
     if (Array.isArray(output)) {
-      assert(Array.isArray(nextInput), 'If an array of actions is yielded, it will return an array of results.')
+      assert(Array.isArray(nextInput), 'If an array of actions is yielded, it should return an array of results.')
     }
   }
 }
