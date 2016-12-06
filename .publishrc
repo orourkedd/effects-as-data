@@ -6,5 +6,5 @@
     "gitTag": false
   },
   "publishTag": "latest",
-  "prePublishScript": "npm run lint && npm run transpile && npm test"
+  "prePublishScript": "npm run lint; npm run transpile; npm test"
 }
