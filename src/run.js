@@ -8,13 +8,18 @@ const {
 const { handleActions } = require('./handle-actions')
 
 const run = (actionHandlers, fn, payload = null) => {
-  return runComplete(actionHandlers, fn, payload).then(prop('payload'))
+  const h1 = handleActions(run, actionHandlers)
+  return runComplete(h1, fn, payload).then(prop('payload'))
 }
 
-const runComplete = (actionHandlers, fn, payload = null) => {
+const runComplete = (handleActions, fn, payload = null) => {
   let g = fn(payload)
-  const actionHandler = handleActions(run, actionHandlers)
-  return runner(actionHandler, g, payload)
+  return runner(handleActions, g, payload)
+}
+
+const runTest = (actionHandlers, fn, payload = null) => {
+  const h1 = handleActions(run, actionHandlers)
+  return runComplete(h1, fn, payload)
 }
 
 const runner = (handleActions, g, input, el) => {
@@ -61,5 +66,5 @@ module.exports = {
   runner,
   run: curry(run),
   runComplete: curry(runComplete),
-  runTest: curry(runComplete)
+  runTest: curry(runTest)
 }
