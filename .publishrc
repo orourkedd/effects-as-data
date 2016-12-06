@@ -1,0 +1,10 @@
+{
+  "validations": {
+    "uncommittedChanges": true,
+    "untrackedFiles": true,
+    "branch": "master",
+    "gitTag": false
+  },
+  "publishTag": "latest",
+  "prePublishScript": "npm run lint && npm run transpile && npm test"
+}
