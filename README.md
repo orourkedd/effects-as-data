@@ -1,5 +1,7 @@
 # Effects as Data
 
+Express async workflows using pure functions.
+
 ## Installation
 ```sh
 npm i --save effects-as-data
