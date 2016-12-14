@@ -19,6 +19,8 @@ const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
 const testFn = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
 
+  assert(fn, 'The function you are trying to test is undefined.')
+
   const [input, expectedOutput] = expected[index] || []
   let g
   if (fn.next) {
