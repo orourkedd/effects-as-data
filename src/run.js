@@ -3,18 +3,19 @@ const {
   curry,
   prop,
   toPromise,
-  append
+  append,
+  getFailures
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
-const run = (actionHandlers, fn, payload = null) => {
+const run = (actionHandlers, fn, payload = null, config = {}) => {
   const h1 = handleActions(run, actionHandlers)
-  return runComplete(h1, fn, payload).then(prop('payload'))
+  return runComplete(h1, fn, payload, config).then(prop('payload'))
 }
 
-const runComplete = (handleActions, fn, payload = null) => {
+const runComplete = (handleActions, fn, payload = null, config = {}) => {
   let g = fn(payload)
-  return runner(handleActions, g, payload)
+  return runner(handleActions, g, payload, config)
 }
 
 const runTest = (actionHandlers, fn, payload = null) => {
@@ -22,15 +23,32 @@ const runTest = (actionHandlers, fn, payload = null) => {
   return runComplete(h1, fn, payload)
 }
 
-const runner = (handleActions, g, input, el) => {
+const runner = (handleActions, g, input, config = {}, el) => {
   const el1 = getExecutionLog(el)
   let { output, done } = nextOutput(g, input)
   const returnResultsAsArray = Array.isArray(output)
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
   return handleActions(output).then((actionResults1) => {
+    handleFailedActions(actionResults1, el2, config)
     const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
-    return runner(handleActions, g, actionResults2, el2)
+    return runner(handleActions, g, actionResults2, config, el2)
+  })
+}
+
+const handleFailedActions = (actionResults, el, config) => {
+  const onFailure = config.onFailure || function () {}
+  const failures = getFailures(actionResults)
+  failures.forEach((f) => {
+    const error = f.error || {}
+    onFailure({
+      fn: config.name,
+      log: el,
+      errorMessage: error.message,
+      errorName: error.name,
+      errorStack: error.stack,
+      error: error.toString()
+    })
   })
 }
 

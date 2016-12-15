@@ -4,7 +4,7 @@ const { httpGet } = require('./actions')
 
 const testSingleLine = testIt(singleLine)
 
-describe.only('demo/misc.js', () => {
+describe('demo/misc.js', () => {
   describe('#singleLine', () => {
     it('handles it', testSingleLine(() => {
       return [

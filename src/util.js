@@ -42,6 +42,10 @@ function isSuccess (p) {
   return p.success === true
 }
 
+function getSuccesses (l) {
+  return l.filter((p) => p.success === true)
+}
+
 function failure (error) {
   return {
     success: false,
@@ -51,6 +55,10 @@ function failure (error) {
 
 function isFailure (p) {
   return p.success === false
+}
+
+function getFailures (l) {
+  return l.filter((p) => p.success === false)
 }
 
 const normalizeToSuccess = (p) => {
@@ -88,8 +96,10 @@ module.exports = {
   append,
   success,
   isSuccess,
+  getSuccesses,
   failure,
   isFailure,
+  getFailures,
   merge,
   normalizeToSuccess,
   normalizeListToSuccess,

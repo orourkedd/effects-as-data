@@ -3,8 +3,10 @@ const { call } = require('./actions')
 const {
   success,
   isSuccess,
+  getSuccesses,
   failure,
-  isFailure
+  isFailure,
+  getFailures
 } = require('./util')
 
 module.exports = {
@@ -12,6 +14,8 @@ module.exports = {
   call,
   success,
   isSuccess,
+  getSuccesses,
   failure,
-  isFailure
+  isFailure,
+  getFailures
 }

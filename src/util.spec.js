@@ -5,7 +5,9 @@ const {
   success,
   failure,
   isSuccess,
+  getSuccesses,
   isFailure,
+  getFailures,
   normalizeToSuccess,
   normalizeListToSuccess,
   normalizeToFailure,
@@ -110,6 +112,15 @@ describe('util.js', () => {
     })
   })
 
+  describe('#getFailures', () => {
+    it('should return all failures', () => {
+      const list = [success(1), failure(1), success(2), failure(2)]
+      const actual = getSuccesses(list)
+      const expected = [success(1), success(2)]
+      deepEqual(actual, expected)
+    })
+  })
+
   describe('#isFailure', () => {
     it('should return true if is failure object', () => {
       const s = {
@@ -128,6 +139,15 @@ describe('util.js', () => {
       }
       const actual = isFailure(s)
       const expected = false
+      deepEqual(actual, expected)
+    })
+  })
+
+  describe('#getFailures', () => {
+    it('should return all failures', () => {
+      const list = [failure(1), failure(2), success(), failure(2)]
+      const actual = getFailures(list)
+      const expected = [failure(1), failure(2), failure(2)]
       deepEqual(actual, expected)
     })
   })
