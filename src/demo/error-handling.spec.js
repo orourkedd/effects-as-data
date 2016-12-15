@@ -1,4 +1,4 @@
-const { run, failure, success } = require('../index')
+const { run, success } = require('../index')
 const { deepEqual } = require('assert')
 
 const error = new Error('oops!')
