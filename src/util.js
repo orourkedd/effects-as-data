@@ -31,7 +31,7 @@ const toPromise = (v) => {
   return v
 }
 
-function success (payload) {
+function success (payload = null) {
   return {
     success: true,
     payload

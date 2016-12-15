@@ -76,6 +76,11 @@ describe('util.js', () => {
       const actual = success(1)
       deepEqual(actual, expected)
     })
+
+    it('should use a default payload of null', () => {
+      const actual = success()
+      deepEqual(actual.payload === null, true)
+    })
   })
 
   describe('#failure', () => {
