@@ -205,3 +205,30 @@ const handlers = {
 
 run(handlers, saveRepositories, 'repos.json').catch(console.error)
 ```
+
+## Logging Action Failures
+
+Logging all action failures explicitly can add a lot of noise to your code.  Effects-as-data provides an `onFailure` hook that will be called for each failing action with a detailed payload about the error:
+
+```js
+function onFailure (payload) {
+  //  payload:
+  //  {
+  //   fn: 'testFunction',
+  //   log: [
+  //     [42, {type: 'noop'}],
+  //     [{success: true, payload: 'noop'}, {type: 'test'}]
+  //   ],
+  //   errorMessage: 'Oh No!',
+  //   errorName: 'TypeError',
+  //   errorStack: the stack trace,
+  //   error: the error object toString()'d
+  // }
+  log(payload)
+}
+
+return run(handlers, test, 42, {
+  name: 'testFunction',
+  onFailure
+})
+```
