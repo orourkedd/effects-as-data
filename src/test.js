@@ -31,7 +31,7 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
 
   let normalizedInput
   if (Array.isArray(previousOutput)) {
-    normalizedInput = input
+    normalizedInput = map(normalizeToSuccess, input)
   } else {
     normalizedInput = normalizeToSuccess(input)
   }
