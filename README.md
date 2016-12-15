@@ -222,7 +222,7 @@ function onFailure (payload) {
   //   errorMessage: 'Oh No!',
   //   errorName: 'TypeError',
   //   errorStack: the stack trace,
-  //   error: the error object toString()'d
+  //   error: the error object
   // }
   log(payload)
 }

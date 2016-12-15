@@ -47,7 +47,7 @@ const handleFailedActions = (actionResults, el, config) => {
       errorMessage: error.message,
       errorName: error.name,
       errorStack: error.stack,
-      error: error.toString()
+      error
     })
   })
 }

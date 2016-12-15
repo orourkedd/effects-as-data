@@ -42,7 +42,7 @@ describe('Error Handling', () => {
           errorMessage: error.message,
           errorName: error.name,
           errorStack: error.stack,
-          error: error.toString()
+          error
         }
 
         deepEqual(errorResult, expected)
