@@ -13,7 +13,7 @@ function noopHandler () {
 }
 
 function testHandler (action) {
-  return failure(error)
+  throw error
 }
 
 const handlers = {

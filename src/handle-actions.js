@@ -20,10 +20,14 @@ const handleActions = (run, handlers, actions) => {
         throw new Error(`"${a.type}" is not a registered plugin.`)
       }
       let value
-      if (typeof plugin === 'function') {
-        value = plugin(a)
-      } else {
-        value = plugin
+      try {
+        if (typeof plugin === 'function') {
+          value = plugin(a)
+        } else {
+          value = plugin
+        }
+      } catch (e) {
+        value = normalizeToFailure(e)
       }
       return toPromise(value).catch(normalizeToFailure)
     }, a1)

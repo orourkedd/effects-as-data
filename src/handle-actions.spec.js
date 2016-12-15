@@ -107,13 +107,31 @@ describe('handle-actions.js', () => {
       deepEqual(results[0].payload, 'foo')
     })
 
-    it('should handle promise rejections and return a failure object', async () => {
+    it('should handle promise rejections and normalize to a failure', async () => {
       const a = {
         type: 'test'
       }
       const error = new Error('nope')
       const handlers = {
         test: Promise.reject(error)
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, [a])
+      deepEqual(results, [{
+        success: false,
+        error
+      }])
+    })
+
+    it('should handle thrown errors and normalize to a failure', async () => {
+      const a = {
+        type: 'test'
+      }
+      const error = new Error('nope')
+      const handlers = {
+        test: () => {
+          throw error
+        }
       }
       const run = () => {}
       let results = await handleActions(run, handlers, [a])
