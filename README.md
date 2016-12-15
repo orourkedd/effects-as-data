@@ -208,7 +208,7 @@ run(handlers, saveRepositories, 'repos.json').catch(console.error)
 
 ## Logging Action Failures
 
-Logging all action failures explicitly can add a lot of noise to your code.  Effects-as-data provides an `onFailure` hook that will be called for each failing action with a detailed payload about the error:
+Logging all action failures explicitly can add a lot of noise to your code.  Effects-as-data provides an `onFailure` hook that will be called for each failed action with a detailed payload about the error:
 
 ```js
 function onFailure (payload) {
