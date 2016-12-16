@@ -12,7 +12,8 @@ const {
   normalizeListToSuccess,
   normalizeToFailure,
   isProtocol,
-  map
+  map,
+  clean
 } = require('./util')
 const { deepEqual } = require('assert')
 
@@ -144,6 +145,44 @@ describe('util.js', () => {
       }
       const actual = isFailure(s)
       const expected = false
+      deepEqual(actual, expected)
+    })
+  })
+
+  describe('#clean', () => {
+    it('should clean a success', () => {
+      const a = {
+        success: true,
+        payload: 'abc',
+        meta: {
+          foo: 'bar'
+        }
+      }
+      const actual = clean(a)
+      const expected = {
+        success: true,
+        payload: 'abc'
+      }
+      deepEqual(actual, expected)
+    })
+
+    it('should clean a failure', () => {
+      const a = {
+        success: true,
+        error: {
+          message: 'oops!'
+        },
+        meta: {
+          foo: 'bar'
+        }
+      }
+      const actual = clean(a)
+      const expected = {
+        success: true,
+        error: {
+          message: 'oops!'
+        }
+      }
       deepEqual(actual, expected)
     })
   })
