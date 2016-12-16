@@ -82,6 +82,10 @@ const isProtocol = (p) => {
   return false
 }
 
+const clean = (p) => {
+  return pick(['success', 'error', 'payload'], p)
+}
+
 module.exports = {
   unwrapArgs,
   toArray,
@@ -104,5 +108,6 @@ module.exports = {
   normalizeToSuccess,
   normalizeListToSuccess,
   normalizeToFailure,
-  isProtocol
+  isProtocol,
+  clean
 }

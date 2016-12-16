@@ -6,7 +6,8 @@ const {
   getSuccesses,
   failure,
   isFailure,
-  getFailures
+  getFailures,
+  clean
 } = require('./util')
 
 module.exports = {
@@ -17,5 +18,6 @@ module.exports = {
   getSuccesses,
   failure,
   isFailure,
-  getFailures
+  getFailures,
+  clean
 }
