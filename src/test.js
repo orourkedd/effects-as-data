@@ -21,7 +21,13 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
 
   assert(fn, 'The function you are trying to test is undefined.')
 
-  const [input, expectedOutput] = expected[index] || []
+  const step = expected[index]
+
+  if (step === undefined) {
+    throw new Error('Your spec does not have as many steps as your function.  Are you missing a return line?')
+  }
+
+  const [input, expectedOutput] = step
   let g
   if (fn.next) {
     g = fn
@@ -59,6 +65,9 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
 }
 
 const checkForExpectedTypeMismatches = (expected) => {
+  if (!Array.isArray(expected)) {
+    throw new Error(`Your spec must return an array of tuples.  It is currently returning a value of type "${typeof expected}".`)
+  }
   for (let i = 0; i < expected.length; i++) {
     if (i + 1 >= expected.length) return
     let output = expected[i][1]
