@@ -7,6 +7,9 @@ const {
   normalizeToSuccess
 } = require('./util')
 const { runTest } = require('./run')
+const jsondiffpatch = require('jsondiffpatch')
+const { format: logFormatter } = require('jsondiffpatch/src/formatters/console')
+const chalk = require('chalk')
 
 const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
   return runTest(actionHandlers, fn, payload).then(({log}) => {
@@ -47,18 +50,13 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   } catch (e) {
     let errorMessage = []
 
+    const delta = jsondiffpatch.diff(actualOutput, expectedOutput)
+
     errorMessage.push(`Error on Step ${index + 1}`)
     errorMessage.push('============================')
-    errorMessage.push('\nActual')
-    errorMessage.push(`You expected this for Step ${index + 1} (the ${getNumber(index)} element of the array returned from the spec):`)
-    errorMessage.push('-----------------------------------------------------------------------------')
-    errorMessage.push(JSON.stringify(expectedOutput, true, 2))
+    errorMessage.push(`${chalk.red('actual')} ${chalk.green('expected')}`)
+    errorMessage.push(logFormatter(delta, actualOutput))
 
-    errorMessage.push('\nExpected')
-    errorMessage.push(`The function actually yielded/returned this (right side of the ${getNumber(index)} yield/return in your function):`)
-    errorMessage.push('-----------------------------------------------------------------------------')
-    errorMessage.push(JSON.stringify(actualOutput, true, 2))
-    errorMessage.push('\n')
     e.name = 'Error'
     e.message = errorMessage.join('\n')
 
