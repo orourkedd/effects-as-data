@@ -48,16 +48,20 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   try {
     deepEqual(actualOutput, expectedOutput)
   } catch (e) {
+    const isMocha = process.argv.some((s) => s.match(/mocha/))
     let errorMessage = []
 
     const delta = jsondiffpatch.diff(actualOutput, expectedOutput)
 
     errorMessage.push(`Error on Step ${index + 1}`)
-    errorMessage.push('============================')
-    errorMessage.push(`${chalk.red('actual')} ${chalk.green('expected')}`)
-    errorMessage.push(logFormatter(delta, actualOutput))
 
-    e.name = 'Error'
+    if (!isMocha) {
+      errorMessage.push(`${chalk.red('actual')} ${chalk.green('expected')}`)
+      errorMessage.push('')
+      errorMessage.push(logFormatter(delta, actualOutput))
+    }
+
+    e.name = ''
     e.message = errorMessage.join('\n')
 
     throw e
