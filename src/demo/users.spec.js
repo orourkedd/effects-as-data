@@ -27,7 +27,7 @@ const testGetUsers = testIt(getUsers)
 describe('demo/users.js', () => {
   describe('#getUsers', () => {
     describe('if cache hit', () => {
-      it.only('should return value from cache on cache hit and log cache hit', testGetUsers(() => {
+      it('should return value from cache on cache hit and log cache hit', testGetUsers(() => {
         return [
           [null, cacheGet('users')],
           [[{id: 1}], log('CACHE_HIT')],
