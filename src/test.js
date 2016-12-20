@@ -45,16 +45,21 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   try {
     deepEqual(actualOutput, expectedOutput)
   } catch (e) {
-    let errorMessage = [e.message, '\n']
+    let errorMessage = []
 
     errorMessage.push(`Error on Step ${index + 1}`)
     errorMessage.push('============================')
-    errorMessage.push('\nExpected:')
+    errorMessage.push('\nActual')
+    errorMessage.push(`You expected this for Step ${index + 1} (the ${getNumber(index)} element of the array returned from the spec):`)
+    errorMessage.push('-----------------------------------------------------------------------------')
     errorMessage.push(JSON.stringify(expectedOutput, true, 2))
 
-    errorMessage.push('\nActual:')
+    errorMessage.push('\nExpected')
+    errorMessage.push(`The function actually yielded/returned this (right side of the ${getNumber(index)} yield/return in your function):`)
+    errorMessage.push('-----------------------------------------------------------------------------')
     errorMessage.push(JSON.stringify(actualOutput, true, 2))
     errorMessage.push('\n')
+    e.name = 'Error'
     e.message = errorMessage.join('\n')
 
     throw e
@@ -83,6 +88,43 @@ const testIt = (fn, expected) => {
   return function () {
     let expectedLog = expected()
     testFn(fn, expectedLog)
+  }
+}
+
+const getNumber = (i) => {
+  switch (i + 1) {
+    case 1:
+      return 'first'
+    case 2:
+      return 'second'
+    case 3:
+      return 'third'
+    case 4:
+      return 'fourth'
+    case 5:
+      return 'fifth'
+    case 6:
+      return 'sixth'
+    case 7:
+      return 'seventh'
+    case 8:
+      return 'eighth'
+    case 9:
+      return 'ninth'
+    case 10:
+      return 'tenth'
+    case 11:
+      return 'eleventh'
+    case 12:
+      return 'twelfth'
+    case 13:
+      return 'thirteenth'
+    case 14:
+      return 'fourteenth'
+    case 15:
+      return 'fifteenth'
+    default:
+      return i + 1
   }
 }
 
