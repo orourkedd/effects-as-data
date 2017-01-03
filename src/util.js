@@ -46,10 +46,18 @@ function getSuccesses (l) {
   return l.filter((p) => p.success === true)
 }
 
-function failure (error) {
+function failure (error = null) {
+  let e1
+  if (typeof error === 'string') {
+    e1 = {
+      message: error
+    }
+  } else {
+    e1 = error
+  }
   return {
     success: false,
-    error
+    error: e1
   }
 }
 

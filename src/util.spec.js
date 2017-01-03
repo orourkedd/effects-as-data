@@ -94,6 +94,18 @@ describe('util.js', () => {
       const actual = failure(error)
       deepEqual(actual, expected)
     })
+
+    it('should put a string onto an error-like object', () => {
+      const error = 'nope'
+      const expected = {
+        success: false,
+        error: {
+          message: error
+        }
+      }
+      const actual = failure(error)
+      deepEqual(actual, expected)
+    })
   })
 
   describe('#isSuccess', () => {
