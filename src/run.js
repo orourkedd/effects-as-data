@@ -9,7 +9,7 @@ const {
 const { handleActions } = require('./handle-actions')
 
 const run = (actionHandlers, fn, payload = null, config = {}) => {
-  const h1 = handleActions(run, actionHandlers)
+  const h1 = handleActions(run, actionHandlers, config)
   return runComplete(h1, fn, payload, config).then(prop('payload'))
 }
 
@@ -19,7 +19,7 @@ const runComplete = (handleActions, fn, payload = null, config = {}) => {
 }
 
 const runTest = (actionHandlers, fn, payload = null) => {
-  const h1 = handleActions(run, actionHandlers)
+  const h1 = handleActions(run, actionHandlers, {})
   return runComplete(h1, fn, payload)
 }
 
