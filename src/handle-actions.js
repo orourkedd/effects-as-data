@@ -7,14 +7,14 @@ const {
   normalizeToFailure
 } = require('./util')
 
-const handleActions = (run, handlers, actions) => {
+const handleActions = (run, handlers, config, actions) => {
   try {
     let a1 = toArray(actions)
     let p = map((a) => {
       let plugin = handlers[a.type]
       const noPlugin = typeof plugin === 'undefined'
       if (noPlugin && a.type === 'call') {
-        return run(handlers, a.fn, a.payload)
+        return run(handlers, a.fn, a.payload, config)
       }
       if (noPlugin) {
         throw new Error(`"${a.type}" is not a registered plugin.`)
