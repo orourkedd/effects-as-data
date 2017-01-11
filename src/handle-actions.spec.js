@@ -74,6 +74,32 @@ describe('handle-actions.js', () => {
       })
     })
 
+    it('should pass action, handlers and config into handler', async () => {
+      const a = {
+        type: 'test'
+      }
+      const config = {
+        foo: 'bar'
+      }
+      const handlers = {
+        test: (action, handlers, config) => {
+          return {
+            action,
+            handlers,
+            config
+          }
+        }
+      }
+      const expected = {
+        action: a,
+        handlers,
+        config
+      }
+      const run = () => {}
+      let results = await handleActions(run, handlers, config, [a])
+      deepEqual(results[0].payload, expected)
+    })
+
     it('should support handlers as functions returning values', async () => {
       const a = {
         type: 'test'

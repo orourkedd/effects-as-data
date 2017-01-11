@@ -22,7 +22,7 @@ const handleActions = (run, handlers, config, actions) => {
       let value
       try {
         if (typeof plugin === 'function') {
-          value = plugin(a)
+          value = plugin(a, handlers, config)
         } else {
           value = plugin
         }
