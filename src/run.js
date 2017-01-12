@@ -24,16 +24,20 @@ const runTest = (actionHandlers, fn, payload = null) => {
 }
 
 const runner = (handleActions, g, input, config = {}, el) => {
-  const el1 = getExecutionLog(el)
-  let { output, done } = nextOutput(g, input)
-  const returnResultsAsArray = Array.isArray(output)
-  const el2 = addToExecutionLog(el1, input, output)
-  if (done) return buildPayload(el2, output)
-  return handleActions(output).then((actionResults1) => {
-    handleFailedActions(actionResults1, el2, config)
-    const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
-    return runner(handleActions, g, actionResults2, config, el2)
-  })
+  try {
+    const el1 = getExecutionLog(el)
+    let { output, done } = nextOutput(g, input)
+    const returnResultsAsArray = Array.isArray(output)
+    const el2 = addToExecutionLog(el1, input, output)
+    if (done) return buildPayload(el2, output)
+    return handleActions(output).then((actionResults1) => {
+      handleFailedActions(actionResults1, el2, config)
+      const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
+      return runner(handleActions, g, actionResults2, config, el2)
+    })
+  } catch (e) {
+    return Promise.reject(e)
+  }
 }
 
 const handleFailedActions = (actionResults, el, config) => {
