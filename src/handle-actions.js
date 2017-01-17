@@ -4,9 +4,7 @@ const {
   curry,
   map,
   normalizeListToSuccess,
-  normalizeToFailure,
-  normalizeToSuccess,
-  failure
+  normalizeToFailure
 } = require('./util')
 
 const handleActions = (run, handlers, config, actions) => {
