@@ -2,6 +2,8 @@ const { handleActions } = require('./handle-actions')
 const { deepEqual } = require('assert')
 const { call } = require('./actions')
 const { stub } = require('sinon')
+const { run } = require('./run')
+const { failure } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
@@ -23,12 +25,12 @@ describe('handle-actions.js', () => {
       let a = call(fn, {foo: 'bar'})
       let config = {foo: 'baz'}
       let run = (handlers, fn, payload, config) => {
-        return {
+        return Promise.resolve({
           handlers,
           fn,
           payload,
           config
-        }
+        })
       }
 
       let results = await handleActions(run, {}, config, [a])
@@ -57,6 +59,19 @@ describe('handle-actions.js', () => {
         payload: {foo: 'bar'},
         fn
       })
+    })
+
+    it('should handle errors from effects-as-data functions that have been called using the call action', async () => {
+      const error = new Error('nope')
+      const handlers = {}
+      const a = call(testCalledFn, {})
+      function * testCalledFn () {
+        throw error
+      }
+
+      let results = await handleActions(run, handlers, {}, [a])
+      deepEqual(results[0].success, false)
+      deepEqual(results[0].error.message, error.message)
     })
 
     it('should normalize results to success objects', async () => {
