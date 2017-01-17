@@ -4,17 +4,19 @@ const {
   curry,
   map,
   normalizeListToSuccess,
-  normalizeToFailure
+  normalizeToFailure,
+  normalizeToSuccess,
+  failure
 } = require('./util')
 
 const handleActions = (run, handlers, config, actions) => {
   try {
     let a1 = toArray(actions)
-    let p = map((a) => {
+    let p1 = map((a) => {
       let plugin = handlers[a.type]
       const noPlugin = typeof plugin === 'undefined'
       if (noPlugin && a.type === 'call') {
-        return run(handlers, a.fn, a.payload, config)
+        return run(handlers, a.fn, a.payload, config).catch(normalizeToFailure)
       }
       if (noPlugin) {
         throw new Error(`"${a.type}" is not a registered plugin.`)
@@ -32,7 +34,7 @@ const handleActions = (run, handlers, config, actions) => {
       return toPromise(value).catch(normalizeToFailure)
     }, a1)
 
-    return Promise.all(p).then(normalizeListToSuccess)
+    return Promise.all(p1).then(normalizeListToSuccess)
   } catch (e) {
     const f = normalizeToFailure(e)
     return Promise.reject(f)
