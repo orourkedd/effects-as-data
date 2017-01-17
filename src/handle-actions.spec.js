@@ -3,7 +3,6 @@ const { deepEqual } = require('assert')
 const { call } = require('./actions')
 const { stub } = require('sinon')
 const { run } = require('./run')
-const { failure } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
