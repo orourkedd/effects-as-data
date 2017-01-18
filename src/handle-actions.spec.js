@@ -3,6 +3,7 @@ const { deepEqual } = require('assert')
 const { call } = require('./actions')
 const { stub } = require('sinon')
 const { run } = require('./run')
+const { success } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
@@ -42,6 +43,17 @@ describe('handle-actions.js', () => {
       })
     })
 
+    it('run a fn for the call action asynchronously and return immediate success if action.asyncAction === true', async () => {
+      let fn = function * () {}
+      let a = call(fn, {foo: 'bar'}, { asyncAction: true })
+      let config = {foo: 'baz'}
+      let run = stub()
+      let results = await handleActions(run, {}, config, [a])
+      deepEqual(results.length, 1)
+      deepEqual(results[0], success())
+      deepEqual(run.calledWith({}, fn, a.payload, config), true)
+    })
+
     it('should use the call action handler is provided', async () => {
       let fn = function * () {}
       let a = call(fn, {foo: 'bar'})
@@ -56,7 +68,8 @@ describe('handle-actions.js', () => {
       deepEqual(callHandler.firstCall.args[0], {
         type: 'call',
         payload: {foo: 'bar'},
-        fn
+        fn,
+        asyncAction: false
       })
     })
 
