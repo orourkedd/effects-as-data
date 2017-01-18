@@ -4,7 +4,8 @@ const {
   curry,
   map,
   normalizeListToSuccess,
-  normalizeToFailure
+  normalizeToFailure,
+  success
 } = require('./util')
 
 const handleActions = (run, handlers, config, actions) => {
@@ -14,7 +15,12 @@ const handleActions = (run, handlers, config, actions) => {
       let plugin = handlers[a.type]
       const noPlugin = typeof plugin === 'undefined'
       if (noPlugin && a.type === 'call') {
-        return run(handlers, a.fn, a.payload, config).catch(normalizeToFailure)
+        if (a.asyncAction === true) {
+          run(handlers, a.fn, a.payload, config)
+          return success()
+        } else {
+          return run(handlers, a.fn, a.payload, config).catch(normalizeToFailure)
+        }
       }
       if (noPlugin) {
         throw new Error(`"${a.type}" is not a registered plugin.`)

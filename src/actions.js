@@ -1,8 +1,9 @@
-const call = (fn, payload) => {
+const call = (fn, payload, options = {}) => {
   return {
     type: 'call',
     fn,
-    payload
+    payload,
+    asyncAction: options.asyncAction === true
   }
 }
 
