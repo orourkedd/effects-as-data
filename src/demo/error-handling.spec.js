@@ -1,5 +1,6 @@
 const { run, success } = require('../index')
 const { deepEqual } = require('assert')
+const { errorToObject } = require('../util')
 
 const error = new Error('oops!')
 
@@ -42,7 +43,7 @@ describe('Error Handling', () => {
           errorMessage: error.message,
           errorName: error.name,
           errorStack: error.stack,
-          error
+          error: errorToObject(error)
         }
 
         deepEqual(errorResult, expected)
