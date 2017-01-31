@@ -8,7 +8,7 @@ const {
   logError,
   sendEmail
 } = require('./actions')
-const { success, failure, map, merge } = require('../util')
+const { success, failure, map, merge, errorToObject } = require('../util')
 const { call } = require('../actions')
 
 const testGetUsers = testHandlers(getUsers, undefined)
@@ -72,7 +72,7 @@ describe('demo/users.js with handlers', () => {
               cacheGet('users'),
               httpGet('https://api.github.com/users'),
               cacheSet('users', [{id: 1}]),
-              logError(error),
+              logError(errorToObject(error)),
               success([{id: 1}])
             ]
 
@@ -92,7 +92,7 @@ describe('demo/users.js with handlers', () => {
           const expected = [
             cacheGet('users'),
             httpGet('https://api.github.com/users'),
-            logError(error),
+            logError(errorToObject(error)),
             failureObj
           ]
 
@@ -111,7 +111,7 @@ describe('demo/users.js with handlers', () => {
 
         const expected = [
           cacheGet('users'),
-          logError(error),
+          logError(errorToObject(error)),
           httpGet('https://api.github.com/users'),
           cacheSet('users', [{id: 1}]),
           success([{id: 1}])

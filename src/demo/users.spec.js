@@ -16,7 +16,8 @@ const {
   success,
   failure,
   map,
-  prop
+  prop,
+  errorToObject
 } = require('../util')
 const { call } = require('../actions')
 
@@ -55,7 +56,7 @@ describe('demo/users.js', () => {
               [null, cacheGet('users')],
               [null, httpGet('https://api.github.com/users')],
               [[{id: 1}], cacheSet('users', [{id: 1}])],
-              [failure(error), logError(error)],
+              [failure(error), logError(errorToObject(error))],
               [null, success([{id: 1}])]
             ]
           }))
@@ -69,7 +70,7 @@ describe('demo/users.js', () => {
           return [
             [null, cacheGet('users')],
             [null, httpGet('https://api.github.com/users')],
-            [failure(error), logError(error)],
+            [failure(error), logError(errorToObject(error))],
             [null, failure(error)]
           ]
         }))
@@ -82,7 +83,7 @@ describe('demo/users.js', () => {
 
         return [
           [null, cacheGet('users')],
-          [failure(error), logError(error)],
+          [failure(error), logError(errorToObject(error))],
           [null, httpGet('https://api.github.com/users')],
           [[{id: 1}], cacheSet('users', [{id: 1}])],
           [null, success([{id: 1}])]

@@ -47,18 +47,27 @@ function getSuccesses (l) {
 }
 
 function failure (error = null) {
-  let e1
+  let e1 = errorToObject(error)
   if (typeof error === 'string') {
     e1 = {
       message: error
     }
-  } else {
-    e1 = error
   }
   return {
     success: false,
     error: e1
   }
+}
+
+function errorToObject (error) {
+  const isError = error instanceof Error
+  if (!isError) return error
+  const errorProps = Object.getOwnPropertyNames(error)
+  const e1 = pick(errorProps, error)
+  const e2 = merge(e1, {
+    name: error.name
+  })
+  return e2
 }
 
 function isFailure (p) {
@@ -117,5 +126,6 @@ module.exports = {
   normalizeListToSuccess,
   normalizeToFailure,
   isProtocol,
-  clean
+  clean,
+  errorToObject
 }

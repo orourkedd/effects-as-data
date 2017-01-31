@@ -3,7 +3,7 @@ const { deepEqual } = require('assert')
 const { call } = require('./actions')
 const { stub } = require('sinon')
 const { run } = require('./run')
-const { success } = require('./util')
+const { success, errorToObject } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
@@ -175,7 +175,7 @@ describe('handle-actions.js', () => {
       let results = await handleActions(run, handlers, {}, [a])
       deepEqual(results, [{
         success: false,
-        error
+        error: errorToObject(error)
       }])
     })
 
@@ -193,7 +193,7 @@ describe('handle-actions.js', () => {
       let results = await handleActions(run, handlers, {}, [a])
       deepEqual(results, [{
         success: false,
-        error
+        error: errorToObject(error)
       }])
     })
   })

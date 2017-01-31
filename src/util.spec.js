@@ -13,7 +13,8 @@ const {
   normalizeToFailure,
   isProtocol,
   map,
-  clean
+  clean,
+  errorToObject
 } = require('./util')
 const { deepEqual } = require('assert')
 
@@ -85,16 +86,6 @@ describe('util.js', () => {
   })
 
   describe('#failure', () => {
-    it('should return a failure object', () => {
-      const error = new Error('nope')
-      const expected = {
-        success: false,
-        error
-      }
-      const actual = failure(error)
-      deepEqual(actual, expected)
-    })
-
     it('should put a string onto an error-like object', () => {
       const error = 'nope'
       const expected = {
@@ -104,6 +95,41 @@ describe('util.js', () => {
         }
       }
       const actual = failure(error)
+      deepEqual(actual, expected)
+    })
+
+    it('should return a failure object', () => {
+      const error = new Error('nope')
+      error.actual = 'test'
+      error.expected = 'test1'
+      const actual = failure(error)
+      const expected = {
+        success: false,
+        error: {
+          message: 'nope',
+          name: 'Error',
+          actual: 'test',
+          expected: 'test1',
+          stack: error.stack
+        }
+      }
+      deepEqual(actual, expected)
+    })
+  })
+
+  describe('#errorToObject', () => {
+    it('should convert an error to a serializable object', () => {
+      const error = new Error('nope')
+      error.actual = 'test'
+      error.expected = 'test1'
+      const actual = errorToObject(error)
+      const expected = {
+        message: 'nope',
+        name: 'Error',
+        actual: 'test',
+        expected: 'test1',
+        stack: error.stack
+      }
       deepEqual(actual, expected)
     })
   })
