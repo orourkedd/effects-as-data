@@ -1,8 +1,9 @@
 {
   "name": "effects-as-data",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
+  "repository": "https://github.com/orourkedd/effects-as-data",
   "scripts": {
     "test": "jest",
     "demo": "npm run transpile; node lib/demo/repos.js",
