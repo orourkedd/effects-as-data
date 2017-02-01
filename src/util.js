@@ -7,104 +7,46 @@ const {
   has,
   merge,
   props,
-  append
+  append,
+  filter
 } = require('ramda')
 
-const unwrapArgs = (a) => {
-  if (!Array.isArray(a)) return a
-  if (a.length === 1) {
-    return a[0]
-  } else {
-    return a
-  }
-}
+const hasSuccess             = has('success')
+const hasPayload             = has('payload')
+const hasError               = has('error')
+const isArray                = Array.isArray
+const isString               = s => typeof s === 'string'
+const isPromise              = v => !v || !v.then
+const isProtocol             = p => p ? hasSuccess(p) && (hasPayload(p) || hasError(p)) : false
+const isSuccess              = p => p.success === true
+const isFailure              = p => p.success === false
+const clean                  = p => pick(['success', 'error', 'payload'], p)
 
-const toArray = (a) => {
-  return Array.isArray(a) ? a : [a]
-}
+const toError                = e => isString(e) ? { message: e } : e
+const toArray                = a => isArray(a) ? a : [a]
+const toPromise              = v => isPromise(v) ? Promise.resolve(v) : v
 
-const toPromise = (v) => {
-  if (!v || !v.then) {
-    return Promise.resolve(v)
-  }
+const S                      = { success: true }
+const success                = (payload = null) => Object.assign({}, S, { payload })
+const F                      = { success: false }
+const failure                = (e = null) => Object.assign({}, F, { error: toError(e)})
 
-  return v
-}
+const isError                = e => e instanceof Error
+const errorProps             = e => Object.getOwnPropertyNames(e).concat('name')
+const errorToObject          = e => isError(e) ? pick(errorProps(e), e) : e
 
-function success (payload = null) {
-  return {
-    success: true,
-    payload
-  }
-}
-
-function isSuccess (p) {
-  return p.success === true
-}
-
-function getSuccesses (l) {
-  return l.filter((p) => p.success === true)
-}
-
-function failure (error = null) {
-  let e1 = errorToObject(error)
-  if (typeof error === 'string') {
-    e1 = {
-      message: error
-    }
-  }
-  return {
-    success: false,
-    error: e1
-  }
-}
-
-function errorToObject (error) {
-  const isError = error instanceof Error
-  if (!isError) return error
-  const errorProps = Object.getOwnPropertyNames(error)
-  const e1 = pick(errorProps, error)
-  const e2 = merge(e1, {
-    name: error.name
-  })
-  return e2
-}
-
-function isFailure (p) {
-  return p.success === false
-}
-
-function getFailures (l) {
-  return l.filter((p) => p.success === false)
-}
-
-const normalizeToSuccess = (p) => {
-  if (isProtocol(p)) return p
-  return success(p)
-}
-
+const unwrapArray            = a => a.length === 1 ? a[0] : a
+const unwrapArgs             = a => isArray(a) ? unwrapArray(a) : a
+const getSuccesses           = l => filter(isSuccess, l)
+const getFailures            = l => filter(isFailure, l)
+const normalize              = (fn, p) => isProtocol(p) ? p : fn(p)
+const normalizeToSuccess     = p => normalize(success, p)
+const normalizeToFailure     = p => normalize(failure, p)
 const normalizeListToSuccess = map(normalizeToSuccess)
-
-const normalizeToFailure = (p) => {
-  if (isProtocol(p)) return p
-  return failure(p)
-}
-
-const isProtocol = (p) => {
-  if (!p) return false
-  const hasSuccess = has('success')
-  const hasPayload = has('payload')
-  const hasError = has('error')
-  if (hasSuccess(p) && (hasPayload(p) || hasError(p))) return true
-  return false
-}
-
-const clean = (p) => {
-  return pick(['success', 'error', 'payload'], p)
-}
 
 module.exports = {
   unwrapArgs,
+  unwrapArray,
   toArray,
   toPromise,
   curry,
