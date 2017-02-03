@@ -13,7 +13,6 @@ const simpleProtocol = require('simple-protocol-helpers')
 
 const isArray = Array.isArray
 const isPromise = v => v && v.then
-const clean = p => pick(['success', 'error', 'payload'], p)
 
 const toArray = a => isArray(a) ? a : [a]
 const toPromise = v => isPromise(v) ? v : Promise.resolve(v)
@@ -34,6 +33,5 @@ module.exports = merge(simpleProtocol, {
   zip,
   has,
   append,
-  merge,
-  clean
+  merge
 })
