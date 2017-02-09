@@ -25,7 +25,7 @@ const handlers = {
   test: testHandler
 }
 
-describe.only('Error Handling', () => {
+describe('Error Handling', () => {
   describe('onFailure', () => {
     it('should call onFailure callback with error payload', () => {
       let errorResult
