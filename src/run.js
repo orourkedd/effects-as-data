@@ -4,7 +4,10 @@ const {
   prop,
   toPromise,
   append,
-  getFailures
+  filter,
+  zip,
+  isFailure,
+  toArray
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
@@ -38,24 +41,22 @@ const runner = (handleActions, g, input, config = {}, el) => {
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
   return handleActions(output).then((actionResults1) => {
-    handleFailedActions(actionResults1, el2, config)
+    handleFailedActions(toArray(output), actionResults1, el2, config)
     const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
     return runner(handleActions, g, actionResults2, config, el2)
   })
 }
 
-const handleFailedActions = (actionResults, el, config) => {
+const handleFailedActions = (actions, actionResults, el, config) => {
+  const resultPairs = zip(actions, actionResults)
   const onFailure = config.onFailure || function () {}
-  const failures = getFailures(actionResults)
-  failures.forEach((f) => {
-    const error = f.error || {}
+  const failures = filter(([action, result]) => isFailure(result), resultPairs)
+  failures.forEach(([action, failure]) => {
     onFailure({
       fn: config.name,
       log: el,
-      errorMessage: error.message,
-      errorName: error.name,
-      errorStack: error.stack,
-      error
+      failure,
+      action
     })
   })
 }
