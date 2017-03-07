@@ -16,7 +16,7 @@ npm run demo
 
 ## Usage
 ### Action Creators
-First, create some action creators.  You can find these in `demo-cli/actions`:
+First, create some action creators.  You can find these in [`demo-cli/actions`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/actions/index.js):
 
 ```js
 const httpGet = (url) => {
@@ -50,7 +50,7 @@ const userInput = (question) => {
 ```
 
 ### Action Handlers
-Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.  You can find these in `demo-cli/handlers`:
+Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.  You can find these in [`demo-cli/handlers`](https://github.com/orourkedd/effects-as-data/tree/master/src/demo-cli/handlers):
 ```js
 const httpGetActionHandler = (action) => {
   return get(action.url)
@@ -97,39 +97,42 @@ Third, define a pure function that `effects-as-data` can use to perform your bus
 * Prints the user's repositories in a formatted list.
 * Writes the user's repositories to a file.
 
-You can find this in `demo-cli/functions/save-repositories.js`
+You can find this in [`demo-cli/functions/save-repositories.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js)
 
 ```js
+const { userInput, httpGet, writeFile, log } = require('../actions')
+const { isFailure } = require('../../util')
+const { buildList, printRepository } = require('./helpers')
+
 const saveRepositories = function * (filename) {
+  //  Get the user's Github username from the command line
   const {payload: username} = yield userInput('\nEnter a github username: ')
+
+  //  Get the users repositories based on the username
   const repos = yield httpGet(`https://api.github.com/users/${username}/repos`)
   if (isFailure(repos)) return repos
+
+  //  Format the list and print it to the console
   const list = buildList(repos.payload)
   yield printRepository(list, username)
+
+  //  Write the repositories as JSON to disk
   const writeResult = yield writeFile(filename, JSON.stringify(repos.payload))
   if (isFailure(writeResult)) return writeResult
+
+  //  Log a message out the user indicating the location of the file
   yield log(`\nRepos Written From Github To File: ${writeResult.payload.realpath}`)
+
   return writeResult
 }
 
-const printRepository = (list, username) => {
-  return [
-    log(`\nRepositories for ${username}`),
-    log(`=============================================`),
-    log(list)
-  ]
-}
-
-const buildList = (repos) => {
-  const l1 = map(pick(['name', 'git_url']), repos)
-  const l2 = map(({name, git_url}) => `${name}: ${git_url}`, l1)
-  const l3 = l2.join('\n')
-  return l3
+module.exports = {
+  saveRepositories
 }
 ```
 
 ### Test It
-Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in `demo-cli/functions/save-repositories.spec.js`:
+Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in [`demo-cli/functions/save-repositories.spec.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js):
 ```js
 const { testIt } = require('../../test')
 const { saveRepositories } = require('./save-repositories')
@@ -201,7 +204,7 @@ Expected:
 ```
 
 ### Wire It Up and Run It
-Fifth, wire it all up.  You can find this in `demo-cli/index.js`:
+Fifth, wire it all up.  You can find this in [`demo-cli/index.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/index.js):
 ```js
 const { run } = require('../index')
 const handlers = require('./handlers')
