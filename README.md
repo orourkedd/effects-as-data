@@ -132,7 +132,7 @@ module.exports = {
 ```
 
 ### Test It
-Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in [`demo-cli/functions/save-repositories.spec.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js):
+Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in [`demo-cli/functions/save-repositories.spec.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.spec.js):
 ```js
 const { testIt } = require('../../test')
 const { saveRepositories } = require('./save-repositories')
