@@ -7,7 +7,7 @@ const { success, failure } = require('../../util')
 const testSaveRepositories = testIt(saveRepositories)
 
 describe('saveRepositories()', () => {
-  it('should get respoitories and save to disk', testSaveRepositories(() => {
+  it('should get repositories and save to disk', testSaveRepositories(() => {
     const repos = [{name: 'test', git_url: 'git://...'}]
     const reposListFormatted = 'test: git://...'
     const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
