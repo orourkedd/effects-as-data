@@ -106,7 +106,7 @@ const { buildList, printRepository } = require('./helpers')
 
 //  Note: effects-as-data will normalize all return values from actions to
 //  simple protocol (https://github.com/orourkedd/simple-protocol).  effects-as-data
-//  will never intentionally throw an errors and will catch errors and convert
+//  will never intentionally throw an error and will catch all errors and convert
 //  them to effects-as-data failures.
 
 const saveRepositories = function * (filename) {
