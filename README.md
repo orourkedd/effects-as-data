@@ -218,24 +218,27 @@ run(handlers, saveRepositories, outputFile).catch(console.error)
 
 ## Logging Action Failures
 
-Logging all action failures explicitly can add a lot of noise to your code.  Effects-as-data provides an `onFailure` hook that will be called for each failed action with a detailed payload about the error:
+Logging all action failures explicitly can add a lot of noise to your code.  Effects-as-data provides an `onFailure` hook that will be called for each failed action with a detailed payload about the error.  **This allows for every effect in the system to be independently monitored and reported on, automatically.**
 
 ```js
-
 function onFailure (payload) {
   //  payload:
   //  {
-  //   fn: 'testFunction',
+  //   fn: 'saveRepositories',
   //   log: [
   //     [42, {type: 'firstAction'}],
   //     [{success: true, payload: 'something from firstAction'}, {type: 'theFailingAction'}]
   //   ],
-  //   errorMessage: 'Oh No!',
-  //   errorName: 'TypeError',
-  //   errorStack: the stack trace,
-  //   error: the error object
+  //   failure: {
+  //     success: false,
+  //     error: {
+  //       message: 'Some happened on this line for that reason'
+  //     }
+  //   },
+  //   action: {type: 'theFailingAction'}
   // }
-  log(payload)
+
+  myLoggingFn(payload)
 }
 
 function * test () {
