@@ -2,8 +2,13 @@ const { userInput, httpGet, writeFile, log } = require('../actions')
 const { isFailure } = require('../../util')
 const { buildList, printRepository } = require('./helpers')
 
+//  Note: effects-as-data will normalize all return values from actions to
+//  simple protocol (https://github.com/orourkedd/simple-protocol).  effects-as-data
+//  will never intentionally throw an errors and will catch errors and convert
+//  them to effects-as-data failures.
+
 const saveRepositories = function * (filename) {
-  //  Get the user's Github username from the command line
+  //  Get the user's Github username from the command line.
   const {payload: username} = yield userInput('\nEnter a github username: ')
 
   //  Get the users repositories based on the username
