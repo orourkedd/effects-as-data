@@ -7,9 +7,6 @@ const {
   normalizeToSuccess
 } = require('./util')
 const { runTest } = require('./run')
-const jsondiffpatch = require('jsondiffpatch')
-const { format: logFormatter } = require('jsondiffpatch/src/formatters/console')
-const chalk = require('chalk')
 
 const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
   return runTest(actionHandlers, fn, payload).then(({log}) => {
@@ -45,27 +42,16 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
     normalizedInput = normalizeToSuccess(input)
   }
   let { value: actualOutput, done } = g.next(normalizedInput)
+  
+  deepEqual(actualOutput, expectedOutput)
+  
   try {
     deepEqual(actualOutput, expectedOutput)
   } catch (e) {
-    const isMocha = process.argv.some((s) => s.match(/mocha/))
-    let errorMessage = []
-
-    const delta = jsondiffpatch.diff(actualOutput, expectedOutput)
-
-    errorMessage.push(`Error on Step ${index + 1}`)
-
-    if (!isMocha) {
-      errorMessage.push(`${chalk.red('actual')} ${chalk.green('expected')}`)
-      errorMessage.push('')
-      errorMessage.push(logFormatter(delta, actualOutput))
-    }
-
-    e.name = ''
-    e.message = errorMessage.join('\n')
-
+    e.message = `Error on Step ${index + 1}`
     throw e
   }
+  
   if (!done || index + 1 < expected.length) {
     testFn(g, expected, index + 1, actualOutput)
   }
