@@ -52,20 +52,22 @@ describe('util.js', () => {
   })
 
   describe('#toPromise', () => {
-    it('should normalize value to promise', async () => {
+    it('should normalize value to promise', () => {
       const input = 1
       const expected = 1
       const p = toPromise(input)
-      const actual = await p
-      deepEqual(actual, expected)
+      return p.then((actual) => {
+        deepEqual(actual, expected)
+      })
     })
 
-    it('should return promise if value is promise', async () => {
+    it('should return promise if value is promise', () => {
       const input = Promise.resolve(1)
       const expected = 1
       const p = toPromise(input)
-      const actual = await p
-      deepEqual(actual, expected)
+      return p.then((actual) => {
+        deepEqual(actual, expected)
+      })
     })
   })
 

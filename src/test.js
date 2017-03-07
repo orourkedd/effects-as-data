@@ -8,7 +8,7 @@ const {
 } = require('./util')
 const { runTest } = require('./run')
 
-const testHandlers = async (fn, payload, actionHandlers, expectedOutput) => {
+const testHandlers = (fn, payload, actionHandlers, expectedOutput) => {
   return runTest(actionHandlers, fn, payload).then(({log}) => {
     const outputPicker = prop(1)
     const actualOutput = map(outputPicker, log)
@@ -43,12 +43,10 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   }
   let { value: actualOutput, done } = g.next(normalizedInput)
 
-  deepEqual(actualOutput, expectedOutput)
-
   try {
     deepEqual(actualOutput, expectedOutput)
   } catch (e) {
-    e.message = `Error on Step ${index + 1}`
+    e.name = `Error on Step ${index + 1}`
     throw e
   }
 

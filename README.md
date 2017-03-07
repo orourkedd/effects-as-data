@@ -16,7 +16,8 @@ npm run demo
 
 ## Usage
 ### Action Creators
-First, create some action creators:
+First, create some action creators.  You can find these in `demo-cli/actions`:
+
 ```js
 const httpGet = (url) => {
   return {
@@ -49,7 +50,7 @@ const userInput = (question) => {
 ```
 
 ### Action Handlers
-Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.
+Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.  You can find these in `demo-cli/handlers`:
 ```js
 const httpGetActionHandler = (action) => {
   return get(action.url)
@@ -96,6 +97,8 @@ Third, define a pure function that `effects-as-data` can use to perform your bus
 * Prints the user's repositories in a formatted list.
 * Writes the user's repositories to a file.
 
+You can find this in `demo-cli/functions/save-repositories.js`
+
 ```js
 const saveRepositories = function * (filename) {
   const {payload: username} = yield userInput('\nEnter a github username: ')
@@ -126,84 +129,88 @@ const buildList = (repos) => {
 ```
 
 ### Test It
-Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.
+Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in `demo-cli/functions/save-repositories.spec.js`:
 ```js
-it('should get user repos and write file', testIt(saveRepositories, () => {
-  const repos = [{name: 'test', git_url: 'git://...'}]
-  const reposListFormatted = 'test: git://...'
-  const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
-  //  3 log actions return 3 success results
-  const printResult = [success(), success(), success()]
-  return [
-    ['repos.json', userInput('\nEnter a github username: ')],
-    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
-    [repos, printRepository(reposListFormatted, 'orourkedd')],
-    [printResult, writeFile('repos.json', JSON.stringify(repos))],
-    [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
-    [undefined, writeFileResult]
-  ]
-}))
+const { testIt } = require('../../test')
+const { saveRepositories } = require('./save-repositories')
+const { userInput, httpGet, writeFile, log } = require('../actions')
+const { printRepository } = require('./helpers')
+const { success, failure } = require('../../util')
 
-it('should log http error and return failure', testIt(saveRepositories, () => {
-  const httpError = new Error('http error!')
-  return [
-    ['repos.json', userInput('\nEnter a github username: ')],
-    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
-    [failure(httpError), failure(httpError)]
-  ]
-}))
+const testSaveRepositories = testIt(saveRepositories)
 
-it('should log file write error and return failure', testIt(saveRepositories, () => {
-  const repos = [{name: 'test', git_url: 'git://...'}]
-  const reposListFormatted = 'test: git://...'
-  const writeError = new Error('write error!')
-  //  3 log actions return 3 success results
-  const printResult = [success(), success(), success()]
-  return [
-    ['repos.json', userInput('\nEnter a github username: ')],
-    ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
-    [repos, printRepository(reposListFormatted, 'orourkedd')],
-    [printResult, writeFile('repos.json', JSON.stringify(repos))],
-    [failure(writeError), failure(writeError)]
-  ]
-}))
+describe('saveRepositories()', () => {
+  it('should get repositories and save to disk', testSaveRepositories(() => {
+    const repos = [{name: 'test', git_url: 'git://...'}]
+    const reposListFormatted = 'test: git://...'
+    const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
+    return [
+      ['repos.json', userInput('\nEnter a github username: ')],
+      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+      [repos, printRepository(reposListFormatted, 'orourkedd')],
+      [[], writeFile('repos.json', JSON.stringify(repos))],
+      [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
+      [undefined, writeFileResult]
+    ]
+  }))
+
+  it('should return http GET failure', testSaveRepositories(() => {
+    const httpError = new Error('http error!')
+    return [
+      ['repos.json', userInput('\nEnter a github username: ')],
+      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+      [failure(httpError), failure(httpError)]
+    ]
+  }))
+
+  it('should return write file error', testSaveRepositories(() => {
+    const repos = [{name: 'test', git_url: 'git://...'}]
+    const reposListFormatted = 'test: git://...'
+    const writeError = new Error('write error!')
+    //  3 log actions return 3 success results
+    const printResult = [success(), success(), success()]
+    return [
+      ['repos.json', userInput('\nEnter a github username: ')],
+      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+      [repos, printRepository(reposListFormatted, 'orourkedd')],
+      [printResult, writeFile('repos.json', JSON.stringify(repos))],
+      [failure(writeError), failure(writeError)]
+    ]
+  }))
+})
+
 ```
 
 ### Debug
 If your tests are failing, you get a message like this:
 
 ```
-AssertionError: expected { Object (type, path, ...) } to deeply equal { Object (type, path, ...) }
-
 Error on Step 4
-============================
-
-Expected:
-{
-  "type": "writeFile",
-  "path": "repos.json",
-  "data": ...
-}
 
 Actual:
-{
-  "type": "writeFile",
-  "path": "wrong-file.json",
-  "data": ...
+{ type: 'writeFile',
+  path: 'wrong-path.json',
+  data: '...
+}
+
+Expected:
+{ type: 'writeFile',
+  path: 'repos.json',
+  data: '...'
 }
 ```
 
 ### Wire It Up and Run It
-Fifth, wire it all up:
+Fifth, wire it all up.  You can find this in `demo-cli/index.js`:
 ```js
-const handlers = {
-  httpGet: httpGetActionHandler,
-  writeFile: writeFileActionHandler,
-  log: logHandler,
-  userInput: userInputHandler
-}
+const { run } = require('../index')
+const handlers = require('./handlers')
+const { saveRepositories } = require('./functions/save-repositories')
 
-run(handlers, saveRepositories, 'repos.json').catch(console.error)
+const outputFile = 'repos.json'
+
+run(handlers, saveRepositories, outputFile).catch(console.error)
+
 ```
 
 ## Logging Action Failures

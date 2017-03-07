@@ -7,20 +7,20 @@ const { success, errorToObject } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
-    it('should throw an exception if plugin is not registered', async () => {
+    it('should throw an exception if plugin is not registered', () => {
       const noop = function () {}
       const handlers = {}
       const actions = [{type: 'dne'}]
-      try {
-        await handleActions(noop, handlers, {}, actions)
-      } catch (e) {
+      return handleActions(noop, handlers, {}, actions)
+      .then(() => {
+        fail('handleActions did not throw')
+      })
+      .catch((e) => {
         deepEqual(e.error.message, '"dne" is not a registered plugin.')
-        return
-      }
-      fail('handleActions did not throw')
+      })
     })
 
-    it('run a fn for the call action', async () => {
+    it('run a fn for the call action', () => {
       let fn = function * () {}
       let a = call(fn, {foo: 'bar'})
       let config = {foo: 'baz'}
@@ -33,28 +33,30 @@ describe('handle-actions.js', () => {
         })
       }
 
-      let results = await handleActions(run, {}, config, [a])
-      deepEqual(results.length, 1)
-      deepEqual(results[0].payload, {
-        handlers: {},
-        payload: {foo: 'bar'},
-        fn,
-        config
+      return handleActions(run, {}, config, [a]).then((results) => {
+        deepEqual(results.length, 1)
+        deepEqual(results[0].payload, {
+          handlers: {},
+          payload: {foo: 'bar'},
+          fn,
+          config
+        })
       })
     })
 
-    it('run a fn for the call action asynchronously and return immediate success if action.asyncAction === true', async () => {
+    it('run a fn for the call action asynchronously and return immediate success if action.asyncAction === true', () => {
       let fn = function * () {}
       let a = call(fn, {foo: 'bar'}, { asyncAction: true })
       let config = {foo: 'baz'}
       let run = stub()
-      let results = await handleActions(run, {}, config, [a])
-      deepEqual(results.length, 1)
-      deepEqual(results[0], success())
-      deepEqual(run.calledWith({}, fn, a.payload, config), true)
+      return handleActions(run, {}, config, [a]).then((results) => {
+        deepEqual(results.length, 1)
+        deepEqual(results[0], success())
+        deepEqual(run.calledWith({}, fn, a.payload, config), true)
+      })
     })
 
-    it('should use the call action handler is provided', async () => {
+    it('should use the call action handler is provided', () => {
       let fn = function * () {}
       let a = call(fn, {foo: 'bar'})
       let callHandler = stub().returns(true)
@@ -62,18 +64,19 @@ describe('handle-actions.js', () => {
         call: callHandler
       }
 
-      let results = await handleActions(() => {}, handlers, {}, [a])
-      deepEqual(results.length, 1)
-      deepEqual(results[0].payload, true)
-      deepEqual(callHandler.firstCall.args[0], {
-        type: 'call',
-        payload: {foo: 'bar'},
-        fn,
-        asyncAction: false
+      return handleActions(() => {}, handlers, {}, [a]).then((results) => {
+        deepEqual(results.length, 1)
+        deepEqual(results[0].payload, true)
+        deepEqual(callHandler.firstCall.args[0], {
+          type: 'call',
+          payload: {foo: 'bar'},
+          fn,
+          asyncAction: false
+        })
       })
     })
 
-    it('should handle errors from effects-as-data functions that have been called using the call action', async () => {
+    it('should handle errors from effects-as-data functions that have been called using the call action', () => {
       const error = new Error('nope')
       const handlers = {}
       const a = call(testCalledFn, {})
@@ -81,12 +84,13 @@ describe('handle-actions.js', () => {
         throw error
       }
 
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results[0].success, false)
-      deepEqual(results[0].error.message, error.message)
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results[0].success, false)
+        deepEqual(results[0].error.message, error.message)
+      })
     })
 
-    it('should normalize results to success objects', async () => {
+    it('should normalize results to success objects', () => {
       const a = {
         type: 'test'
       }
@@ -94,14 +98,15 @@ describe('handle-actions.js', () => {
         test: 'foo'
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results[0], {
-        success: true,
-        payload: 'foo'
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results[0], {
+          success: true,
+          payload: 'foo'
+        })
       })
     })
 
-    it('should pass action, handlers and config into handler', async () => {
+    it('should pass action, handlers and config into handler', () => {
       const a = {
         type: 'test'
       }
@@ -123,11 +128,12 @@ describe('handle-actions.js', () => {
         config
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, config, [a])
-      deepEqual(results[0].payload, expected)
+      return handleActions(run, handlers, config, [a]).then((results) => {
+        deepEqual(results[0].payload, expected)
+      })
     })
 
-    it('should support handlers as functions returning values', async () => {
+    it('should support handlers as functions returning values', () => {
       const a = {
         type: 'test'
       }
@@ -135,11 +141,12 @@ describe('handle-actions.js', () => {
         test: () => 'foo'
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results[0].payload, 'foo')
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results[0].payload, 'foo')
+      })
     })
 
-    it('should support handlers returning promises', async () => {
+    it('should support handlers returning promises', () => {
       const a = {
         type: 'test'
       }
@@ -147,11 +154,12 @@ describe('handle-actions.js', () => {
         test: () => Promise.resolve('foo')
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results[0].payload, 'foo')
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results[0].payload, 'foo')
+      })
     })
 
-    it('should support handlers returning values', async () => {
+    it('should support handlers returning values', () => {
       const a = {
         type: 'test'
       }
@@ -159,11 +167,12 @@ describe('handle-actions.js', () => {
         test: 'foo'
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results[0].payload, 'foo')
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results[0].payload, 'foo')
+      })
     })
 
-    it('should handle promise rejections and normalize to a failure', async () => {
+    it('should handle promise rejections and normalize to a failure', () => {
       const a = {
         type: 'test'
       }
@@ -172,14 +181,15 @@ describe('handle-actions.js', () => {
         test: Promise.reject(error)
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results, [{
-        success: false,
-        error: errorToObject(error)
-      }])
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results, [{
+          success: false,
+          error: errorToObject(error)
+        }])
+      })
     })
 
-    it('should handle thrown errors and normalize to a failure', async () => {
+    it('should handle thrown errors and normalize to a failure', () => {
       const a = {
         type: 'test'
       }
@@ -190,11 +200,12 @@ describe('handle-actions.js', () => {
         }
       }
       const run = () => {}
-      let results = await handleActions(run, handlers, {}, [a])
-      deepEqual(results, [{
-        success: false,
-        error: errorToObject(error)
-      }])
+      return handleActions(run, handlers, {}, [a]).then((results) => {
+        deepEqual(results, [{
+          success: false,
+          error: errorToObject(error)
+        }])
+      })
     })
   })
 })
