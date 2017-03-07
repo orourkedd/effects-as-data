@@ -1,5 +1,5 @@
 const { log } = require('../actions')
-const { map, pick } = require('ramda')
+const { map, pick } = require('../../util')
 
 const printRepository = (list, username) => {
   return [
