@@ -42,16 +42,16 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
     normalizedInput = normalizeToSuccess(input)
   }
   let { value: actualOutput, done } = g.next(normalizedInput)
-  
+
   deepEqual(actualOutput, expectedOutput)
-  
+
   try {
     deepEqual(actualOutput, expectedOutput)
   } catch (e) {
     e.message = `Error on Step ${index + 1}`
     throw e
   }
-  
+
   if (!done || index + 1 < expected.length) {
     testFn(g, expected, index + 1, actualOutput)
   }
