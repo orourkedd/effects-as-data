@@ -1,4 +1,4 @@
-const { sendEmailsToUsers } = require('./users')
+const { sendEmailsToUsers } = require('./functions')
 const { run } = require('../run')
 const handlers = require('./handlers')
 

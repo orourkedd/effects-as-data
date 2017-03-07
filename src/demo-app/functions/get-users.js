@@ -3,15 +3,9 @@ const {
   cacheSet,
   httpGet,
   log,
-  logError,
-  sendEmail
-} = require('./actions')
-const {
-  isFailure,
-  map,
-  prop
-} = require('../util')
-const { call } = require('../actions')
+  logError
+} = require('../actions')
+const { isFailure } = require('../../util')
 
 function * getUsers () {
   let cachedUsers = yield cacheGet('users')
@@ -30,22 +24,6 @@ function * getUsers () {
   return users
 }
 
-function * sendEmails (users) {
-  let emails = map(sendEmail, users)
-  let result = yield emails
-  const propPayload = prop('payload')
-  return map(propPayload, result)
-}
-
-function * sendEmailsToUsers () {
-  let users = yield call(getUsers)
-  if (isFailure(users)) return users
-  let sendResults = yield call(sendEmails, users.payload)
-  return sendResults
-}
-
 module.exports = {
-  getUsers,
-  sendEmails,
-  sendEmailsToUsers
+  getUsers
 }

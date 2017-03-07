@@ -1,28 +1,18 @@
-const {
-  getUsers,
-  sendEmails,
-  sendEmailsToUsers
-} = require('./users')
-const { testIt } = require('../test')
+const { getUsers } = require('./index')
+const { testIt } = require('../../test')
 const {
   cacheGet,
   httpGet,
   cacheSet,
   log,
-  logError,
-  sendEmail
-} = require('./actions')
+  logError
+} = require('../actions')
 const {
   success,
   failure,
-  map,
-  prop,
   errorToObject
-} = require('../util')
-const { call } = require('../actions')
+} = require('../../util')
 
-const testSendEmail = testIt(sendEmails)
-const testSendEmailsToUsers = testIt(sendEmailsToUsers)
 const testGetUsers = testIt(getUsers)
 
 describe('demo/users.js', () => {
@@ -90,35 +80,5 @@ describe('demo/users.js', () => {
         ]
       }))
     })
-  })
-
-  describe('#sendEmails', () => {
-    it('should send emails to users', testSendEmail(() => {
-      const users = [{id: 1}, {id: 2}, {id: 3}]
-      const emails = map(sendEmail, users)
-      const sendEmailResults1 = map((user) => ({status: 'sent', user}), users)
-      const sendEmailResults2 = map(success, sendEmailResults1)
-
-      const propPayload = prop('payload')
-      const expectedReturn = map(propPayload, sendEmailResults2)
-
-      return [
-        [users, emails],
-        [sendEmailResults2, expectedReturn]
-      ]
-    }))
-  })
-
-  describe('#sendEmailsToUsers', () => {
-    it('should send emails to all users', testSendEmailsToUsers(() => {
-      const sendEmailResults = [sendEmail({id: 1}), sendEmail({id: 2}), sendEmail({id: 3})]
-      const users = [{id: 1}, {id: 2}, {id: 3}]
-
-      return [
-        [null, call(getUsers)],
-        [users, call(sendEmails, users)],
-        [sendEmailResults, success(sendEmailResults)]
-      ]
-    }))
   })
 })
