@@ -1,13 +1,34 @@
-const { singleLine, normalizeToSuccess, yieldArray } = require('./misc')
 const { testIt } = require('../test')
-const { httpGet } = require('./actions')
 const { success } = require('../util')
+const { deepEqual } = require('assert')
+
+const httpGet = (url) => {
+  return {
+    type: 'httpGet',
+    url
+  }
+}
+
+function * singleLine (id) {
+  const s1 = yield httpGet(`http://example.com/api/v1/users/${id}`)
+  return s1
+}
+
+function * normalizeToSuccess () {
+  const s1 = yield [{type: 'test'}]
+  return s1
+}
+
+function * yieldArray () {
+  const s1 = yield [{type: 'test'}]
+  return s1
+}
+
 const testSingleLine = testIt(singleLine)
 const testNormalizeToSuccess = testIt(normalizeToSuccess)
 const testYieldArray = testIt(yieldArray)
-const { deepEqual } = require('assert')
 
-describe('demo/misc.js', () => {
+describe('misc.spec.js', () => {
   describe('#singleLine', () => {
     it('should not fail', testSingleLine(() => {
       return [

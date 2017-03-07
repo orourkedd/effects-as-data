@@ -1,4 +1,4 @@
-const { getUsers, sendEmails, sendEmailsToUsers } = require('./users')
+const { getUsers, sendEmails, sendEmailsToUsers } = require('./functions')
 const { testHandlers } = require('../test')
 const {
   cacheGet,
