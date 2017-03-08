@@ -5,8 +5,8 @@ Express async workflows using pure functions.
 ## Why use effects as data?
 
 * It adds a huge boost to development throughput.
-* All business logic is expressed using **only** pure functions.
 * Its hard to write hard-to-test code.
+* All business logic is expressed using **only** pure functions.
 * One testing methodology for everything.  Say goodbye to mocks, stubs, spies, globals, and interaction testing.  Just pure-function, `deepEqual(input, output)` style testing.
 * Logicless tests.  *Tests have no assertions.*
 * Decouple protocol from implementation.
