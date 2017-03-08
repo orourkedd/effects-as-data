@@ -27,6 +27,9 @@ npm install
 npm run demo
 ```
 
+### Effects-as-data lifecycle
+![Effects-as-data lifecycle](https://s3-us-west-2.amazonaws.com/effects-as-data/effects-as-data-diagram-v1.jpg)
+
 ## Usage
 ### Action Creators
 First, create some action creators.  You can find these in [`demo-cli/actions`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/actions/index.js):
