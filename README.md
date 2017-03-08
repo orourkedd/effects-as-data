@@ -2,6 +2,19 @@
 
 Express async workflows using pure functions.
 
+## Why use effects as data?
+
+* It adds a huge boost to development throughput.
+* All business logic is expressed using **only** pure functions.
+* Its hard to write hard-to-test code.
+* One testing methodology for everything.  Say goodbye to mocks, stubs, spies, globals, and interaction testing.  Just pure-function, `deepEqual(input, output)` style testing.
+* Logicless tests.  *Tests have no assertions.*
+* Decouple protocol from implementation.
+* Independently monitor all side effects in the system.
+
+## Example
+[Checkout out an in-browser example here](https://effects-as-data-browser.herokuapp.com)
+
 ## Installation
 ```sh
 npm i --save effects-as-data
