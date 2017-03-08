@@ -1,6 +1,6 @@
 # Effects as Data
 
-Express async workflows using pure functions.
+Express async workflows using pure functions.  Inspired by what people are doing with Elm and Redux.
 
 ## Why use effects as data?
 
