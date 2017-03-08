@@ -13,7 +13,7 @@ Express async workflows using pure functions.  Inspired by what people are doing
 * Independently monitor all side effects in the system.
 
 ## Example
-[Checkout out an in-browser example here](https://effects-as-data-browser.herokuapp.com)
+[Check out an in-browser example here](https://effects-as-data-browser.herokuapp.com)
 
 ## Installation
 ```sh
