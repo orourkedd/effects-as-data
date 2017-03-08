@@ -7,6 +7,7 @@ const {
   filter,
   zip,
   isFailure,
+  isSuccess,
   toArray
 } = require('./util')
 const { handleActions } = require('./handle-actions')
@@ -41,13 +42,18 @@ const runner = (handleActions, g, input, config = {}, el) => {
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
   return handleActions(output).then((actionResults1) => {
-    handleFailedActions(toArray(output), actionResults1, el2, config)
+    handleActionResults(toArray(output), actionResults1, el2, config)
     const actionResults2 = returnResultsAsArray ? actionResults1 : unwrapArgs(actionResults1)
     return runner(handleActions, g, actionResults2, config, el2)
   })
 }
 
-const handleFailedActions = (actions, actionResults, el, config) => {
+const handleActionResults = (actions, actionResults, el, config) => {
+  handleActionFailures(actions, actionResults, el, config)
+  handleActionSuccesses(actions, actionResults, el, config)
+}
+
+const handleActionFailures = (actions, actionResults, el, config) => {
   const resultPairs = zip(actions, actionResults)
   const onFailure = config.onFailure || function () {}
   const failures = filter(([action, result]) => isFailure(result), resultPairs)
@@ -56,6 +62,20 @@ const handleFailedActions = (actions, actionResults, el, config) => {
       fn: config.name,
       log: el,
       failure,
+      action
+    })
+  })
+}
+
+const handleActionSuccesses = (actions, actionResults, el, config) => {
+  const resultPairs = zip(actions, actionResults)
+  const onSuccess = config.onSuccess || function () {}
+  const successes = filter(([action, result]) => isSuccess(result), resultPairs)
+  successes.forEach(([action, result]) => {
+    onSuccess({
+      fn: config.name,
+      log: el,
+      result,
       action
     })
   })
