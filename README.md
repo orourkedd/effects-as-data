@@ -6,6 +6,7 @@ Express async workflows using pure functions.  Inspired by what people are doing
 
 * It makes development faster.
 * Its hard to write hard-to-test code.  **If you like testing, you'll love effects-as-data.**
+* Service discovery is no longer a thing.  No need for dependency injection, exposing services as singletons, etc.  Services and state are available everywhere all the time, without being global.
 * All business logic is expressed using **only** pure functions.
 * One testing methodology for everything.  Say goodbye to mocks, stubs, spies, globals, and interaction testing.  Just pure-function, `deepEqual(input, output)` style testing.
 * Logicless tests.  *Tests have no assertions.*
