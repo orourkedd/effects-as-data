@@ -1,7 +1,10 @@
 const { env } = require('./env')
 const { requireModule } = require('./require-module')
+const { readFile, writeFile } = require('./fs')
 
 module.exports = {
   env,
-  requireModule
+  requireModule,
+  readFile,
+  writeFile
 }
