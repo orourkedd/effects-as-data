@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.9.11",
+  "version": "1.9.12",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -22,7 +22,8 @@
   "license": "MIT",
   "dependencies": {
     "ramda": "^0.22.1",
-    "simple-protocol-helpers": "^0.3.0"
+    "simple-protocol-helpers": "^0.3.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
