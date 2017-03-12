@@ -1,1 +1,1 @@
-hi()
+console.log('hi!')
