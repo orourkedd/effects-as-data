@@ -1,7 +1,7 @@
-const { call } = require('./actions')
+const { call } = require('./call')
 const { deepEqual } = require('assert')
 
-describe('actions.js', () => {
+describe('call.js', () => {
   describe('#call', () => {
     it('should return a call action', () => {
       const fn = function * () {}
