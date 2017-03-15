@@ -3,6 +3,7 @@ const { randomNumber } = require('./random-number')
 const { now } = require('./now')
 const { guid } = require('./guid')
 const { echo } = require('./echo')
+const { jsonParse } = require('./json-parse')
 const { getState, setState } = require('./state')
 const { logInfo, logError } = require('./log')
 
@@ -15,5 +16,6 @@ module.exports = {
   getState,
   setState,
   logInfo,
-  logError
+  logError,
+  jsonParse
 }
