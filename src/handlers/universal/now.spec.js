@@ -1,4 +1,4 @@
-const actions = require('../../actions/standard/now')
+const actions = require('../../actions/universal/now')
 const { nowFn } = require('./now')
 const { deepEqual } = require('assert')
 

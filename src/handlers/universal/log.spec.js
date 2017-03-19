@@ -1,5 +1,5 @@
 const { logInfoFn, logErrorFn } = require('./log')
-const actions = require('../../actions/standard')
+const actions = require('../../actions/universal')
 const { deepEqual } = require('assert')
 
 describe('log.js', () => {

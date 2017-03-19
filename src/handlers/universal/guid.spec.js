@@ -1,4 +1,4 @@
-const actions = require('../../actions/standard/guid')
+const actions = require('../../actions/universal/guid')
 const { guidFn } = require('./guid')
 const { deepEqual } = require('assert')
 

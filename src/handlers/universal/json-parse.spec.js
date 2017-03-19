@@ -1,5 +1,5 @@
 const { jsonParse } = require('./json-parse')
-const actions = require('../../actions/standard')
+const actions = require('../../actions/universal')
 const { deepEqual } = require('assert')
 
 describe('json-parse.js', () => {
