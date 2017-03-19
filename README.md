@@ -40,20 +40,21 @@ Define a pure function that `effects-as-data` can use to perform your business l
 * Prints an array of the user's repository names.
 * Returns the array of repository names.
 
+NOTE: `prompt`, `httpGet`, `logInfo` below are pure functions which only return JSON objects.  They are not actually `prompt`ing, `httpGet`ing, etc.  `effects-as-data` routes these JSON objects to handlers that do the dirty, hard-to-test part for you.  The code below performs no side-effects, nor does it have any reference to side-effect-producing code.
+
 You can find this in [`demo-cli/functions/save-repositories.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js)
 
 ```js
-const { prompt, httpGet, logInfo } = require('../../node').actions
-const { isFailure } = require('../../util')
+const { actions, isFailure } = require('effects-as-data/node')
 const { pluck } = require('ramda')
 const getListOfNames = pluck(['name'])
 
 const saveRepositories = function * (filename) {
-  const {payload: username} = yield prompt('\nEnter a github username: ')
-  const repos = yield httpGet(`https://api.github.com/users/${username}/repos`)
+  const {payload: username} = yield actions.prompt('\nEnter a github username: ')
+  const repos = yield actions.httpGet(`https://api.github.com/users/${username}/repos`)
   if (isFailure(repos)) return repos
   const names = getListOfNames(repos.payload)
-  yield logInfo(names.join('\n'))
+  yield actions.logInfo(names.join('\n'))
   return names
 }
 
