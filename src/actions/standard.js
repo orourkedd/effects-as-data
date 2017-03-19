@@ -1,2 +1,2 @@
 //  legacy support
-mdoule.exports = require('./universal')
+module.exports = require('./universal')
