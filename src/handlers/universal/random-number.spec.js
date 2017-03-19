@@ -1,4 +1,4 @@
-const actions = require('../../actions/standard/random-number')
+const actions = require('../../actions/universal/random-number')
 const { randomNumberFn } = require('./random-number')
 const { deepEqual } = require('assert')
 

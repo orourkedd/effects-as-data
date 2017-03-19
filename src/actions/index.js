@@ -1,4 +1,4 @@
-const { call } = require('./standard/call')
+const { call } = require('./universal/call')
 
 module.exports = {
   call

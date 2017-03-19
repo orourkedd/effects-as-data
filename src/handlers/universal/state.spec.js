@@ -1,5 +1,5 @@
 const { getState, setState, getGlobalState } = require('./state')
-const actions = require('../../actions/standard')
+const actions = require('../../actions/universal')
 const { deepEqual } = require('assert')
 
 describe('state.js', () => {

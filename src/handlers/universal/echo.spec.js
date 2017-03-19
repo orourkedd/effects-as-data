@@ -1,5 +1,5 @@
 const { echo } = require('./echo')
-const actions = require('../../actions/standard')
+const actions = require('../../actions/universal')
 const { deepEqual } = require('assert')
 
 describe('echo.js', () => {
