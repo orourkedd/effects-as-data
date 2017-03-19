@@ -14,7 +14,7 @@ Express async workflows using pure functions.  Inspired by what people are doing
 * Independently monitor all side effects in the system.
 
 ## Example
-[Check out an in-browser example here](https://effects-as-data-browser.herokuapp.com)
+A side-by-side example of the same code written in traditional-style javascript and in effects-as-data: https://github.com/orourkedd/effects-as-data-vs-side-effects.  This came from a talk given at the Pluralsight Tech Summit.
 
 ## Installation
 ```sh
