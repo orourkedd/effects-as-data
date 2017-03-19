@@ -1,6 +1,6 @@
 # Effects as Data
 
-Express async workflows using pure functions.  Inspired by what people are doing with Elm and Redux.
+`effects-as-data` is a library that allows you to express your business logic using only pure functions, anywhere that Javascript runs.  `effects-as-data` makes it easy to reason about your code and makes it hard to write hard-to-test code, getting rid of the need for mocks, stubs, spies, globals, and interaction testing.
 
 ## Why use effects as data?
 
