@@ -5,6 +5,7 @@ const { now } = require('./now')
 const { randomNumber } = require('./random-number')
 const { logInfo, logError } = require('./log')
 const { getState, setState } = require('./state')
+const { httpGet, httpPost, httpPut, httpDelete } = require('./http')
 
 module.exports = {
   echo,
@@ -15,5 +16,9 @@ module.exports = {
   logInfo,
   logError,
   getState,
-  setState
+  setState,
+  httpGet,
+  httpPost,
+  httpPut,
+  httpDelete
 }

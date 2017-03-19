@@ -6,6 +6,7 @@ const { echo } = require('./echo')
 const { jsonParse } = require('./json-parse')
 const { getState, setState } = require('./state')
 const { logInfo, logError } = require('./log')
+const { httpGet, httpPost, httpPut, httpDelete, rpc } = require('./http')
 
 module.exports = {
   call,
@@ -17,5 +18,10 @@ module.exports = {
   setState,
   logInfo,
   logError,
-  jsonParse
+  jsonParse,
+  httpGet,
+  httpPost,
+  httpPut,
+  httpDelete,
+  rpc
 }
