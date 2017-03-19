@@ -32,178 +32,69 @@ npm run demo
 ![Effects-as-data lifecycle](https://s3-us-west-2.amazonaws.com/effects-as-data/effects-as-data-diagram-v1.jpg)
 
 ## Usage
-### Action Creators
-First, create some action creators.  You can find these in [`demo-cli/actions`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/actions/index.js):
 
-```js
-const httpGet = (url) => {
-  return {
-    type: 'httpGet',
-    url
-  }
-}
-
-const log = (message) => {
-  return {
-    type: 'log',
-    message
-  }
-}
-
-const writeFile = (path, data) => {
-  return {
-    type: 'writeFile',
-    path,
-    data
-  }
-}
-
-const userInput = (question) => {
-  return {
-    type: 'userInput',
-    question
-  }
-}
-```
-
-### Action Handlers
-Second, create handlers for the actions.  This is the only place where side-effect producing code should exist.  You can find these in [`demo-cli/handlers`](https://github.com/orourkedd/effects-as-data/tree/master/src/demo-cli/handlers):
-```js
-const httpGetActionHandler = (action) => {
-  return get(action.url)
-}
-
-const writeFileActionHandler = (action) => {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(action.path, action.data, {encoding: 'utf8'}, (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve({
-          realpath: path.resolve(action.path),
-          path: action.path
-        })
-      }
-    })
-  })
-}
-
-const logHandler = (action) => {
-  console.log(action.message)
-}
-
-const userInputHandler = (action) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  })
-
-  return new Promise((resolve) => {
-    rl.question(action.question, (answer) => {
-      resolve(answer)
-      rl.close()
-    })
-  })
-}
-```
-
-### Pure Functions for Business Logic
-Third, define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  The function below does a lot and would normally be difficult to test:
+### Write a pure function expressing your business logic
+Define a pure function that `effects-as-data` can use to perform your business logic.  This function coordinates your workflow.  The function below does a lot and would normally be difficult to test:
 * Reads user input (a Github username).
 * Does a GET request to Github for the user's repositories.
-* Prints the user's repositories in a formatted list.
-* Writes the user's repositories to a file.
+* Prints an array of the user's repository names.
+* Returns the array of repository names.
 
 You can find this in [`demo-cli/functions/save-repositories.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js)
 
 ```js
-const { userInput, httpGet, writeFile, log } = require('../actions')
+const { prompt, httpGet, logInfo } = require('../../node').actions
 const { isFailure } = require('../../util')
-const { buildList, printRepository } = require('./helpers')
-
-//  Note: effects-as-data will normalize all return values from actions to
-//  simple protocol (https://github.com/orourkedd/simple-protocol).  effects-as-data
-//  will never intentionally throw an error and will catch all errors and convert
-//  them to effects-as-data failures.
+const { pluck } = require('ramda')
+const getListOfNames = pluck(['name'])
 
 const saveRepositories = function * (filename) {
-  //  Get the user's Github username from the command line.
-  const {payload: username} = yield userInput('\nEnter a github username: ')
-
-  //  Get the users repositories based on the username
+  const {payload: username} = yield prompt('\nEnter a github username: ')
   const repos = yield httpGet(`https://api.github.com/users/${username}/repos`)
   if (isFailure(repos)) return repos
-
-  //  Format the list and print it to the console
-  const list = buildList(repos.payload)
-  yield printRepository(list, username)
-
-  //  Write the repositories as JSON to disk
-  const writeResult = yield writeFile(filename, JSON.stringify(repos.payload))
-  if (isFailure(writeResult)) return writeResult
-
-  //  Log a message out the user indicating the location of the file
-  yield log(`\nRepos Written From Github To File: ${writeResult.payload.realpath}`)
-
-  return writeResult
+  const names = getListOfNames(repos.payload)
+  yield logInfo(names.join('\n'))
+  return names
 }
 
 module.exports = {
   saveRepositories
 }
-
 ```
 
 ### Test It
-Fourth, test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in [`demo-cli/functions/save-repositories.spec.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.spec.js):
+Test your business logic using logic-less tests.  Each tuple in the array is an input-output pair.  You can find this in [`demo-cli/functions/save-repositories.spec.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.spec.js):
 ```js
-const { testIt } = require('../../test')
+const { testIt } = require('effects-as-data/test')
 const { saveRepositories } = require('./save-repositories')
-const { userInput, httpGet, writeFile, log } = require('../actions')
-const { printRepository } = require('./helpers')
-const { success, failure } = require('../../util')
+const { actions, failure } = require('effects-as-data/node')
 
 const testSaveRepositories = testIt(saveRepositories)
 
 describe('saveRepositories()', () => {
-  it('should get repositories and save to disk', testSaveRepositories(() => {
-    const repos = [{name: 'test', git_url: 'git://...'}]
-    const reposListFormatted = 'test: git://...'
-    const writeFileResult = success({path: 'repos.json', realpath: 'r/repos.json'})
+  it('should get repositories and print names', testSaveRepositories(() => {
+    const repos = [
+      { name: 'foo' },
+      { name: 'bar' }
+    ]
     return [
-      ['repos.json', userInput('\nEnter a github username: ')],
-      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
-      [repos, printRepository(reposListFormatted, 'orourkedd')],
-      [[], writeFile('repos.json', JSON.stringify(repos))],
-      [writeFileResult, log('\nRepos Written From Github To File: r/repos.json')],
-      [undefined, writeFileResult]
+      ['repos.json', actions.prompt('\nEnter a github username: ')],
+      ['orourkedd', actions.httpGet('https://api.github.com/users/orourkedd/repos')],
+      [repos, actions.logInfo('foo\nbar')],
+      [null, ['foo', 'bar']]
     ]
   }))
 
   it('should return http GET failure', testSaveRepositories(() => {
     const httpError = new Error('http error!')
     return [
-      ['repos.json', userInput('\nEnter a github username: ')],
-      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
+      ['repos.json', actions.prompt('\nEnter a github username: ')],
+      ['orourkedd', actions.httpGet('https://api.github.com/users/orourkedd/repos')],
       [failure(httpError), failure(httpError)]
     ]
   }))
-
-  it('should return write file error', testSaveRepositories(() => {
-    const repos = [{name: 'test', git_url: 'git://...'}]
-    const reposListFormatted = 'test: git://...'
-    const writeError = new Error('write error!')
-    //  3 log actions return 3 success results
-    const printResult = [success(), success(), success()]
-    return [
-      ['repos.json', userInput('\nEnter a github username: ')],
-      ['orourkedd', httpGet('https://api.github.com/users/orourkedd/repos')],
-      [repos, printRepository(reposListFormatted, 'orourkedd')],
-      [printResult, writeFile('repos.json', JSON.stringify(repos))],
-      [failure(writeError), failure(writeError)]
-    ]
-  }))
 })
+
 
 ```
 
@@ -229,13 +120,10 @@ Expected:
 ### Wire It Up and Run It
 Fifth, wire it all up.  You can find this in [`demo-cli/index.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/index.js):
 ```js
-const { run } = require('../index')
-const handlers = require('./handlers')
+const { runNode } = require('effects-as-data/node')
 const { saveRepositories } = require('./functions/save-repositories')
 
-const outputFile = 'repos.json'
-
-run(handlers, saveRepositories, outputFile).catch(console.error)
+runNode(saveRepositories, 'repos.json').catch(console.error)
 
 ```
 
