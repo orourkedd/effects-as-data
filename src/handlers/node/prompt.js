@@ -1,6 +1,6 @@
 const readline = require('readline')
 
-const userInput = (action) => {
+const prompt = (action) => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -15,5 +15,5 @@ const userInput = (action) => {
 }
 
 module.exports = {
-  userInput
+  prompt
 }
