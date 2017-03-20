@@ -121,10 +121,10 @@ Expected:
 ### Wire It Up and Run It
 Fifth, wire it all up.  You can find this in [`demo-cli/index.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/index.js):
 ```js
-const { runNode } = require('effects-as-data/node')
+const { run, handlers } = require('effects-as-data/node')
 const { saveRepositories } = require('./functions/save-repositories')
 
-runNode(saveRepositories, 'repos.json').catch(console.error)
+run(handlers, saveRepositories, 'repos.json').catch(console.error)
 
 ```
 
