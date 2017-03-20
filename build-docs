@@ -1,0 +1,1 @@
+documentation build src --format md --markdown-toc --github > docs.md
