@@ -190,7 +190,7 @@ return run(handlers, test, 42, {
 
 ## env
 
-[src/actions/node/env.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/env.js#L33-L37 "Source code on GitHub")
+[src/actions/node/env.js:33-37](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/env.js#L33-L37 "Source code on GitHub")
 
 Create an `env` action.  Yield an env action get `process.env`.
 
@@ -235,7 +235,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## readFile
 
-[src/actions/node/fs.js:37-44](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/fs.js#L37-L44 "Source code on GitHub")
+[src/actions/node/fs.js:37-44](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/fs.js#L37-L44 "Source code on GitHub")
 
 Creates a `readFile` action.  `yield` a `readFile` action to read a file using `fs.readFile`.
 
@@ -287,7 +287,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## writeFile
 
-[src/actions/node/fs.js:84-91](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/fs.js#L84-L91 "Source code on GitHub")
+[src/actions/node/fs.js:84-91](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/fs.js#L84-L91 "Source code on GitHub")
 
 Creates a `writeFile` action.  `yield` a `writeFile` action to write a file using `fs.writeFile`.
 
@@ -341,7 +341,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## prompt
 
-[src/actions/node/prompt.js:40-45](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/prompt.js#L40-L45 "Source code on GitHub")
+[src/actions/node/prompt.js:40-45](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/prompt.js#L40-L45 "Source code on GitHub")
 
 Creates a `prompt` action.  `yield` a `prompt` action read input form a user from the command line.
 
@@ -397,7 +397,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## requireModule
 
-[src/actions/node/require-module.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/require-module.js#L35-L40 "Source code on GitHub")
+[src/actions/node/require-module.js:35-40](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/node/require-module.js#L35-L40 "Source code on GitHub")
 
 Creates a `requireModule` action.  `yield` a `requireModule` action to require a module.
 
@@ -447,7 +447,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## call
 
-[src/actions/universal/call.js:43-50](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/call.js#L43-L50 "Source code on GitHub")
+[src/actions/universal/call.js:43-50](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/call.js#L43-L50 "Source code on GitHub")
 
 Creates a `call` action.  `yield` a `call` action to call another effects-as-data function.  `call` is used to compose effects-as-data functions in a testible manner.
 
@@ -505,7 +505,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## echo
 
-[src/actions/universal/echo.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/echo.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/echo.js:35-40](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/echo.js#L35-L40 "Source code on GitHub")
 
 Creates an `echo` action.  `yield` an `echo` action for the handler to return `payload`.  This is used as a placeholder when multiple actions are being `yield`ed and some of the actions need to be `yield`ed conditionally.
 
@@ -555,7 +555,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## guid
 
-[src/actions/universal/guid.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/guid.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/guid.js:33-37](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/guid.js#L33-L37 "Source code on GitHub")
 
 Creates a `guid` action.  `yield` a `guid` action to get a shiny new guid.
 
@@ -600,7 +600,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpGet
 
-[src/actions/universal/http.js:43-50](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L43-L50 "Source code on GitHub")
+[src/actions/universal/http.js:43-50](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L43-L50 "Source code on GitHub")
 
 Creates a `httpGet` action.  `yield` an `httpGet` action to do an http GET request.
 
@@ -652,7 +652,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpPost
 
-[src/actions/universal/http.js:89-97](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L89-L97 "Source code on GitHub")
+[src/actions/universal/http.js:89-97](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L89-L97 "Source code on GitHub")
 
 Creates a `httpPost` action.  `yield` an `httpPost` action to do an http POST request.
 
@@ -705,7 +705,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpPut
 
-[src/actions/universal/http.js:136-144](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L136-L144 "Source code on GitHub")
+[src/actions/universal/http.js:136-144](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L136-L144 "Source code on GitHub")
 
 Creates a `httpPut` action.  `yield` an `httpPut` action to do an http PUT request.
 
@@ -758,7 +758,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpDelete
 
-[src/actions/universal/http.js:181-188](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L181-L188 "Source code on GitHub")
+[src/actions/universal/http.js:181-188](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/http.js#L181-L188 "Source code on GitHub")
 
 Creates a `httpDelete` action.  `yield` an `httpDelete` action to do an http DELETE request.
 
@@ -809,7 +809,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## jsonParse
 
-[src/actions/universal/json-parse.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/json-parse.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/json-parse.js:35-40](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/json-parse.js#L35-L40 "Source code on GitHub")
 
 Creates a `jsonParse` action.  `yield` a `jsonParse` action to parse a JSON string.  Why not just use `JSON.parse()` inline?  Although a successful parsing operation is deterministic, a failed parsing operation is not.
 
@@ -859,7 +859,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## logInfo
 
-[src/actions/universal/log.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/log.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/log.js:35-40](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/log.js#L35-L40 "Source code on GitHub")
 
 Creates a `logInfo` action.  `yield` a `logInfo` action to log to the console using `console.info`.
 
@@ -909,7 +909,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## logError
 
-[src/actions/universal/log.js:76-81](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/log.js#L76-L81 "Source code on GitHub")
+[src/actions/universal/log.js:76-81](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/log.js#L76-L81 "Source code on GitHub")
 
 Creates a `logError` action.  `yield` a `logError` action to log to the console using `console.error`.
 
@@ -959,7 +959,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## now
 
-[src/actions/universal/now.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/now.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/now.js:33-37](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/now.js#L33-L37 "Source code on GitHub")
 
 Create an `now` action.  `yield` a `now` action to get the current timestamp from `Date.now()`.
 
@@ -1004,7 +1004,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## randomNumber
 
-[src/actions/universal/random-number.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/random-number.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/random-number.js:33-37](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/random-number.js#L33-L37 "Source code on GitHub")
 
 Create an `randomNumber` action.  `yield` a `randomNumber` to get a random number using `Math.random()`.
 
@@ -1049,7 +1049,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## getState
 
-[src/actions/universal/state.js:34-39](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/state.js#L34-L39 "Source code on GitHub")
+[src/actions/universal/state.js:34-39](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/state.js#L34-L39 "Source code on GitHub")
 
 Creates a `getState` action.  `yield` a `getState` to get application state.
 
@@ -1098,7 +1098,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## setState
 
-[src/actions/universal/state.js:76-81](https://github.com-orourkedd/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/state.js#L76-L81 "Source code on GitHub")
+[src/actions/universal/state.js:76-81](https://github.com/orourkedd/effects-as-data/blob/dfafcc7b80594995eb800fac797ae50a5ee16c53/src/actions/universal/state.js#L76-L81 "Source code on GitHub")
 
 Creates a `setState` action.  `yield` a `setState` to set application state.
 
