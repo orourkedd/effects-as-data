@@ -164,7 +164,7 @@ return run(handlers, test, 42, {
 })
 ```
 
-# Actions
+# Actions packaged with effects-as-data
 
 ### Table of Contents
 
