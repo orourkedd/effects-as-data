@@ -4,7 +4,7 @@
  * @returns {Object} an action of type `jsonParse`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
@@ -18,7 +18,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example ({ json }) {
  *   const result = yield actions.jsonParse(json)
@@ -26,7 +26,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { json: '{"foo": "bar"}' }).then((result) => {
  *   result.payload.foo === 'bar' //  true

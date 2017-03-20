@@ -190,9 +190,9 @@ return run(handlers, test, 42, {
 
 ## env
 
-[src/actions/node/env.js:33-37](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/node/env.js#L33-L37 "Source code on GitHub")
+[src/actions/node/env.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/node/env.js#L33-L37 "Source code on GitHub")
 
-Create an `env` action.  Yield an env action get `process.env`.
+Create an `env` action.  `yield` an env action get `process.env`.
 
 **Examples**
 
@@ -235,7 +235,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## readFile
 
-[src/actions/node/fs.js:37-44](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/node/fs.js#L37-L44 "Source code on GitHub")
+[src/actions/node/fs.js:37-44](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/node/fs.js#L37-L44 "Source code on GitHub")
 
 Creates a `readFile` action.  `yield` a `readFile` action to read a file using `fs.readFile`.
 
@@ -288,7 +288,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## writeFile
 
-[src/actions/node/fs.js:84-91](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/node/fs.js#L84-L91 "Source code on GitHub")
+[src/actions/node/fs.js:84-91](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/node/fs.js#L84-L91 "Source code on GitHub")
 
 Creates a `writeFile` action.  `yield` a `writeFile` action to write a file using `fs.writeFile`.
 
@@ -344,7 +344,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## prompt
 
-[src/actions/node/prompt.js:35-40](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/node/prompt.js#L35-L40 "Source code on GitHub")
+[src/actions/node/prompt.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/node/prompt.js#L35-L40 "Source code on GitHub")
 
 Creates a `prompt` action.  `yield` a `prompt` action read input form a user from the command line.
 
@@ -394,7 +394,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## requireModule
 
-[src/actions/node/require-module.js:35-40](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/node/require-module.js#L35-L40 "Source code on GitHub")
+[src/actions/node/require-module.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/node/require-module.js#L35-L40 "Source code on GitHub")
 
 Creates a `requireModule` action.  `yield` a `requireModule` action to require a module.
 
@@ -445,7 +445,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## call
 
-[src/actions/universal/call.js:43-50](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/call.js#L43-L50 "Source code on GitHub")
+[src/actions/universal/call.js:43-50](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/call.js#L43-L50 "Source code on GitHub")
 
 Creates a `call` action.  `yield` a `call` action to call another effects-as-data function.  `call` is used to compose effects-as-data functions in a testible manner.
 
@@ -460,7 +460,7 @@ Creates a `call` action.  `yield` a `call` action to call another effects-as-dat
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const testExample = testIt(example)
 
@@ -476,7 +476,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * getUser ({ id }) {
  const user = yield actions.httpGet(`https://example.com/api/v1/users/${id}`)
@@ -491,7 +491,7 @@ function * example ({ id }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { id: '123' }).then((user) => {
   user.payload.id === '123' //  true
@@ -503,7 +503,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## echo
 
-[src/actions/universal/echo.js:35-40](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/echo.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/echo.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/echo.js#L35-L40 "Source code on GitHub")
 
 Creates an `echo` action.  `yield` an `echo` action for the handler to return `payload`.  This is used as a placeholder when multiple actions are being `yield`ed and some of the actions need to be `yield`ed conditionally.
 
@@ -516,7 +516,7 @@ Creates an `echo` action.  `yield` an `echo` action for the handler to return `p
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -532,7 +532,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ value }) {
   const result = yield actions.echo(value)
@@ -542,7 +542,7 @@ function * example ({ value }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { value: 32 }).then((result) => {
   result.payload === 32 //  true
@@ -553,7 +553,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## guid
 
-[src/actions/universal/guid.js:33-37](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/guid.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/guid.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/guid.js#L33-L37 "Source code on GitHub")
 
 Creates a `guid` action.  `yield` a `guid` action to get a shiny new guid.
 
@@ -562,7 +562,7 @@ Creates a `guid` action.  `yield` a `guid` action to get a shiny new guid.
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -577,7 +577,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example () {
   const result = yield actions.guid()
@@ -587,7 +587,7 @@ function * example () {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example).then((result) => {
   result.payload === '15270902-2798-4c34-aaa8-9a55726b58af' //  true, if `uuid.v4()` returned '15270902-2798-4c34-aaa8-9a55726b58af'
@@ -598,7 +598,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpGet
 
-[src/actions/universal/http.js:43-50](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/http.js#L43-L50 "Source code on GitHub")
+[src/actions/universal/http.js:43-50](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/http.js#L43-L50 "Source code on GitHub")
 
 Creates a `httpGet` action.  `yield` an `httpGet` action to do an http GET request.
 
@@ -613,7 +613,7 @@ Creates a `httpGet` action.  `yield` an `httpGet` action to do an http GET reque
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -628,7 +628,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ url }) {
   const result = yield actions.httpGet(url)
@@ -638,7 +638,7 @@ function * example ({ url }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const url = 'https://www.example.com/api/v1/something'
 run(handlers, example, { url }).then((result) => {
@@ -650,7 +650,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpPost
 
-[src/actions/universal/http.js:89-97](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/http.js#L89-L97 "Source code on GitHub")
+[src/actions/universal/http.js:89-97](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/http.js#L89-L97 "Source code on GitHub")
 
 Creates a `httpPost` action.  `yield` an `httpPost` action to do an http POST request.
 
@@ -666,7 +666,7 @@ Creates a `httpPost` action.  `yield` an `httpPost` action to do an http POST re
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -682,7 +682,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example (payload) {
   const result = yield actions.httpPost('http://www.example.com/api/v1/user', payload)
@@ -692,7 +692,7 @@ function * example (payload) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { foo: 'bar' }).then((result) => {
   result.success === true //  true, if a POST was successful
@@ -703,7 +703,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpPut
 
-[src/actions/universal/http.js:136-144](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/http.js#L136-L144 "Source code on GitHub")
+[src/actions/universal/http.js:136-144](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/http.js#L136-L144 "Source code on GitHub")
 
 Creates a `httpPut` action.  `yield` an `httpPut` action to do an http PUT request.
 
@@ -719,7 +719,7 @@ Creates a `httpPut` action.  `yield` an `httpPut` action to do an http PUT reque
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -735,7 +735,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example (payload) {
   const result = yield actions.httpPut('http://www.example.com/api/v1/user', payload)
@@ -745,7 +745,7 @@ function * example (payload) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { foo: 'bar' }).then((result) => {
   result.success === true //  true, if a PUT was successful
@@ -756,7 +756,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## httpDelete
 
-[src/actions/universal/http.js:181-188](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/http.js#L181-L188 "Source code on GitHub")
+[src/actions/universal/http.js:181-188](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/http.js#L181-L188 "Source code on GitHub")
 
 Creates a `httpDelete` action.  `yield` an `httpDelete` action to do an http DELETE request.
 
@@ -771,7 +771,7 @@ Creates a `httpDelete` action.  `yield` an `httpDelete` action to do an http DEL
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -786,7 +786,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ id }) {
   const result = yield actions.httpDelete(`http://www.example.com/api/v1/user/${id}`)
@@ -796,7 +796,7 @@ function * example ({ id }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { id: '123' }).then((result) => {
   result.success === true //  true, if a DELETE to http://www.example.com/api/v1/user/123 was successful
@@ -807,7 +807,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## jsonParse
 
-[src/actions/universal/json-parse.js:35-40](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/json-parse.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/json-parse.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/json-parse.js#L35-L40 "Source code on GitHub")
 
 Creates a `jsonParse` action.  `yield` a `jsonParse` action to parse a JSON string.  Why not just use `JSON.parse()` inline?  Although a successful parsing operation is deterministic, a failed parsing operation is not.
 
@@ -820,7 +820,7 @@ Creates a `jsonParse` action.  `yield` a `jsonParse` action to parse a JSON stri
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const testExample = testIt(example)
 
@@ -836,7 +836,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ json }) {
   const result = yield actions.jsonParse(json)
@@ -846,7 +846,7 @@ function * example ({ json }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { json: '{"foo": "bar"}' }).then((result) => {
   result.payload.foo === 'bar' //  true
@@ -857,7 +857,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## logInfo
 
-[src/actions/universal/log.js:35-40](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/log.js#L35-L40 "Source code on GitHub")
+[src/actions/universal/log.js:35-40](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/log.js#L35-L40 "Source code on GitHub")
 
 Creates a `logInfo` action.  `yield` a `logInfo` action to log to the console using `console.info`.
 
@@ -870,7 +870,7 @@ Creates a `logInfo` action.  `yield` a `logInfo` action to log to the console us
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const testExample = testIt(example)
 
@@ -886,7 +886,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ message }) {
   const result = yield actions.logInfo(message)
@@ -896,7 +896,7 @@ function * example ({ message }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { message: 'bar' }).then((result) => {
   //  "bar" should have been `console.info`ed
@@ -907,7 +907,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## logError
 
-[src/actions/universal/log.js:76-81](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/log.js#L76-L81 "Source code on GitHub")
+[src/actions/universal/log.js:76-81](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/log.js#L76-L81 "Source code on GitHub")
 
 Creates a `logError` action.  `yield` a `logError` action to log to the console using `console.error`.
 
@@ -920,7 +920,7 @@ Creates a `logError` action.  `yield` a `logError` action to log to the console 
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const testExample = testIt(example)
 
@@ -936,7 +936,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example ({ message }) {
   const result = yield actions.logError(message)
@@ -946,7 +946,7 @@ function * example ({ message }) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example, { message: 'bar' }).then((result) => {
   //  "bar" should have been `console.error`ed
@@ -957,7 +957,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## now
 
-[src/actions/universal/now.js:33-37](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/now.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/now.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/now.js#L33-L37 "Source code on GitHub")
 
 Create an `now` action.  `yield` a `now` action to get the current timestamp from `Date.now()`.
 
@@ -966,7 +966,7 @@ Create an `now` action.  `yield` a `now` action to get the current timestamp fro
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -981,7 +981,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example () {
   const timestamp = yield actions.now()
@@ -991,7 +991,7 @@ function * example () {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example).then((timestamp) => {
   timestamp.payload === 1490030160103 //  true, if Date.now() returned 1490030160103
@@ -1002,7 +1002,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## randomNumber
 
-[src/actions/universal/random-number.js:33-37](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/random-number.js#L33-L37 "Source code on GitHub")
+[src/actions/universal/random-number.js:33-37](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/random-number.js#L33-L37 "Source code on GitHub")
 
 Create an `randomNumber` action.  `yield` a `randomNumber` to get a random number using `Math.random()`.
 
@@ -1011,7 +1011,7 @@ Create an `randomNumber` action.  `yield` a `randomNumber` to get a random numbe
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -1026,7 +1026,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example () {
   const n = yield actions.randomNumber()
@@ -1036,7 +1036,7 @@ function * example () {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example).then((n) => {
   n.payload === 0.345 //  true, if Math.random() returned 0.345
@@ -1047,7 +1047,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## getState
 
-[src/actions/universal/state.js:34-39](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/state.js#L34-L39 "Source code on GitHub")
+[src/actions/universal/state.js:34-39](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/state.js#L34-L39 "Source code on GitHub")
 
 Creates a `getState` action.  `yield` a `getState` to get application state.
 
@@ -1060,7 +1060,7 @@ Creates a `getState` action.  `yield` a `getState` to get application state.
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -1075,7 +1075,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example () {
   const user = yield actions.getState(['user'])
@@ -1085,7 +1085,7 @@ function * example () {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 run(handlers, example).then((user) => {
   user.id === 'abc' //  true, if the user has an `id` of 'abc'
@@ -1096,7 +1096,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## setState
 
-[src/actions/universal/state.js:76-81](https://github.com/orourkedd/effects-as-data/blob/f818118103596d20a7f7ab29d3f1ed61a031c8d9/src/actions/universal/state.js#L76-L81 "Source code on GitHub")
+[src/actions/universal/state.js:76-81](https://github.com-orourkedd/orourkedd/effects-as-data/blob/da7c6768fa7dfc99630600a48caa1dcf34783497/src/actions/universal/state.js#L76-L81 "Source code on GitHub")
 
 Creates a `setState` action.  `yield` a `setState` to set application state.
 
@@ -1109,7 +1109,7 @@ Creates a `setState` action.  `yield` a `setState` to set application state.
 ```javascript
 //  Test It
 const { testIt } = require('effects-as-data/test')
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 const testExample = testIt(example)
 
 describe('example()', () => {
@@ -1125,7 +1125,7 @@ describe('example()', () => {
 
 ```javascript
 //  Write It
-const { actions } = require('effects-as-data/universal')
+const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 function * example (user) {
   const result = yield actions.setState({ user })
@@ -1135,7 +1135,7 @@ function * example (user) {
 
 ```javascript
 //  Run It
-const { handlers, run } = require('effects-as-data/universal')
+const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
 
 const user = { id: '123', username: 'foo' }
 run(handlers, example, user).then((result) => {

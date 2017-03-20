@@ -4,7 +4,7 @@
  * @returns {Object} an action of type `getState`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -17,7 +17,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example () {
  *   const user = yield actions.getState(['user'])
@@ -25,7 +25,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example).then((user) => {
  *   user.id === 'abc' //  true, if the user has an `id` of 'abc'
@@ -44,7 +44,7 @@ function getState (keys) {
  * @returns {Object} an action of type `setState`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -58,7 +58,7 @@ function getState (keys) {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example (user) {
  *   const result = yield actions.setState({ user })
@@ -66,7 +66,7 @@ function getState (keys) {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const user = { id: '123', username: 'foo' }
  * run(handlers, example, user).then((result) => {

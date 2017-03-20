@@ -4,7 +4,7 @@
  * @returns {Object} an action of type `logInfo`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
@@ -18,7 +18,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example ({ message }) {
  *   const result = yield actions.logInfo(message)
@@ -26,7 +26,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { message: 'bar' }).then((result) => {
  *   //  "bar" should have been `console.info`ed
@@ -45,7 +45,7 @@ function logInfo (payload) {
  * @returns {Object} an action of type `logError`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
@@ -59,7 +59,7 @@ function logInfo (payload) {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example ({ message }) {
  *   const result = yield actions.logError(message)
@@ -67,7 +67,7 @@ function logInfo (payload) {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { message: 'bar' }).then((result) => {
  *   //  "bar" should have been `console.error`ed
