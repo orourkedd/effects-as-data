@@ -9,13 +9,14 @@
  * @returns {Object} an action of type `writeFile`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
  *   it('should prompt the user', testExample(() => {
  *     return [
- *       [null, prompt("What's your favorite color?")],
+ *       [null, actions.prompt("What's your favorite color?")],
  *       ['green', success('green')]
  *     ]
  *   }))

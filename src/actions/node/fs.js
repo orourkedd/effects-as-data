@@ -5,6 +5,7 @@
  * @returns {Object} an action of type `readFile`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
@@ -12,7 +13,7 @@
  *   it('should read a file', testExample(() => {
  *     const path = '/path/to/file.txt'
  *     return [
- *       [{ path }, readFile(path, { encoding: 'utf8' })],
+ *       [{ path }, actions.readFile(path, { encoding: 'utf8' })],
  *       ['FOO', success()]
  *     ]
  *   }))
@@ -32,7 +33,6 @@
  * run(handlers, example, { path: '/path/to/file.txt' }).then((result) => {
  *   result.payload === 'FOO' //  true, if '/path/to/file.txt' has the content 'FOO'.
  * })
- *
  */
 function readFile (path, options) {
   return {

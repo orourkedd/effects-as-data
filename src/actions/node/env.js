@@ -29,7 +29,6 @@
  * run(handlers, example).then((env) => {
  *   env.payload.NODE_ENV === 'development' //  true, if process.env.NODE_ENV === 'development'
  * })
- *
  */
 function env () {
   return {
