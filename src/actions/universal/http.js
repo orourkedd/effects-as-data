@@ -10,6 +10,35 @@ const defaultHeaders = {
  * @param {Object} [headers={}] request headers.
  * @param {Object} [options={}] options for `fetch`.
  * @returns {Object} an action of type `httpGet`.
+ * @example //  Test It
+ * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/universal')
+ * const testExample = testIt(example)
+ *
+ * describe('example()', () => {
+ *   it('should return a result from GET', testExample(() => {
+ *     return [
+ *       [{ url: 'http://www.example.com' }, actions.httpGet('http://www.example.com')],
+ *       [{ foo: 'bar' }, success({ foo: 'bar' })]
+ *     ]
+ *   }))
+ * })
+ *
+ * @example //  Write It
+ * const { actions } = require('effects-as-data/universal')
+ *
+ * function * example ({ url }) {
+ *   const result = yield actions.httpGet(url)
+ *   return result
+ * }
+ *
+ * @example //  Run It
+ * const { handlers, run } = require('effects-as-data/universal')
+ *
+ * const url = 'https://www.example.com/api/v1/something'
+ * run(handlers, example, { url }).then((result) => {
+ *   result.payload === { foo: 'bar' } //  true, if a GET to `url` returned `{ foo: 'bar' }`
+ * })
  */
 function httpGet (url, headers = {}, options = {}) {
   return {
@@ -27,6 +56,35 @@ function httpGet (url, headers = {}, options = {}) {
  * @param {Object} [headers={}] request headers.
  * @param {Object} [options={}] options for `fetch`.
  * @returns {Object} an action of type `httpPost`.
+ * @example //  Test It
+ * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/universal')
+ * const testExample = testIt(example)
+ *
+ * describe('example()', () => {
+ *   it('should POST payload to url', testExample(() => {
+ *     const url = 'http://www.example.com/api/v1/user'
+ *     return [
+ *       [{ url }, actions.httpPost(url, { foo: 'bar' })],
+ *       [success(), success()]
+ *     ]
+ *   }))
+ * })
+ *
+ * @example //  Write It
+ * const { actions } = require('effects-as-data/universal')
+ *
+ * function * example (payload) {
+ *   const result = yield actions.httpPost('http://www.example.com/api/v1/user', payload)
+ *   return result
+ * }
+ *
+ * @example //  Run It
+ * const { handlers, run } = require('effects-as-data/universal')
+ *
+ * run(handlers, example, { foo: 'bar' }).then((result) => {
+ *   result.success === true //  true, if a POST was successful
+ * })
  */
 function httpPost (url, payload, headers = {}, options = {}) {
   return {
@@ -45,6 +103,35 @@ function httpPost (url, payload, headers = {}, options = {}) {
  * @param {Object} [headers={}] request headers.
  * @param {Object} [options={}] options for `fetch`.
  * @returns {Object} an action of type `httpPut`.
+ * @example //  Test It
+ * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/universal')
+ * const testExample = testIt(example)
+ *
+ * describe('example()', () => {
+ *   it('should PUT payload to url', testExample(() => {
+ *     const url = 'http://www.example.com/api/v1/user'
+ *     return [
+ *       [{ url }, actions.httpPut(url, { foo: 'bar' })],
+ *       [success(), success()]
+ *     ]
+ *   }))
+ * })
+ *
+ * @example //  Write It
+ * const { actions } = require('effects-as-data/universal')
+ *
+ * function * example (payload) {
+ *   const result = yield actions.httpPut('http://www.example.com/api/v1/user', payload)
+ *   return result
+ * }
+ *
+ * @example //  Run It
+ * const { handlers, run } = require('effects-as-data/universal')
+ *
+ * run(handlers, example, { foo: 'bar' }).then((result) => {
+ *   result.success === true //  true, if a PUT was successful
+ * })
  */
 function httpPut (url, payload, headers = {}, options = {}) {
   return {
@@ -62,6 +149,34 @@ function httpPut (url, payload, headers = {}, options = {}) {
  * @param {Object} [headers={}] request headers.
  * @param {Object} [options={}] options for `fetch`.
  * @returns {Object} an action of type `httpDelete`.
+ * @example //  Test It
+ * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/universal')
+ * const testExample = testIt(example)
+ *
+ * describe('example()', () => {
+ *   it('should return a result from DELETE', testExample(() => {
+ *     return [
+ *       [{ id: '32' }, actions.httpDelete('http://www.example.com/api/v1/user/32')],
+ *       [success(), success())]
+ *     ]
+ *   }))
+ * })
+ *
+ * @example //  Write It
+ * const { actions } = require('effects-as-data/universal')
+ *
+ * function * example ({ id }) {
+ *   const result = yield actions.httpDelete(`http://www.example.com/api/v1/user/${id}`)
+ *   return result
+ * }
+ *
+ * @example //  Run It
+ * const { handlers, run } = require('effects-as-data/universal')
+ *
+ * run(handlers, example, { id: '123' }).then((result) => {
+ *   result.success === true //  true, if a DELETE to http://www.example.com/api/v1/user/123 was successful
+ * })
  */
 function httpDelete (url, headers = {}, options = {}) {
   return {

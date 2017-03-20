@@ -4,13 +4,14 @@
  * @returns {Object} an action of type `requireModule`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
  *   it('should require a module', testExample(() => {
  *     return [
- *       [null, requireModule('/path/to/my-module')],
+ *       [null, actions.requireModule('/path/to/my-module')],
  *       [{ foo: 'bar' }, success({ foo: 'bar' })]
  *     ]
  *   }))

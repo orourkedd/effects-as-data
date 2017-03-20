@@ -1,17 +1,34 @@
 /**
  * Create an `now` action.  `yield` a `now` action to get the current timestamp from `Date.now()`.
  * @returns {Object} an action of type `now`.
- * @example const { actions, handlers, run } = require('effects-as-data/node')
+ * @example //  Test It
+ * const { testIt } = require('effects-as-data/test')
+ * const { actions } = require('effects-as-data/universal')
+ * const testExample = testIt(example)
+ *
+ * describe('example()', () => {
+ *   it('should return the current timestamp', testExample(() => {
+ *     return [
+ *       [null, actions.now()],
+ *       [123456, success(123456)]
+ *     ]
+ *   }))
+ * })
+ *
+ * @example //  Write It
+ * const { actions } = require('effects-as-data/universal')
  *
  * function * example () {
  *   const timestamp = yield actions.now()
  *   return timestamp
  * }
  *
+ * @example //  Run It
+ * const { handlers, run } = require('effects-as-data/universal')
+ *
  * run(handlers, example).then((timestamp) => {
  *   timestamp.payload === 1490030160103 //  true, if Date.now() returned 1490030160103
  * })
- *
  */
 function now () {
   return {
