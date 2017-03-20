@@ -1,6 +1,6 @@
 /**
  * Creates a `readFile` action.  `yield` a `readFile` action to read a file using `fs.readFile`.
- * @param {string} file path
+ * @param {string} file file path
  * @param {Object} [options={}] options for `fs.readFile`
  * @returns {Object} an action of type `readFile`.
  * @example //  Test It
@@ -45,7 +45,7 @@ function readFile (path, options) {
 
 /**
  * Creates a `writeFile` action.  `yield` a `writeFile` action to write a file using `fs.writeFile`.
- * @param {string} file path
+ * @param {string} file file path
  * @param {any} the contents to write
  * @param {Object} [options={}] options for `fs.writeFile`
  * @returns {Object} an action of type `writeFile`.

@@ -1,6 +1,6 @@
 /**
  * Creates a `prompt` action.  `yield` a `prompt` action read input form a user from the command line.
- * @param {string} prompt for the user
+ * @param {string} question prompt for the user
  * @returns {Object} an action of type `prompt`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
