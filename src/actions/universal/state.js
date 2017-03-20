@@ -1,6 +1,6 @@
 /**
  * Creates a `getState` action.  `yield` a `getState` to get application state.
- * @param {Array} [keys] an array of paths to sections of state.  For example, ['user.firstName', 'settings.showBanner']
+ * @param {Array} an array of paths to sections of state.  For example, ['user.firstName', 'settings.showBanner']
  * @returns {Object} an action of type `getState`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
