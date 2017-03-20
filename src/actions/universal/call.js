@@ -6,7 +6,7 @@
  * @returns {Object} an action of type `call`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const testExample = testIt(example)
  *
@@ -20,7 +20,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * getUser ({ id }) {
  *  const user = yield actions.httpGet(`https://example.com/api/v1/users/${id}`)
@@ -33,7 +33,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { id: '123' }).then((user) => {
  *   user.payload.id === '123' //  true

@@ -3,7 +3,7 @@
  * @returns {Object} an action of type `guid`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -16,7 +16,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example () {
  *   const result = yield actions.guid()
@@ -24,7 +24,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example).then((result) => {
  *   result.payload === '15270902-2798-4c34-aaa8-9a55726b58af' //  true, if `uuid.v4()` returned '15270902-2798-4c34-aaa8-9a55726b58af'

@@ -12,7 +12,7 @@ const defaultHeaders = {
  * @returns {Object} an action of type `httpGet`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -25,7 +25,7 @@ const defaultHeaders = {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example ({ url }) {
  *   const result = yield actions.httpGet(url)
@@ -33,7 +33,7 @@ const defaultHeaders = {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * const url = 'https://www.example.com/api/v1/something'
  * run(handlers, example, { url }).then((result) => {
@@ -58,7 +58,7 @@ function httpGet (url, headers = {}, options = {}) {
  * @returns {Object} an action of type `httpPost`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -72,7 +72,7 @@ function httpGet (url, headers = {}, options = {}) {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example (payload) {
  *   const result = yield actions.httpPost('http://www.example.com/api/v1/user', payload)
@@ -80,7 +80,7 @@ function httpGet (url, headers = {}, options = {}) {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { foo: 'bar' }).then((result) => {
  *   result.success === true //  true, if a POST was successful
@@ -105,7 +105,7 @@ function httpPost (url, payload, headers = {}, options = {}) {
  * @returns {Object} an action of type `httpPut`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -119,7 +119,7 @@ function httpPost (url, payload, headers = {}, options = {}) {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example (payload) {
  *   const result = yield actions.httpPut('http://www.example.com/api/v1/user', payload)
@@ -127,7 +127,7 @@ function httpPost (url, payload, headers = {}, options = {}) {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { foo: 'bar' }).then((result) => {
  *   result.success === true //  true, if a PUT was successful
@@ -151,7 +151,7 @@ function httpPut (url, payload, headers = {}, options = {}) {
  * @returns {Object} an action of type `httpDelete`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -164,7 +164,7 @@ function httpPut (url, payload, headers = {}, options = {}) {
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example ({ id }) {
  *   const result = yield actions.httpDelete(`http://www.example.com/api/v1/user/${id}`)
@@ -172,7 +172,7 @@ function httpPut (url, payload, headers = {}, options = {}) {
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example, { id: '123' }).then((result) => {
  *   result.success === true //  true, if a DELETE to http://www.example.com/api/v1/user/123 was successful

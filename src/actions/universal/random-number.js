@@ -3,7 +3,7 @@
  * @returns {Object} an action of type `randomNumber`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  * const testExample = testIt(example)
  *
  * describe('example()', () => {
@@ -16,7 +16,7 @@
  * })
  *
  * @example //  Write It
- * const { actions } = require('effects-as-data/universal')
+ * const { actions } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * function * example () {
  *   const n = yield actions.randomNumber()
@@ -24,7 +24,7 @@
  * }
  *
  * @example //  Run It
- * const { handlers, run } = require('effects-as-data/universal')
+ * const { handlers, run } = require('effects-as-data/universal') //  also available in require('effects-as-data/node')
  *
  * run(handlers, example).then((n) => {
  *   n.payload === 0.345 //  true, if Math.random() returned 0.345
