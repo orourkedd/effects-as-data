@@ -40,7 +40,7 @@ Define a pure function that `effects-as-data` can use to perform your business l
 * Prints an array of the user's repository names.
 * Returns the array of repository names.
 
-NOTE: `prompt`, `httpGet`, `logInfo` below are pure functions which only return JSON objects.  They are not actually `prompt`ing, `httpGet`ing, etc.  `effects-as-data` routes these JSON objects to handlers that do the dirty, hard-to-test part for you.  The code below performs no side-effects, nor does it have any reference to side-effect-producing code.
+NOTE: `prompt`, `httpGet`, `logInfo` below are pure functions which only return JSON objects.  They are not actually `prompt`ing, `httpGet`ing, etc.  `effects-as-data` routes these JSON objects to handlers that do the side-effect-producing, hard-to-test part for you.  The code below performs no side-effects, nor does it have any reference to side-effect-producing code.
 
 You can find this in [`demo-cli/functions/save-repositories.js`](https://github.com/orourkedd/effects-as-data/blob/master/src/demo-cli/functions/save-repositories.js)
 
