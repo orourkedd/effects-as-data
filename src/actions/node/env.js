@@ -1,5 +1,5 @@
 /**
- * Create an `env` action.  Yield an env action get `process.env`.
+ * Create an `env` action.  `yield` an env action get `process.env`.
  * @returns {Object} an action of type `env`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
