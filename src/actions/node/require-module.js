@@ -1,6 +1,6 @@
 /**
  * Creates a `requireModule` action.  `yield` a `requireModule` action to require a module.
- * @param {string} [path] the absolute path to the module.
+ * @param {string} the absolute path to the module.
  * @returns {Object} an action of type `requireModule`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')

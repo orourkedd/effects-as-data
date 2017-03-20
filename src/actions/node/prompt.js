@@ -1,12 +1,7 @@
 /**
  * Creates a `prompt` action.  `yield` a `prompt` action read input form a user from the command line.
- * @param {string} [question] prompt for the user
+ * @param {string} prompt for the user
  * @returns {Object} an action of type `prompt`.
- * Creates a `writeFile` action.  `yield` a `writeFile` action to write a file using `fs.writeFile`.
- * @param {string} [path] file path
- * @param {any} [data] the contents to write
- * @param {Object} [options={}] options for `fs.writeFile`
- * @returns {Object} an action of type `writeFile`.
  * @example //  Test It
  * const { testIt } = require('effects-as-data/test')
  * const { actions } = require('effects-as-data/node')
