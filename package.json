@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.13.21",
+  "version": "1.13.22",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -25,7 +25,7 @@
     "readline": "^1.3.0",
     "safe-errors": "^0.7.0",
     "simple-protocol-helpers": "^0.3.0",
-    "simple-protocol-http": "^0.5.0",
+    "simple-protocol-http": "^0.15.0",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
@@ -34,11 +34,9 @@
     "babel-jest": "^17.0.2",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
-    "effects-as-data-http": "0.0.13",
     "husky": "^0.11.9",
     "jest-cli": "^17.0.3",
     "publish-please": "^2.2.0",
-    "simple-protocol-http": "^0.5.0",
     "sinon": "^1.17.6",
     "standard": "^8.6.0",
     "uver-cli": "^1.1.0"
