@@ -7,7 +7,7 @@ const { success, errorToObject } = require('./util')
 
 describe('handle-actions.js', () => {
   describe('handleActions', () => {
-    it('should throw an exception if plugin is not registered', () => {
+    it('should throw an exception if handler is not registered and indicate there are no handlers registered', () => {
       const noop = function () {}
       const handlers = {}
       const actions = [{type: 'dne'}]
@@ -16,7 +16,20 @@ describe('handle-actions.js', () => {
         fail('handleActions did not throw')
       })
       .catch((e) => {
-        deepEqual(e.error.message, '"dne" is not a registered plugin.')
+        deepEqual(e.error.message, '"dne" is not a registered handler.  In fact, there are no registered handlers (first argument to the run function).')
+      })
+    })
+
+    it('should throw an exception if handler is not registered and list registered handlers', () => {
+      const noop = function () {}
+      const handlers = { foo: () => {}, bar: () => {}, baz: () => {} }
+      const actions = [{type: 'dne'}]
+      return handleActions(noop, handlers, {}, actions)
+      .then(() => {
+        fail('handleActions did not throw')
+      })
+      .catch((e) => {
+        deepEqual(e.error.message, '"dne" is not a registered handler.  Registered handlers are: foo, bar, baz.')
       })
     })
 
