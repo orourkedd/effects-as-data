@@ -3,6 +3,7 @@ const {
   toPromise,
   curry,
   map,
+  keys,
   normalizeListToSuccess,
   normalizeToFailure,
   success
@@ -12,9 +13,9 @@ const handleActions = (run, handlers, config, actions) => {
   try {
     let a1 = toArray(actions)
     let p1 = map((a) => {
-      let plugin = handlers[a.type]
-      const noPlugin = typeof plugin === 'undefined'
-      if (noPlugin && a.type === 'call') {
+      let handler = handlers[a.type]
+      const noHandler = typeof handler === 'undefined'
+      if (noHandler && a.type === 'call') {
         if (a.asyncAction === true) {
           run(handlers, a.fn, a.payload, config)
           return success()
@@ -22,15 +23,19 @@ const handleActions = (run, handlers, config, actions) => {
           return run(handlers, a.fn, a.payload, config).catch(normalizeToFailure)
         }
       }
-      if (noPlugin) {
-        throw new Error(`"${a.type}" is not a registered plugin.`)
+      if (noHandler) {
+        const handlerNames = keys(handlers)
+        const handlerMessage = handlerNames.length
+        ? `Registered handlers are: ${handlerNames.join(', ')}.`
+        : 'In fact, there are no registered handlers (first argument to the run function).'
+        throw new Error(`"${a.type}" is not a registered handler.  ${handlerMessage}`)
       }
       let value
       try {
-        if (typeof plugin === 'function') {
-          value = plugin(a, handlers, config)
+        if (typeof handler === 'function') {
+          value = handler(a, handlers, config)
         } else {
-          value = plugin
+          value = handler
         }
       } catch (e) {
         value = normalizeToFailure(e)
