@@ -8,7 +8,12 @@ const {
   zip,
   isFailure,
   isSuccess,
-  toArray
+  toArray,
+  toPairs,
+  fromPairs,
+  pipe,
+  merge,
+  map
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
@@ -111,9 +116,23 @@ const buildPayload = (log, payload) => {
   })
 }
 
+function buildFunctions (handlers, functions, options = {}) {
+  function build ([name, fn]) {
+    const o = merge(options, { name })
+    const f = function (payload) {
+      return run(handlers, fn, payload, o)
+    }
+
+    return [name, f]
+  }
+
+  return pipe(toPairs, map(build), fromPairs)(functions)
+}
+
 module.exports = {
   runner,
   run: curry(run),
   runComplete: curry(runComplete),
-  runTest: curry(runTest)
+  runTest: curry(runTest),
+  buildFunctions
 }
