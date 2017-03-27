@@ -12,7 +12,7 @@ const {
   toPairs,
   fromPairs,
   pipe,
-  merge,
+  mergeAll,
   map
 } = require('./util')
 const { handleActions } = require('./handle-actions')
@@ -118,7 +118,10 @@ const buildPayload = (log, payload) => {
 
 function buildFunctions (handlers, functions, options = {}) {
   function build ([name, fn]) {
-    const o = merge(options, { name })
+    const defaultOptions = {
+      onFailure: console.error
+    }
+    const o = mergeAll([defaultOptions, options, { name }])
     const f = function (payload) {
       return run(handlers, fn, payload, o)
     }
