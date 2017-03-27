@@ -9,7 +9,10 @@ const {
   props,
   append,
   filter,
-  keys
+  keys,
+  toPairs,
+  fromPairs,
+  pipe
 } = require('ramda')
 const simpleProtocol = require('simple-protocol-helpers')
 
@@ -37,5 +40,8 @@ module.exports = merge(simpleProtocol, {
   append,
   merge,
   filter,
-  keys
+  keys,
+  pipe,
+  fromPairs,
+  toPairs
 })

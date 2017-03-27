@@ -1,4 +1,4 @@
-const { run } = require('./run')
+const { run, buildFunctions } = require('./run')
 const { call } = require('./actions')
 const {
   success,
@@ -13,6 +13,7 @@ const {
 
 module.exports = {
   run,
+  buildFunctions,
   call,
   success,
   isSuccess,
