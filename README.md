@@ -13,7 +13,12 @@
 * Decouple protocol from implementation.
 * Independently monitor all side effects in the system.
 
-## Example
+## Examples
+
+### Express
+![use with Express](https://github.com/orourkedd/effects-as-data-projects/tree/master/express)
+
+### Traditional Javascript vs Effects-as-data
 A side-by-side example of the same code written in traditional-style javascript and in effects-as-data: https://github.com/orourkedd/effects-as-data-vs-side-effects.  This came from a talk given at the Pluralsight Tech Summit.
 
 ## Installation
