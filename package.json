@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.13.25",
+  "version": "1.13.26",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -8,20 +8,19 @@
     "url": "https://github.com/orourkedd/effects-as-data"
   },
   "scripts": {
-    "test": "standard && jest",
+    "test": "jest",
     "test-mocha": "mocha src/**/*.spec.js --recursive --compilers js:babel-register --require babel-polyfill",
     "demo": "npm run transpile; node lib/demo-cli/index.js",
     "transpile": "babel src --out-dir lib --source-maps",
-    "precommit": "standard; npm run transpile && npm test && uver && git add -A",
-    "deploy": "standard && npm run transpile && npm test",
+    "precommit": "npm run transpile && npm test && uver && git add -A",
+    "deploy": "npm run transpile && npm test",
     "publish-please": "publish-please",
-    "prepublish": "publish-please guard",
-    "lint": "standard"
+    "prepublish": "publish-please guard"
   },
   "author": "orourkedd",
   "license": "MIT",
   "dependencies": {
-    "ramda": "^0.22.1",
+    "ramda": "^0.23.0",
     "readline": "^1.3.0",
     "safe-errors": "^0.7.0",
     "simple-protocol-helpers": "^0.3.0",
@@ -29,25 +28,17 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^7.1.1",
-    "babel-jest": "^17.0.2",
-    "babel-polyfill": "^6.16.0",
-    "babel-preset-es2015": "^6.18.0",
-    "husky": "^0.11.9",
-    "jest-cli": "^17.0.3",
-    "publish-please": "^2.2.0",
-    "sinon": "^1.17.6",
-    "standard": "^8.6.0",
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^20.0.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "husky": "^0.13.3",
+    "jest-cli": "^20.0.0",
+    "publish-please": "^2.3.1",
+    "sinon": "^2.2.0",
     "uver-cli": "^1.1.0"
   },
-  "standard": {
-    "parser": "babel-eslint",
-    "globals": [
-      "describe",
-      "test",
-      "it",
-      "fail"
-    ]
+  "jest": {
+    "testPathIgnorePatterns": ["<rootDir>/test.js", "<rootDir>/src/test.js", "<rootDir>/lib/test.js"]
   }
 }

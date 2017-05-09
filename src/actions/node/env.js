@@ -30,12 +30,12 @@
  *   env.payload.NODE_ENV === 'development' //  true, if process.env.NODE_ENV === 'development'
  * })
  */
-function env () {
+function env() {
   return {
-    type: 'env'
+    type: 'env',
   }
 }
 
 module.exports = {
-  env
+  env,
 }

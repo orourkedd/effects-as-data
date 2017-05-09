@@ -1,15 +1,10 @@
 const assert = require('assert')
 const { deepEqual } = assert
-const {
-  map,
-  prop,
-  curry,
-  normalizeToSuccess
-} = require('./util')
+const { map, prop, curry, normalizeToSuccess } = require('./util')
 const { runTest } = require('./run')
 
 const testHandlers = (fn, payload, actionHandlers, expectedOutput) => {
-  return runTest(actionHandlers, fn, payload).then(({log}) => {
+  return runTest(actionHandlers, fn, payload).then(({ log }) => {
     const outputPicker = prop(1)
     const actualOutput = map(outputPicker, log)
     deepEqual(actualOutput, expectedOutput)
@@ -24,7 +19,9 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   const step = expected[index]
 
   if (step === undefined) {
-    throw new Error('Your spec does not have as many steps as your function.  Are you missing a return line?')
+    throw new Error(
+      'Your spec does not have as many steps as your function.  Are you missing a return line?'
+    )
   }
 
   const [input, expectedOutput] = step
@@ -55,9 +52,11 @@ const testFn = (fn, expected, index = 0, previousOutput = null) => {
   }
 }
 
-const checkForExpectedTypeMismatches = (expected) => {
+const checkForExpectedTypeMismatches = expected => {
   if (!Array.isArray(expected)) {
-    throw new Error(`Your spec must return an array of tuples.  It is currently returning a value of type "${typeof expected}".`)
+    throw new Error(
+      `Your spec must return an array of tuples.  It is currently returning a value of type "${typeof expected}".`
+    )
   }
   for (let i = 0; i < expected.length; i++) {
     if (i + 1 >= expected.length) return
@@ -65,13 +64,16 @@ const checkForExpectedTypeMismatches = (expected) => {
     let nextInput = expected[i + 1][0]
 
     if (Array.isArray(output)) {
-      assert(Array.isArray(nextInput), 'If an array of actions is yielded, it should return an array of results.')
+      assert(
+        Array.isArray(nextInput),
+        'If an array of actions is yielded, it should return an array of results.'
+      )
     }
   }
 }
 
 const testIt = (fn, expected) => {
-  return function () {
+  return function() {
     let expectedLog = expected()
     testFn(fn, expectedLog)
   }
@@ -80,5 +82,5 @@ const testIt = (fn, expected) => {
 module.exports = {
   testHandlers: curry(testHandlers),
   testFn: curry(testFn),
-  testIt: curry(testIt)
+  testIt: curry(testIt),
 }
