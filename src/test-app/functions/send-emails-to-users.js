@@ -3,7 +3,7 @@ const { call } = require('../../actions')
 const { sendEmails } = require('./send-emails')
 const { getUsers } = require('./get-users')
 
-function * sendEmailsToUsers () {
+function* sendEmailsToUsers() {
   let users = yield call(getUsers)
   if (isFailure(users)) return users
   let sendResults = yield call(sendEmails, users.payload)
@@ -11,5 +11,5 @@ function * sendEmailsToUsers () {
 }
 
 module.exports = {
-  sendEmailsToUsers
+  sendEmailsToUsers,
 }

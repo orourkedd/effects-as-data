@@ -32,13 +32,13 @@
  *   result.payload == { foo: 'bar' } //  true
  * })
  */
-function requireModule (path) {
+function requireModule(path) {
   return {
     type: 'requireModule',
-    path
+    path,
   }
 }
 
 module.exports = {
-  requireModule
+  requireModule,
 }

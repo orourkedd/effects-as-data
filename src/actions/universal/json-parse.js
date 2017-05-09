@@ -32,13 +32,13 @@
  *   result.payload.foo === 'bar' //  true
  * })
  */
-function jsonParse (payload) {
+function jsonParse(payload) {
   return {
     type: 'jsonParse',
-    payload
+    payload,
   }
 }
 
 module.exports = {
-  jsonParse
+  jsonParse,
 }

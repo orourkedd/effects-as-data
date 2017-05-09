@@ -6,7 +6,7 @@ describe('json-parse.js', () => {
     it('should return an jsonParse action with a payload field', () => {
       const expected = {
         type: 'jsonParse',
-        payload: '{"id":123}'
+        payload: '{"id":123}',
       }
 
       const actual = jsonParse('{"id":123}')

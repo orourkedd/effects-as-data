@@ -20,5 +20,5 @@ module.exports = {
   httpGet,
   httpPost,
   httpPut,
-  httpDelete
+  httpDelete,
 }

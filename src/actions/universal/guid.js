@@ -30,12 +30,12 @@
  *   result.payload === '15270902-2798-4c34-aaa8-9a55726b58af' //  true, if `uuid.v4()` returned '15270902-2798-4c34-aaa8-9a55726b58af'
  * })
  */
-function guid () {
+function guid() {
   return {
-    type: 'guid'
+    type: 'guid',
   }
 }
 
 module.exports = {
-  guid
+  guid,
 }

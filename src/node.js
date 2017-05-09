@@ -10,5 +10,5 @@ const runNode = (fn, payload, config) => {
 module.exports = merge(all, {
   runNode,
   handlers,
-  actions
+  actions,
 })

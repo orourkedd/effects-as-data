@@ -8,7 +8,7 @@ const {
   isFailure,
   getFailures,
   clean,
-  errorToObject
+  errorToObject,
 } = require('./util')
 
 module.exports = {
@@ -22,5 +22,5 @@ module.exports = {
   isFailure,
   getFailures,
   clean,
-  errorToObject
+  errorToObject,
 }

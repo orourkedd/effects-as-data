@@ -7,7 +7,7 @@ describe('log.js', () => {
     it('should console.info() the payload', () => {
       const action = actions.logInfo(123)
       let payload = null
-      const consoleLogInfo = (p) => {
+      const consoleLogInfo = p => {
         payload = p
       }
       const expected = 123
@@ -21,7 +21,7 @@ describe('log.js', () => {
     it('should console.error the payload', () => {
       const action = actions.logError(123)
       let payload = null
-      const consoleLogError = (p) => {
+      const consoleLogError = p => {
         payload = p
       }
       const expected = 123

@@ -30,12 +30,12 @@
  *   timestamp.payload === 1490030160103 //  true, if Date.now() returned 1490030160103
  * })
  */
-function now () {
+function now() {
   return {
-    type: 'now'
+    type: 'now',
   }
 }
 
 module.exports = {
-  now
+  now,
 }

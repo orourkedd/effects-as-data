@@ -9,5 +9,5 @@ module.exports = merge(universal, {
   env,
   requireModule,
   node,
-  prompt
+  prompt,
 })

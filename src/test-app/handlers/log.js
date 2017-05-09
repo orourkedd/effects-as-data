@@ -1,12 +1,12 @@
-function log (message) {
+function log(message) {
   console.log(message)
 }
 
-function logError (error) {
+function logError(error) {
   console.error(error)
 }
 
 module.exports = {
   log,
-  logError
+  logError,
 }

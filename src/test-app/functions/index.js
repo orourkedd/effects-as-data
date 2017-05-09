@@ -5,5 +5,5 @@ const { sendEmailsToUsers } = require('./send-emails-to-users')
 module.exports = {
   getUsers,
   sendEmails,
-  sendEmailsToUsers
+  sendEmailsToUsers,
 }

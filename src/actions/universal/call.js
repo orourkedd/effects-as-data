@@ -40,15 +40,15 @@
  *   user.payload.username === 'foo' //  true, if a user with an id of '123' has the `username` 'foo'.
  * })
  */
-function call (fn, payload, options = {}) {
+function call(fn, payload, options = {}) {
   return {
     type: 'call',
     fn,
     payload,
-    asyncAction: options.asyncAction === true
+    asyncAction: options.asyncAction === true,
   }
 }
 
 module.exports = {
-  call
+  call,
 }

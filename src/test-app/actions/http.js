@@ -1,19 +1,19 @@
-function httpGet (url) {
+function httpGet(url) {
   return {
     type: 'httpGet',
-    url
+    url,
   }
 }
 
-function httpPost (url, payload) {
+function httpPost(url, payload) {
   return {
     type: 'httpPost',
     url,
-    payload
+    payload,
   }
 }
 
 module.exports = {
   httpGet,
-  httpPost
+  httpPost,
 }

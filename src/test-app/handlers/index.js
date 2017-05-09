@@ -10,5 +10,5 @@ module.exports = {
   log,
   logError,
   cacheGet,
-  cacheSet
+  cacheSet,
 }

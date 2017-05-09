@@ -1,9 +1,4 @@
-const {
-  unwrapArgs,
-  unwrapArray,
-  toArray,
-  toPromise
-} = require('./util')
+const { unwrapArgs, unwrapArray, toArray, toPromise } = require('./util')
 const { deepEqual } = require('assert')
 
 describe('util.js', () => {
@@ -67,7 +62,7 @@ describe('util.js', () => {
       const input = 1
       const expected = 1
       const p = toPromise(input)
-      return p.then((actual) => {
+      return p.then(actual => {
         deepEqual(actual, expected)
       })
     })
@@ -76,7 +71,7 @@ describe('util.js', () => {
       const input = Promise.resolve(1)
       const expected = 1
       const p = toPromise(input)
-      return p.then((actual) => {
+      return p.then(actual => {
         deepEqual(actual, expected)
       })
     })

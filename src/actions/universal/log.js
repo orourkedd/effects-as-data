@@ -32,10 +32,10 @@
  *   //  "bar" should have been `console.info`ed
  * })
  */
-function logInfo (payload) {
+function logInfo(payload) {
   return {
     type: 'logInfo',
-    payload
+    payload,
   }
 }
 
@@ -73,14 +73,14 @@ function logInfo (payload) {
  *   //  "bar" should have been `console.error`ed
  * })
  */
-function logError (payload) {
+function logError(payload) {
   return {
     type: 'logError',
-    payload
+    payload,
   }
 }
 
 module.exports = {
   logInfo,
-  logError
+  logError,
 }

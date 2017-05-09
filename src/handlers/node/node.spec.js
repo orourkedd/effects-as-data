@@ -14,7 +14,7 @@ describe('node.js', () => {
       const fileContents = fs.readFileSync(filePath, { encoding: 'utf8' })
       const expected = success(fileContents)
       expected.args = [fileContents]
-      return node(action).then((actual) => {
+      return node(action).then(actual => {
         deepEqual(actual, expected)
       })
     })
@@ -28,7 +28,7 @@ describe('node.js', () => {
       const action = actions.writeFile(filePath, 'foobar', { encoding: 'utf8' })
       const expected = success()
       expected.args = []
-      return node(action).then((actual) => {
+      return node(action).then(actual => {
         deepEqual(actual, expected)
         const contents = fs.readFileSync(filePath, { encoding: 'utf8' })
         deepEqual(contents, 'foobar')

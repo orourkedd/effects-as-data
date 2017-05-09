@@ -6,13 +6,13 @@ const {
   keys,
   normalizeListToSuccess,
   normalizeToFailure,
-  success
+  success,
 } = require('./util')
 
 const handleActions = (run, handlers, config, actions) => {
   try {
     let a1 = toArray(actions)
-    let p1 = map((a) => {
+    let p1 = map(a => {
       let handler = handlers[a.type]
       const noHandler = typeof handler === 'undefined'
       if (noHandler && a.type === 'call') {
@@ -20,15 +20,19 @@ const handleActions = (run, handlers, config, actions) => {
           run(handlers, a.fn, a.payload, config)
           return success()
         } else {
-          return run(handlers, a.fn, a.payload, config).catch(normalizeToFailure)
+          return run(handlers, a.fn, a.payload, config).catch(
+            normalizeToFailure
+          )
         }
       }
       if (noHandler) {
         const handlerNames = keys(handlers)
         const handlerMessage = handlerNames.length
-        ? `Registered handlers are: ${handlerNames.join(', ')}.`
-        : 'In fact, there are no registered handlers (first argument to the run function).'
-        throw new Error(`"${a.type}" is not a registered handler.  ${handlerMessage}`)
+          ? `Registered handlers are: ${handlerNames.join(', ')}.`
+          : 'In fact, there are no registered handlers (first argument to the run function).'
+        throw new Error(
+          `"${a.type}" is not a registered handler.  ${handlerMessage}`
+        )
       }
       let value
       try {
@@ -51,5 +55,5 @@ const handleActions = (run, handlers, config, actions) => {
 }
 
 module.exports = {
-  handleActions: curry(handleActions)
+  handleActions: curry(handleActions),
 }

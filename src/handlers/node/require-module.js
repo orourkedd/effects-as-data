@@ -1,7 +1,7 @@
-function requireModule ({ path }) {
+function requireModule({ path }) {
   return require(path)
 }
 
 module.exports = {
-  requireModule
+  requireModule,
 }

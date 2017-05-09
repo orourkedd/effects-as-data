@@ -6,7 +6,7 @@ describe('state.js', () => {
     it('should return a getState action with a key field', () => {
       const expected = {
         type: 'getState',
-        keys: ['foo']
+        keys: ['foo'],
       }
 
       const actual = getState(['foo'])
@@ -19,7 +19,7 @@ describe('state.js', () => {
     it('should return a setState action with a key and payload field', () => {
       const expected = {
         type: 'setState',
-        payload: { foo: 'bar' }
+        payload: { foo: 'bar' },
       }
 
       const actual = setState({ foo: 'bar' })

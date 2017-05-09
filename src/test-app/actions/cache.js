@@ -1,19 +1,19 @@
-function cacheGet (key) {
+function cacheGet(key) {
   return {
     type: 'cacheGet',
-    key
+    key,
   }
 }
 
-function cacheSet (key, payload) {
+function cacheSet(key, payload) {
   return {
     type: 'cacheSet',
     key,
-    payload
+    payload,
   }
 }
 
 module.exports = {
   cacheGet,
-  cacheSet
+  cacheSet,
 }

@@ -1,7 +1,7 @@
 const { merge } = require('ramda')
 
 const defaultHeaders = {
-  'Content-Type': 'application/json;charset=UTF-8'
+  'Content-Type': 'application/json;charset=UTF-8',
 }
 
 /**
@@ -40,12 +40,12 @@ const defaultHeaders = {
  *   result.payload === { foo: 'bar' } //  true, if a GET to `url` returned `{ foo: 'bar' }`
  * })
  */
-function httpGet (url, headers = {}, options = {}) {
+function httpGet(url, headers = {}, options = {}) {
   return {
     type: 'httpGet',
     url,
     headers,
-    options
+    options,
   }
 }
 
@@ -86,13 +86,13 @@ function httpGet (url, headers = {}, options = {}) {
  *   result.success === true //  true, if a POST was successful
  * })
  */
-function httpPost (url, payload, headers = {}, options = {}) {
+function httpPost(url, payload, headers = {}, options = {}) {
   return {
     type: 'httpPost',
     url,
     payload,
     headers: merge(defaultHeaders, headers),
-    options
+    options,
   }
 }
 
@@ -133,13 +133,13 @@ function httpPost (url, payload, headers = {}, options = {}) {
  *   result.success === true //  true, if a PUT was successful
  * })
  */
-function httpPut (url, payload, headers = {}, options = {}) {
+function httpPut(url, payload, headers = {}, options = {}) {
   return {
     type: 'httpPut',
     url,
     payload,
     headers: merge(defaultHeaders, headers),
-    options
+    options,
   }
 }
 
@@ -178,19 +178,19 @@ function httpPut (url, payload, headers = {}, options = {}) {
  *   result.success === true //  true, if a DELETE to http://www.example.com/api/v1/user/123 was successful
  * })
  */
-function httpDelete (url, headers = {}, options = {}) {
+function httpDelete(url, headers = {}, options = {}) {
   return {
     type: 'httpDelete',
     url,
     headers,
-    options
+    options,
   }
 }
 
-function rpc (url, fn, payload) {
+function rpc(url, fn, payload) {
   return httpPost(url, {
     fn,
-    payload
+    payload,
   })
 }
 
@@ -199,5 +199,5 @@ module.exports = {
   httpPut,
   httpGet,
   httpDelete,
-  rpc
+  rpc,
 }

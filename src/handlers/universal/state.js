@@ -1,6 +1,6 @@
 const { pick, merge } = require('ramda')
 
-function getGlobal () {
+function getGlobal() {
   let g
   if (typeof window !== 'undefined') {
     g = window
@@ -10,28 +10,28 @@ function getGlobal () {
   return g
 }
 
-function getGlobalState () {
+function getGlobalState() {
   const g = getGlobal()
   g.effectsAsDataState = g.effectsAsDataState || {}
   return g.effectsAsDataState
 }
 
-function setGlobalState (payload) {
+function setGlobalState(payload) {
   const g = getGlobal()
   g.effectsAsDataState = merge(g.effectsAsDataState, payload)
 }
 
-function getState ({ keys }) {
+function getState({ keys }) {
   const state = getGlobalState()
   return pick(keys, state)
 }
 
-function setState ({ payload }) {
+function setState({ payload }) {
   setGlobalState(payload)
 }
 
 module.exports = {
   getState,
   setState,
-  getGlobalState
+  getGlobalState,
 }

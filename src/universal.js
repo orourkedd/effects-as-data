@@ -10,5 +10,5 @@ const runUniversal = (fn, payload, config) => {
 module.exports = merge(all, {
   runUniversal,
   handlers,
-  actions
+  actions,
 })

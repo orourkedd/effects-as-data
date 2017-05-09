@@ -31,10 +31,10 @@
  *   user.id === 'abc' //  true, if the user has an `id` of 'abc'
  * })
  */
-function getState (keys) {
+function getState(keys) {
   return {
     type: 'getState',
-    keys
+    keys,
   }
 }
 
@@ -73,14 +73,14 @@ function getState (keys) {
  *   result.success === true //  true, and `user` should be available on the application state using `actions.getState(['user'])`
  * })
  */
-function setState (payload) {
+function setState(payload) {
   return {
     type: 'setState',
-    payload
+    payload,
   }
 }
 
 module.exports = {
   getState,
-  setState
+  setState,
 }

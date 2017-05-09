@@ -32,13 +32,13 @@
  *   result.payload === 'green' //  true, if the user typed "green" on the command line.
  * })
  */
-function prompt (question) {
+function prompt(question) {
   return {
     type: 'prompt',
-    question
+    question,
   }
 }
 
 module.exports = {
-  prompt
+  prompt,
 }

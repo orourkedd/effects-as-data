@@ -8,11 +8,11 @@ describe('state.js', () => {
       const action = actions.getState(['foo', 'bar'])
       global.effectsAsDataState = {
         foo: 1,
-        bar: 2
+        bar: 2,
       }
       const expected = {
         foo: 1,
-        bar: 2
+        bar: 2,
       }
       const actual = getState(action)
       deepEqual(actual, expected)

@@ -34,12 +34,12 @@
  *   result.payload === 'FOO' //  true, if '/path/to/file.txt' has the content 'FOO'.
  * })
  */
-function readFile (path, options) {
+function readFile(path, options) {
   return {
     type: 'node',
     module: 'fs',
     function: 'readFile',
-    args: [path, options]
+    args: [path, options],
   }
 }
 
@@ -81,16 +81,16 @@ function readFile (path, options) {
  *   result.success === true && result.payload === null //  true, if write to '/path/to/file.txt' was successful.
  * })
  */
-function writeFile (path, data, options) {
+function writeFile(path, data, options) {
   return {
     type: 'node',
     module: 'fs',
     function: 'writeFile',
-    args: [path, data, options]
+    args: [path, data, options],
   }
 }
 
 module.exports = {
   readFile,
-  writeFile
+  writeFile,
 }

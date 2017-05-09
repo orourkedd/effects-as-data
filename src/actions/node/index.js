@@ -10,5 +10,5 @@ module.exports = merge(universal, {
   requireModule,
   readFile,
   writeFile,
-  prompt
+  prompt,
 })

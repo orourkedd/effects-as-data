@@ -1,54 +1,54 @@
 const { run, isSuccess, success, failure } = require('../index')
 const { deepEqual } = require('assert')
 
-function getName () {
+function getName() {
   return 'Frankie'
 }
 
-function fail () {
+function fail() {
   return failure('oops')
 }
 
 const handlers = {
   getName,
-  fail
+  fail,
 }
 
-const actionResultIntercepter = (result) => {
+const actionResultIntercepter = result => {
   return isSuccess(result) ? result.payload : result
 }
 
 const config = {
-  actionResultIntercepter
+  actionResultIntercepter,
 }
 
 describe('Action intercepters', () => {
   it('should intercept action results and unwrap successes', () => {
-    function * test () {
+    function* test() {
       return yield { type: 'getName' }
     }
 
-    return run(handlers, test, null, config).then((name) => {
+    return run(handlers, test, null, config).then(name => {
       deepEqual(name, 'Frankie')
     })
   })
 
   it('should intercept action results and do nothing to failures', () => {
-    function * test () {
+    function* test() {
       return yield { type: 'fail' }
     }
 
-    return run(handlers, test, null, config).then((f) => {
+    return run(handlers, test, null, config).then(f => {
       deepEqual(f, failure('oops'))
     })
   })
 
   it('should not apply to function arguments', () => {
-    function * test (a) {
+    function* test(a) {
       return a
     }
 
-    return run(handlers, test, success(42), config).then((result) => {
+    return run(handlers, test, success(42), config).then(result => {
       deepEqual(result, success(42))
     })
   })

@@ -6,7 +6,7 @@ describe('require-module.js', () => {
     it('should return an requireModule action', () => {
       const expected = {
         type: 'requireModule',
-        path: '/my/test/module'
+        path: '/my/test/module',
       }
       const actual = requireModule('/my/test/module')
       deepEqual(actual, expected)

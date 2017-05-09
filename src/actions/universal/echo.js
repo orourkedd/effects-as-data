@@ -32,13 +32,13 @@
  *   result.payload === 32 //  true
  * })
  */
-function echo (payload) {
+function echo(payload) {
   return {
     type: 'echo',
-    payload
+    payload,
   }
 }
 
 module.exports = {
-  echo
+  echo,
 }

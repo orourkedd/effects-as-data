@@ -7,7 +7,7 @@ describe('require-module.js', () => {
   describe('requireModule()', () => {
     it('should return the module', () => {
       const expected = {
-        foo: 'bar'
+        foo: 'bar',
       }
 
       const action = actions.requireModule(join(__dirname, './test-module.js'))

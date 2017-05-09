@@ -1,7 +1,7 @@
 const { sendEmail } = require('../actions')
 const { map, prop } = require('../../util')
 
-function * sendEmails (users) {
+function* sendEmails(users) {
   let emails = map(sendEmail, users)
   let result = yield emails
   const propPayload = prop('payload')
@@ -9,5 +9,5 @@ function * sendEmails (users) {
 }
 
 module.exports = {
-  sendEmails
+  sendEmails,
 }

@@ -9,12 +9,12 @@ describe('saveRepositories()', () => {
     deepEqual(s1.value, actions.prompt('\nEnter a github username: '))
 
     const s2 = i.next(success('orourkedd'))
-    deepEqual(s2.value, actions.httpGet('https://api.github.com/users/orourkedd/repos'))
+    deepEqual(
+      s2.value,
+      actions.httpGet('https://api.github.com/users/orourkedd/repos')
+    )
 
-    const repos = [
-      { name: 'foo' },
-      { name: 'bar' }
-    ]
+    const repos = [{ name: 'foo' }, { name: 'bar' }]
     const s3 = i.next(success(repos))
     deepEqual(s3.value, actions.logInfo('foo\nbar'))
 
@@ -31,7 +31,10 @@ describe('saveRepositories()', () => {
     deepEqual(s1.value, actions.prompt('\nEnter a github username: '))
 
     const s2 = i.next(success('orourkedd'))
-    deepEqual(s2.value, actions.httpGet('https://api.github.com/users/orourkedd/repos'))
+    deepEqual(
+      s2.value,
+      actions.httpGet('https://api.github.com/users/orourkedd/repos')
+    )
 
     const httpError = new Error('http error!')
     const s3 = i.next(failure(httpError))

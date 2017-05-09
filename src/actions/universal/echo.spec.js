@@ -6,7 +6,7 @@ describe('echo.js', () => {
     it('should return an echo action with a payload field', () => {
       const expected = {
         type: 'echo',
-        payload: '123'
+        payload: '123',
       }
 
       const actual = echo(123)

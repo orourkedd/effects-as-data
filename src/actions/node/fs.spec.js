@@ -8,7 +8,7 @@ describe('fs.js', () => {
         type: 'node',
         module: 'fs',
         function: 'readFile',
-        args: ['/path/to/file.txt', { encoding: 'utf8' }]
+        args: ['/path/to/file.txt', { encoding: 'utf8' }],
       }
       const actual = readFile('/path/to/file.txt', { encoding: 'utf8' })
       deepEqual(actual, expected)
@@ -21,9 +21,11 @@ describe('fs.js', () => {
         type: 'node',
         module: 'fs',
         function: 'writeFile',
-        args: ['/path/to/file.txt', 'foobar', { encoding: 'utf8' }]
+        args: ['/path/to/file.txt', 'foobar', { encoding: 'utf8' }],
       }
-      const actual = writeFile('/path/to/file.txt', 'foobar', { encoding: 'utf8' })
+      const actual = writeFile('/path/to/file.txt', 'foobar', {
+        encoding: 'utf8',
+      })
       deepEqual(actual, expected)
     })
   })

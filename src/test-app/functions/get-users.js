@@ -1,13 +1,7 @@
-const {
-  cacheGet,
-  cacheSet,
-  httpGet,
-  log,
-  logError
-} = require('../actions')
+const { cacheGet, cacheSet, httpGet, log, logError } = require('../actions')
 const { isFailure } = require('../../util')
 
-function * getUsers () {
+function* getUsers() {
   let cachedUsers = yield cacheGet('users')
   if (isFailure(cachedUsers)) yield logError(cachedUsers.error)
   if (cachedUsers.payload) {
@@ -25,5 +19,5 @@ function * getUsers () {
 }
 
 module.exports = {
-  getUsers
+  getUsers,
 }

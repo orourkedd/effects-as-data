@@ -30,12 +30,12 @@
  *   n.payload === 0.345 //  true, if Math.random() returned 0.345
  * })
  */
-function randomNumber () {
+function randomNumber() {
   return {
-    type: 'randomNumber'
+    type: 'randomNumber',
   }
 }
 
 module.exports = {
-  randomNumber
+  randomNumber,
 }

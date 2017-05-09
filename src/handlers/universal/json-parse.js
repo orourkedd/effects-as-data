@@ -1,7 +1,7 @@
-function jsonParse ({ payload }) {
+function jsonParse({ payload }) {
   return JSON.parse(payload)
 }
 
 module.exports = {
-  jsonParse
+  jsonParse,
 }

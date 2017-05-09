@@ -1,18 +1,18 @@
-function log (message) {
+function log(message) {
   return {
     type: 'log',
-    message
+    message,
   }
 }
 
-function logError (error) {
+function logError(error) {
   return {
     type: 'logError',
-    error
+    error,
   }
 }
 
 module.exports = {
   log,
-  logError
+  logError,
 }

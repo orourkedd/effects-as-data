@@ -1,10 +1,10 @@
-function sendEmail ({user}) {
+function sendEmail({ user }) {
   return {
     status: 'sent',
-    user
+    user,
   }
 }
 
 module.exports = {
-  sendEmail
+  sendEmail,
 }

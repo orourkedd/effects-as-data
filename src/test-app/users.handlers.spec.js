@@ -6,7 +6,7 @@ const {
   cacheSet,
   log,
   logError,
-  sendEmail
+  sendEmail,
 } = require('./actions')
 const { success, failure, map, merge, errorToObject } = require('../util')
 const { call } = require('../actions')
@@ -15,14 +15,17 @@ const testGetUsers = testHandlers(getUsers, undefined)
 const testSendEmail = testHandlers(sendEmails)
 const testSendEmailsToUsers = testHandlers(sendEmailsToUsers, undefined)
 
-const buildHandlers = (values) => {
-  return merge({
-    cacheGet: null,
-    httpGet: null,
-    cacheSet: null,
-    log: null,
-    logError: null
-  }, values)
+const buildHandlers = values => {
+  return merge(
+    {
+      cacheGet: null,
+      httpGet: null,
+      cacheSet: null,
+      log: null,
+      logError: null,
+    },
+    values
+  )
 }
 
 describe('demo/users.js with handlers', () => {
@@ -30,13 +33,13 @@ describe('demo/users.js with handlers', () => {
     describe('if cache hit', () => {
       it('should return value from cache on cache hit and log cache hit', () => {
         const handlers = buildHandlers({
-          cacheGet: [{id: 1}]
+          cacheGet: [{ id: 1 }],
         })
 
         const expected = [
           cacheGet('users'),
           log('CACHE_HIT'),
-          success([{id: 1}])
+          success([{ id: 1 }]),
         ]
 
         return testGetUsers(handlers, expected)
@@ -47,14 +50,14 @@ describe('demo/users.js with handlers', () => {
       describe('if user GET success', () => {
         it('should GET users and set cache', () => {
           const handlers = buildHandlers({
-            httpGet: [{id: 1}]
+            httpGet: [{ id: 1 }],
           })
 
           const expected = [
             cacheGet('users'),
             httpGet('https://api.github.com/users'),
-            cacheSet('users', [{id: 1}]),
-            success([{id: 1}])
+            cacheSet('users', [{ id: 1 }]),
+            success([{ id: 1 }]),
           ]
 
           return testGetUsers(handlers, expected)
@@ -64,16 +67,16 @@ describe('demo/users.js with handlers', () => {
           it('should log error and return result', () => {
             const error = new Error('cache set failure')
             const handlers = buildHandlers({
-              httpGet: [{id: 1}],
-              cacheSet: failure(error)
+              httpGet: [{ id: 1 }],
+              cacheSet: failure(error),
             })
 
             const expected = [
               cacheGet('users'),
               httpGet('https://api.github.com/users'),
-              cacheSet('users', [{id: 1}]),
+              cacheSet('users', [{ id: 1 }]),
               logError(errorToObject(error)),
-              success([{id: 1}])
+              success([{ id: 1 }]),
             ]
 
             return testGetUsers(handlers, expected)
@@ -86,14 +89,14 @@ describe('demo/users.js with handlers', () => {
           const error = new Error('user get error')
           const failureObj = failure(error)
           const handlers = buildHandlers({
-            httpGet: failureObj
+            httpGet: failureObj,
           })
 
           const expected = [
             cacheGet('users'),
             httpGet('https://api.github.com/users'),
             logError(errorToObject(error)),
-            failureObj
+            failureObj,
           ]
 
           return testGetUsers(handlers, expected)
@@ -106,15 +109,15 @@ describe('demo/users.js with handlers', () => {
         const error = new Error('cache get error')
         const handlers = buildHandlers({
           cacheGet: failure(error),
-          httpGet: [{id: 1}]
+          httpGet: [{ id: 1 }],
         })
 
         const expected = [
           cacheGet('users'),
           logError(errorToObject(error)),
           httpGet('https://api.github.com/users'),
-          cacheSet('users', [{id: 1}]),
-          success([{id: 1}])
+          cacheSet('users', [{ id: 1 }]),
+          success([{ id: 1 }]),
         ]
 
         return testGetUsers(handlers, expected)
@@ -124,29 +127,26 @@ describe('demo/users.js with handlers', () => {
 
   describe('#sendEmails', () => {
     it('should send emails to users', () => {
-      const sendEmailHandler = ({user}) => {
+      const sendEmailHandler = ({ user }) => {
         return {
           status: 'sent',
-          user
+          user,
         }
       }
 
       const handlers = {
-        sendEmail: sendEmailHandler
+        sendEmail: sendEmailHandler,
       }
 
-      const users = [{id: 1}, {id: 2}, {id: 3}]
+      const users = [{ id: 1 }, { id: 2 }, { id: 3 }]
       const emails = map(sendEmail, users)
-      const expectedResults = map((user) => {
+      const expectedResults = map(user => {
         return {
           status: 'sent',
-          user
+          user,
         }
       }, users)
-      const expected = [
-        emails,
-        expectedResults
-      ]
+      const expected = [emails, expectedResults]
 
       return testSendEmail(users, handlers, expected)
     })
@@ -154,21 +154,22 @@ describe('demo/users.js with handlers', () => {
 
   describe('#sendEmailsToUsers', () => {
     it('should send emails to all users', () => {
-      const sendEmailResults = [sendEmail({id: 1}), sendEmail({id: 2}), sendEmail({id: 3})]
-      const callReturns = [
-        sendEmailResults,
-        [{id: 1}, {id: 2}, {id: 3}]
+      const sendEmailResults = [
+        sendEmail({ id: 1 }),
+        sendEmail({ id: 2 }),
+        sendEmail({ id: 3 }),
       ]
+      const callReturns = [sendEmailResults, [{ id: 1 }, { id: 2 }, { id: 3 }]]
       const callHandler = () => callReturns.pop()
       const handlers = {
-        call: callHandler
+        call: callHandler,
       }
 
-      const users = [{id: 1}, {id: 2}, {id: 3}]
+      const users = [{ id: 1 }, { id: 2 }, { id: 3 }]
       const expected = [
         call(getUsers),
         call(sendEmails, users),
-        success(sendEmailResults)
+        success(sendEmailResults),
       ]
 
       return testSendEmailsToUsers(handlers, expected)
