@@ -80,7 +80,7 @@ const testIt = (fn, expected) => {
 
 function deepEqual(actual, expected) {
   //  a little bit of jest support
-  if (typeof expect !== 'undefined' && expect.toEqual) {
+  if (typeof expect !== 'undefined' && expect.extend && expect.anything) {
     expect(actual).toEqual(expected)
   } else {
     assert.deepEqual(actual, expected)
