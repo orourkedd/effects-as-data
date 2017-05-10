@@ -1,5 +1,4 @@
 const assert = require('assert')
-const { deepEqual } = assert
 const { map, prop, curry, normalizeToSuccess } = require('./util')
 const { runTest } = require('./run')
 
@@ -79,8 +78,17 @@ const testIt = (fn, expected) => {
   }
 }
 
+function deepEqual(actual, expected) {
+  //  a little bit of jest support
+  if (typeof expect !== 'undefined' && expect.toEqual) {
+    expect(actual).toEqual(expected)
+  } else {
+    assert.deepEqual(actual, expected)
+  }
+}
+
 module.exports = {
   testHandlers: curry(testHandlers),
   testFn: curry(testFn),
-  testIt: curry(testIt),
+  testIt: curry(testIt)
 }
