@@ -13,7 +13,7 @@ describe('Action interceptors', () => {
       return yield action
     }
     const config = {
-      actionIntercepter: action => {
+      actionInterceptor: action => {
         return merge(action, { called: true })
       },
     }

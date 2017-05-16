@@ -43,12 +43,12 @@ const runTest = (actionHandlers, fn, payload = null) => {
 const runner = (handleActions, g, input, config = {}, el) => {
   const el1 = getExecutionLog(el)
   let { output, done } = nextOutput(g, input, {
-    actionResultIntercepter: config.actionResultIntercepter,
+    actionResultInterceptor: config.actionResultInterceptor,
   })
   const returnResultsAsArray = Array.isArray(output)
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
-  const f = config.actionIntercepter || (v => v)
+  const f = config.actionInterceptor || (v => v)
   const interceptedActions = map(f, toArray(output))
   return handleActions(interceptedActions).then(actionResults1 => {
     handleActionResults(toArray(output), actionResults1, el2, config)
@@ -93,7 +93,7 @@ const handleActionSuccesses = (actions, actionResults, el, config) => {
 }
 
 const nextOutput = (g, input, config) => {
-  const ari = config.actionResultIntercepter || (v => v)
+  const ari = config.actionResultInterceptor || (v => v)
   const input2 = ari(input)
   let { value: output, done } = g.next(input2)
   return {

@@ -11,15 +11,15 @@ function fail() {
 
 const handlers = {
   getName,
-  fail,
+  fail
 }
 
-const actionResultIntercepter = result => {
+const actionResultInterceptor = result => {
   return isSuccess(result) ? result.payload : result
 }
 
 const config = {
-  actionResultIntercepter,
+  actionResultInterceptor
 }
 
 describe('Action result intercepters', () => {
