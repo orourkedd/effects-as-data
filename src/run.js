@@ -48,7 +48,9 @@ const runner = (handleActions, g, input, config = {}, el) => {
   const returnResultsAsArray = Array.isArray(output)
   const el2 = addToExecutionLog(el1, input, output)
   if (done) return buildPayload(el2, output)
-  return handleActions(output).then(actionResults1 => {
+  const f = config.actionIntercepter || (v => v)
+  const interceptedActions = map(f, toArray(output))
+  return handleActions(interceptedActions).then(actionResults1 => {
     handleActionResults(toArray(output), actionResults1, el2, config)
     const actionResults2 = returnResultsAsArray
       ? actionResults1

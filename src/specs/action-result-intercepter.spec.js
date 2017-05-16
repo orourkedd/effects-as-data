@@ -22,7 +22,7 @@ const config = {
   actionResultIntercepter,
 }
 
-describe('Action intercepters', () => {
+describe('Action result intercepters', () => {
   it('should intercept action results and unwrap successes', () => {
     function* test() {
       return yield { type: 'getName' }
