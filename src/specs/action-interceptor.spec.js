@@ -15,7 +15,7 @@ describe('Action interceptors', () => {
     const config = {
       actionInterceptor: action => {
         return merge(action, { called: true })
-      },
+      }
     }
     const handlers = { returnAction }
     return run(handlers, test, null, config)
