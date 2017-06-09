@@ -1,4 +1,10 @@
-const { unwrapArgs, unwrapArray, toArray, toPromise } = require('./util')
+const {
+  unwrapArgs,
+  unwrapArray,
+  toArray,
+  toPromise,
+  asyncify
+} = require('./util')
 const { deepEqual } = require('assert')
 
 describe('util.js', () => {
@@ -74,6 +80,15 @@ describe('util.js', () => {
       return p.then(actual => {
         deepEqual(actual, expected)
       })
+    })
+  })
+
+  describe('#asyncify', () => {
+    it('should make an action async', () => {
+      const input = { type: 'foo' }
+      const expected = { type: 'foo', asyncAction: true }
+      const actual = asyncify(input)
+      deepEqual(actual, expected)
     })
   })
 })
