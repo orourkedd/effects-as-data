@@ -6,7 +6,7 @@ const {
   keys,
   normalizeListToSuccess,
   normalizeToFailure,
-  success,
+  success
 } = require('./util')
 
 const handleActions = (run, handlers, config, actions) => {
@@ -36,10 +36,19 @@ const handleActions = (run, handlers, config, actions) => {
       }
       let value
       try {
-        if (typeof handler === 'function') {
-          value = handler(a, handlers, config)
+        if (a.asyncAction === true) {
+          if (typeof handler === 'function') {
+            handler(a, handlers, config)
+            return success()
+          } else {
+            return success()
+          }
         } else {
-          value = handler
+          if (typeof handler === 'function') {
+            value = handler(a, handlers, config)
+          } else {
+            value = handler
+          }
         }
       } catch (e) {
         value = normalizeToFailure(e)
@@ -55,5 +64,5 @@ const handleActions = (run, handlers, config, actions) => {
 }
 
 module.exports = {
-  handleActions: curry(handleActions),
+  handleActions: curry(handleActions)
 }

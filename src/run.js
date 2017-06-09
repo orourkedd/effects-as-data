@@ -13,7 +13,7 @@ const {
   fromPairs,
   pipe,
   mergeAll,
-  map,
+  map
 } = require('./util')
 const { handleActions } = require('./handle-actions')
 
@@ -43,7 +43,7 @@ const runTest = (actionHandlers, fn, payload = null) => {
 const runner = (handleActions, g, input, config = {}, el) => {
   const el1 = getExecutionLog(el)
   let { output, done } = nextOutput(g, input, {
-    actionResultInterceptor: config.actionResultInterceptor,
+    actionResultInterceptor: config.actionResultInterceptor
   })
   const returnResultsAsArray = Array.isArray(output)
   const el2 = addToExecutionLog(el1, input, output)
@@ -73,7 +73,7 @@ const handleActionFailures = (actions, actionResults, el, config) => {
       fn: config.name,
       log: el,
       failure,
-      action,
+      action
     })
   })
 }
@@ -87,7 +87,7 @@ const handleActionSuccesses = (actions, actionResults, el, config) => {
       fn: config.name,
       log: el,
       result,
-      action,
+      action
     })
   })
 }
@@ -98,7 +98,7 @@ const nextOutput = (g, input, config) => {
   let { value: output, done } = g.next(input2)
   return {
     output,
-    done,
+    done
   }
 }
 
@@ -118,14 +118,14 @@ const getExecutionLog = el => {
 const buildPayload = (log, payload) => {
   return toPromise({
     payload,
-    log,
+    log
   })
 }
 
 function buildFunctions(handlers, functions, options = {}) {
   function build([name, fn]) {
     const defaultOptions = {
-      onFailure: console.error,
+      onFailure: console.error
     }
     const o = mergeAll([defaultOptions, options, { name }])
     const f = function(payload) {
@@ -143,5 +143,5 @@ module.exports = {
   run: curry(run),
   runComplete: curry(runComplete),
   runTest: curry(runTest),
-  buildFunctions,
+  buildFunctions
 }
