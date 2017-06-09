@@ -1,6 +1,8 @@
 const assert = require('assert')
+const { merge } = require('ramda')
 const { map, prop, curry, normalizeToSuccess } = require('./util')
 const { runTest } = require('./run')
+const util = require('./util')
 
 const testHandlers = (fn, payload, actionHandlers, expectedOutput) => {
   return runTest(actionHandlers, fn, payload).then(({ log }) => {
@@ -87,8 +89,8 @@ function deepEqual(actual, expected) {
   }
 }
 
-module.exports = {
+module.exports = merge(util, {
   testHandlers: curry(testHandlers),
   testFn: curry(testFn),
   testIt: curry(testIt)
-}
+})
