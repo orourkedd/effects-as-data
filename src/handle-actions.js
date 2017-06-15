@@ -42,7 +42,8 @@ function getHandler(handlers, action, config, stats) {
       end,
       index: stats.index,
       step: stats.step,
-      result
+      result,
+      config
     })
   }
 

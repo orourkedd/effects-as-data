@@ -17,7 +17,8 @@ describe('telemetry', () => {
     const config = {
       onActionComplete: stats => {
         actual.push(stats)
-      }
+      },
+      name: 'foo'
     }
 
     const expected = [
@@ -36,6 +37,7 @@ describe('telemetry', () => {
         deepEqual(actual[i].index, expected[i].index)
         deepEqual(actual[i].step, expected[i].step)
         deepEqual(actual[i].result, expected[i].result)
+        deepEqual(actual[i].config, config)
       }
     })
   })
