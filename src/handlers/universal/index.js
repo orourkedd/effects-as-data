@@ -1,3 +1,4 @@
+const { call } = require('./call')
 const { echo } = require('./echo')
 const { jsonParse } = require('./json-parse')
 const { guid } = require('./guid')
@@ -8,6 +9,7 @@ const { getState, setState } = require('./state')
 const { httpGet, httpPost, httpPut, httpDelete } = require('./http')
 
 module.exports = {
+  call,
   echo,
   jsonParse,
   guid,
@@ -20,5 +22,5 @@ module.exports = {
   httpGet,
   httpPost,
   httpPut,
-  httpDelete,
+  httpDelete
 }

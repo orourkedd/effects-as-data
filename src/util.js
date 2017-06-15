@@ -1,19 +1,20 @@
 const {
+  addIndex,
+  append,
   curry,
-  map,
-  prop,
-  pick,
-  zip,
+  filter,
+  fromPairs,
   has,
+  keys,
+  map,
   merge,
   mergeAll,
+  pick,
+  pipe,
+  prop,
   props,
-  append,
-  filter,
-  keys,
   toPairs,
-  fromPairs,
-  pipe
+  zip
 } = require('ramda')
 const simpleProtocol = require('simple-protocol-helpers')
 
@@ -33,24 +34,25 @@ function asyncify(action) {
 }
 
 module.exports = merge(simpleProtocol, {
-  unwrapArgs,
-  unwrapArray,
-  toArray,
-  toPromise,
-  curry,
-  map,
-  prop,
-  pick,
-  props,
-  zip,
-  has,
+  addIndex,
   append,
+  asyncify,
+  curry,
+  filter,
+  fromPairs,
+  has,
+  keys,
+  map,
   merge,
   mergeAll,
-  filter,
-  keys,
+  pick,
   pipe,
-  fromPairs,
+  prop,
+  props,
+  toArray,
   toPairs,
-  asyncify
+  toPromise,
+  unwrapArgs,
+  unwrapArray,
+  zip
 })
