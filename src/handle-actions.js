@@ -49,6 +49,7 @@ function getHandler(handlers, action, config, stats) {
 
   const handler = handlers[action.type]
   blowUpIfHandlerIsMissing(handlers, handler, action)
+  //  used only for testing with fake handlers
   if (typeof handler !== 'function') return () => toPromise(handler)
   return function() {
     let value
