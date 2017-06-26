@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.17.4",
+  "version": "1.17.5",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -39,6 +39,10 @@
     "uver-cli": "^1.1.0"
   },
   "jest": {
-    "testPathIgnorePatterns": ["<rootDir>/test.js", "<rootDir>/src/test.js", "<rootDir>/lib/test.js"]
+    "testPathIgnorePatterns": [
+      "<rootDir>/test.js",
+      "<rootDir>/src/test.js",
+      "<rootDir>/lib/test.js"
+    ]
   }
 }
