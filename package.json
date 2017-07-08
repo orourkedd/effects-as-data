@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.17.5",
+  "version": "1.17.6",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -23,7 +23,7 @@
     "ramda": "^0.23.0",
     "readline": "^1.3.0",
     "safe-errors": "^0.7.0",
-    "simple-protocol-helpers": "^0.3.0",
+    "simple-protocol-helpers": "^1.0.0",
     "simple-protocol-http": "^0.15.0",
     "uuid": "^3.0.1"
   },
