@@ -9,7 +9,9 @@ const {
   getFailures,
   clean,
   errorToObject,
-  asyncify
+  asyncify,
+  hasAnyFailures,
+  getFirstFailure
 } = require('./util')
 
 module.exports = {
@@ -24,5 +26,7 @@ module.exports = {
   getFailures,
   clean,
   errorToObject,
-  asyncify
+  asyncify,
+  hasAnyFailures,
+  getFirstFailure
 }
