@@ -11,6 +11,9 @@ const {
   valueReturningHandler,
   promiseReturningHandler
 } = require('./handlers')
+const { eitherTest, eitherTestEmpty } = require('./either-test')
+const { throwAtYield, throwAtYieldRecovery } = require('./throw-at-yield')
+const { functionErrorTest } = require('./function-error-test')
 
 module.exports = {
   basic,
@@ -21,5 +24,10 @@ module.exports = {
   badHandler,
   badHandlerRejection,
   valueReturningHandler,
-  promiseReturningHandler
+  promiseReturningHandler,
+  eitherTest,
+  eitherTestEmpty,
+  throwAtYield,
+  throwAtYieldRecovery,
+  functionErrorTest
 }
