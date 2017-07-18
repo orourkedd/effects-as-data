@@ -5,11 +5,21 @@ const {
   basicMultistepParallel,
   basicEmpty
 } = require('./basic')
+const {
+  badHandler,
+  badHandlerRejection,
+  valueReturningHandler,
+  promiseReturningHandler
+} = require('./handlers')
 
 module.exports = {
   basic,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
-  basicEmpty
+  basicEmpty,
+  badHandler,
+  badHandlerRejection,
+  valueReturningHandler,
+  promiseReturningHandler
 }

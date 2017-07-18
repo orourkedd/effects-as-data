@@ -5,6 +5,14 @@ function echo(value) {
   }
 }
 
+function echoPromise(value) {
+  return {
+    type: 'echoPromise',
+    value
+  }
+}
+
 module.exports = {
-  echo
+  echo,
+  echoPromise
 }

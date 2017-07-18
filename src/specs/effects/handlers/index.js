@@ -1,7 +1,9 @@
-const { die } = require('./die')
-const { echo } = require('./echo')
+const { die, dieFromRejection } = require('./die')
+const { echo, echoPromise } = require('./echo')
 
 module.exports = {
   die,
-  echo
+  dieFromRejection,
+  echo,
+  echoPromise
 }

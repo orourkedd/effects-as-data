@@ -5,6 +5,14 @@ function die(message = '') {
   }
 }
 
+function dieFromRejection(message = '') {
+  return {
+    type: 'dieFromRejection',
+    message
+  }
+}
+
 module.exports = {
-  die
+  die,
+  dieFromRejection
 }

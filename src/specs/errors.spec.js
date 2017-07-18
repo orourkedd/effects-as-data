@@ -1,19 +1,15 @@
 const { call } = require('../call')
 const { handlers, functions } = require('./effects')
-const { betterError } = require('../util')
-const { omit } = require('ramda')
+const { badHandler } = functions
+const { expectError } = require('./test-util')
 
-test('call should throw an error for an undefined function', async () => {
-  const message = 'A function is required. Perhaps your function is undefined?'
-  const e = betterError(message)
-  const omitStack = omit('stack')
+test('call should reject for an undefined function', async () => {
   try {
     await call({}, handlers, undefined)
   } catch (actual) {
-    const ne = new Error(message)
-    const expected = betterError(ne)
-    expect(omitStack(actual)).toEqual(omitStack(expected))
-    return
+    const message =
+      'A function is required. Perhaps your function is undefined?'
+    return expectError(actual, message)
   }
-  fail('Did not reject')
+  fail('Function did not reject.')
 })
