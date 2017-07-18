@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "1.17.7",
+  "version": "1.17.8",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -10,7 +10,6 @@
   "scripts": {
     "test": "jest",
     "test-mocha": "mocha src/**/*.spec.js --recursive --compilers js:babel-register --require babel-polyfill",
-    "demo": "npm run transpile; node lib/demo-cli/index.js",
     "transpile": "babel src --out-dir lib --source-maps",
     "precommit": "npm run transpile && npm test && uver && git add -A",
     "deploy": "npm run transpile && npm test",
@@ -19,14 +18,7 @@
   },
   "author": "orourkedd",
   "license": "MIT",
-  "dependencies": {
-    "ramda": "^0.23.0",
-    "readline": "^1.3.0",
-    "safe-errors": "^0.7.0",
-    "simple-protocol-helpers": "^1.0.0",
-    "simple-protocol-http": "^0.15.0",
-    "uuid": "^3.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.0",
@@ -35,6 +27,7 @@
     "husky": "^0.13.3",
     "jest-cli": "^20.0.0",
     "publish-please": "^2.3.1",
+    "ramda": "^0.24.1",
     "sinon": "^2.2.0",
     "uver-cli": "^1.1.0"
   },
