@@ -1,6 +1,6 @@
 const cmds = require('../commands')
 
-function* eitherTest() {
+function* eitherTestError() {
   return yield cmds.either(cmds.die('oops'), 'foo')
 }
 
@@ -9,6 +9,6 @@ function* eitherTestEmpty() {
 }
 
 module.exports = {
-  eitherTest,
+  eitherTestError,
   eitherTestEmpty
 }

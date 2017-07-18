@@ -1,9 +1,9 @@
 const { call } = require('../call')
 const { handlers, functions } = require('./effects')
-const { eitherTest, eitherTestEmpty } = functions
+const { eitherTestError, eitherTestEmpty } = functions
 
 test('call should use either, handle error, and return default value', async () => {
-  const actual = await call({}, handlers, eitherTest)
+  const actual = await call({}, handlers, eitherTestError)
   const expected = 'foo'
   expect(actual).toEqual(expected)
 })
