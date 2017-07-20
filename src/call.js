@@ -5,8 +5,9 @@ function call(config, handlers, fn, ...args) {
   return run(config, handlers, fn, args)
 }
 
-function run(config, handlers, fn, input, generatorOperation = 'next') {
+function run(config, handlers, fn, input, el, generatorOperation = 'next') {
   try {
+    const el1 = getExecutionLog(el)
     if (!fn) {
       const noFunctionMessage =
         'A function is required. Perhaps your function is undefined?'
@@ -19,17 +20,25 @@ function run(config, handlers, fn, input, generatorOperation = 'next') {
     )
     if (done) return output
     const commandsList = toArray(output)
-    return processCommands(config, handlers, commandsList)
+    return processCommands(config, handlers, commandsList, el1)
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
-        return run(config, handlers, fn2, unwrappedResults)
+        return run(config, handlers, fn2, unwrappedResults, el1)
       })
       .catch(e => {
-        return run(config, handlers, fn2, e, 'throw')
+        return run(config, handlers, fn2, e, el1, 'throw')
       })
   } catch (e) {
     return Promise.reject(betterError(e))
   }
+}
+
+function getExecutionLog(el) {
+  return (
+    el || {
+      step: 0
+    }
+  )
 }
 
 function unwrapResults(isList, results) {
