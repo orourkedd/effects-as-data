@@ -1,4 +1,4 @@
-const { call } = require('../call')
+const { call } = require('../index')
 const { handlers, functions } = require('./effects')
 const {
   badHandler,

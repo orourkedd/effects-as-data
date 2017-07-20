@@ -1,4 +1,4 @@
-const { call } = require('../../call')
+const { call } = require('../../index')
 
 function either({ cmd, defaultValue }, config, handlers) {
   return call(config, handlers, function*() {
