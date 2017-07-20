@@ -17,7 +17,7 @@ function run(config, handlers, fn, input, el, generatorOperation = 'next') {
       input,
       generatorOperation
     )
-    if (done) return output
+    if (done) return toPromise(output)
     const commandsList = toArray(output)
     return processCommands(config, handlers, commandsList, el1)
       .then(results => {
