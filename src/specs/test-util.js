@@ -1,5 +1,3 @@
-const { omit, equals } = require('ramda')
-const omitStack = omit('stack')
 const { betterError } = require('../util')
 
 function expectError(e1, e2) {
@@ -8,6 +6,11 @@ function expectError(e1, e2) {
   const be1 = get(() => e2.constructor.name) ? betterError(ne1) : ne1
   const be2 = get(() => e1.constructor.name) ? betterError(ne2) : ne2
   expect(omitStack(be1)).toEqual(omitStack(be2))
+}
+
+function omitStack(s) {
+  delete s.stack
+  return s
 }
 
 function get(fn) {
