@@ -22,13 +22,12 @@ function run(config, handlers, fn, input, el, generatorOperation = 'next') {
     return processCommands(config, handlers, commandsList, el1)
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
-        //  ok to mutate?
-        el1.step = el1.step + 1
+        el1.step = el1.step + 1 // mutate in place
         return run(config, handlers, fn2, unwrappedResults, el1)
       })
       .catch(e => {
         //  ok to mutate?
-        el1.step = el1.step + 1
+        el1.step = el1.step + 1 // mutate in place
         return run(config, handlers, fn2, e, el1, 'throw')
       })
   } catch (e) {
