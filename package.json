@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
@@ -11,7 +11,7 @@
     "test": "jest",
     "test-mocha": "mocha src/**/*.spec.js --recursive --compilers js:babel-register --require babel-polyfill",
     "transpile": "babel src --out-dir lib --source-maps",
-    "deploy": "npm run transpile && npm test && npm publish"
+    "deploy": "npm run transpile && npm test && npm publish --tag beta"
   },
   "author": "orourkedd",
   "license": "MIT",

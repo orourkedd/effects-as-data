@@ -71,21 +71,41 @@ function processCommands(config, handlers, commands, el) {
 
 function processCommand(config, handlers, command, el, index) {
   const start = Date.now()
-  const result = handlers[command.type](command, config, handlers)
-  return toPromise(result).then(r => {
-    const end = Date.now()
-    report({
-      success: true,
-      config,
-      command,
-      step: el.step,
-      index,
-      result: r,
-      start,
-      end
+  let result
+  try {
+    result = handlers[command.type](command, config, handlers)
+  } catch (e) {
+    result = Promise.reject(e)
+  }
+  return toPromise(result)
+    .then(r => {
+      const end = Date.now()
+      report({
+        success: true,
+        config,
+        command,
+        step: el.step,
+        index,
+        result: r,
+        start,
+        end
+      })
+      return r
     })
-    return r
-  })
+    .catch(e => {
+      const end = Date.now()
+      report({
+        success: false,
+        config,
+        command,
+        step: el.step,
+        index,
+        result: betterError(e),
+        start,
+        end
+      })
+      throw e
+    })
 }
 
 function report({ success, command, index, step, result, config, start, end }) {
