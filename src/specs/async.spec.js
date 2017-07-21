@@ -1,6 +1,6 @@
 const { call } = require('../index')
 const { functions, handlers } = require('./effects')
-const { asyncify } = handlers
+const { async } = handlers
 const { asyncTest } = functions
 const { sleep } = require('./test-util')
 
@@ -9,7 +9,7 @@ test('async', async () => {
   const testHandler = () => {
     called = true
   }
-  await call({}, { asyncify, test: testHandler }, asyncTest)
+  await call({}, { async, test: testHandler }, asyncTest)
   expect(called).toEqual(false)
   await sleep(50)
   expect(called).toEqual(true)

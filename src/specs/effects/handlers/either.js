@@ -1,6 +1,4 @@
-const { call } = require('../../index')
-
-function either({ cmd, defaultValue }, config, handlers) {
+function either({ cmd, defaultValue }, { config, handlers, call }) {
   return call(config, handlers, function*() {
     try {
       const result = yield cmd

@@ -1,7 +1,7 @@
 const cmds = require('../commands')
 
 function* asyncTest() {
-  return yield cmds.asyncify({ type: 'test' })
+  return yield cmds.async({ type: 'test' })
 }
 
 module.exports = {

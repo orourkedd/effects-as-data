@@ -72,7 +72,7 @@ function processCommand(config, handlers, command, el, index) {
   const start = Date.now()
   let result
   try {
-    result = handlers[command.type](command, config, handlers)
+    result = handlers[command.type](command, { call, config, handlers })
   } catch (e) {
     result = Promise.reject(e)
   }

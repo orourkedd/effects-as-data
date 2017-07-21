@@ -1,7 +1,7 @@
 const { die, dieFromRejection } = require('./die')
 const { echo, echoPromise } = require('./echo')
-const { either } = require('../../../handlers/universal/either')
-const { asyncify } = require('../../../handlers/universal/asyncify')
+const { either } = require('./either')
+const { async } = require('./async')
 
 module.exports = {
   die,
@@ -9,5 +9,5 @@ module.exports = {
   echo,
   echoPromise,
   either,
-  asyncify
+  async
 }
