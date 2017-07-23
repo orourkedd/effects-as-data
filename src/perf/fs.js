@@ -1,81 +1,26 @@
-const { promisify } = require('util')
-const fs = require('fs')
-const readFileAsync = promisify(fs.readFile)
-const writeFileAsync = promisify(fs.writeFile)
 const { call } = require('../index')
-
-function readFileHandler({ path, options }) {
-  return readFileAsync(path, options)
-}
-
-function readFileCmd(path, options) {
-  return {
-    type: 'readFile',
-    path,
-    options
-  }
-}
-
-function writeFileHandler({ path, content, options }) {
-  return writeFileAsync(path, content, options)
-}
-
-function writeFileCmd(path, content, options) {
-  return {
-    type: 'writeFile',
-    path,
-    content,
-    options
-  }
-}
-
-function nowHandler() {
-  return Date.now()
-}
-
-function nowCmd() {
-  return {
-    type: 'now'
-  }
-}
+const handlers = require('./effects/handlers')
+const { eadBenchmark } = require('./effects/functions')
+const { standardBenchmark } = require('./standard')
 
 const iterations = 1000 * 10
 
-async function testStandard() {
-  const filePath = '/tmp/perf.txt'
-  fs.writeFileSync(filePath, 'foobar', { encoding: 'utf8' })
+const filePath = '/tmp/perf.txt'
 
+async function testStandard() {
   const start = Date.now()
   for (let i = 0; i < iterations; i++) {
-    const now = Date.now()
-    await writeFileAsync(filePath, now.toString(), { encoding: 'utf8' })
-    await readFileAsync(filePath, { encoding: 'utf8' })
+    await standardBenchmark(filePath)
   }
   const end = Date.now()
   return end - start
 }
 
 async function testEAD() {
-  const filePath = '/tmp/perf.txt'
-  fs.writeFileSync(filePath, 'foobar', { encoding: 'utf8' })
-
   const start = Date.now()
   for (let i = 0; i < iterations; i++) {
-    await call(
-      {},
-      {
-        readFile: readFileHandler,
-        writeFile: writeFileHandler,
-        now: nowHandler
-      },
-      function*() {
-        const now = yield nowCmd()
-        yield writeFileCmd(filePath, now.toString(), { encoding: 'utf8' })
-        yield readFileCmd(filePath, { encoding: 'utf8' })
-      }
-    )
+    await call({}, handlers, eadBenchmark, filePath)
   }
-
   const end = Date.now()
   return end - start
 }
