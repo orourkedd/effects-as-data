@@ -3,7 +3,7 @@ const handlers = require('./effects/handlers')
 const { eadBenchmark } = require('./effects/functions')
 const { standardBenchmark } = require('./standard')
 
-const iterations = 1000 * 10
+const iterations = 1000 * 50
 
 const filePath = '/tmp/perf.txt'
 
@@ -26,6 +26,7 @@ async function testEAD() {
 }
 
 async function benchmark() {
+  console.log('Wait while operation runs 50,000 times...')
   const standard = await testStandard()
   const ead = await testEAD()
   const diff = ead - standard
