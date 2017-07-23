@@ -5,13 +5,25 @@ const {
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
-  basicEmpty
+  basicEmpty,
+  basicMultiArg
 } = functions
 
 test('basic', async () => {
   const expected = 'foo'
   const actual = await call({}, handlers, basic, expected)
   expect(actual).toEqual(expected)
+})
+
+test('basic should be able to accept array arguments', async () => {
+  const expected = ['foo', 'bar']
+  const actual = await call({}, handlers, basic, expected)
+  expect(actual).toEqual(expected)
+})
+
+test('basicMultiArg', async () => {
+  const actual = await call({}, handlers, basicMultiArg, 'foo', 'bar')
+  expect(actual).toEqual('foobar')
 })
 
 test('basicMultistep', async () => {

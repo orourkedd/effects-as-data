@@ -4,6 +4,10 @@ function* basic(message) {
   return yield cmds.echo(message)
 }
 
+function* basicMultiArg(a, b) {
+  return yield cmds.echo(a + b)
+}
+
 function* basicMultistep(message) {
   const s1 = yield cmds.echo(message + '1')
   const s2 = yield cmds.echo(message + '2')
@@ -35,6 +39,7 @@ function* basicEmpty() {
 
 module.exports = {
   basic,
+  basicMultiArg,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
