@@ -1,4 +1,5 @@
 const assert = require('assert')
+const curry = require('lodash/curry')
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
@@ -87,5 +88,5 @@ function deepEqual(actual, expected) {
 
 module.exports = {
   testRunner,
-  testFn
+  testFn: curry(testFn, 2)
 }

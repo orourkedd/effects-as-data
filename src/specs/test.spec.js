@@ -22,6 +22,16 @@ test('testFn should pass (basic)', () => {
   })()
 })
 
+test('testFn should curry', () => {
+  testFn(basic)(() => {
+    // prettier-ignore
+    return [
+      ['foo', cmds.echo('foo')],
+      ['foo', 'foo']
+    ]
+  })()
+})
+
 test('testFn should pass (basicMultistep)', () => {
   testFn(basicMultistep, () => {
     // prettier-ignore
