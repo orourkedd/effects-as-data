@@ -2,6 +2,7 @@ const { die, dieFromRejection } = require('./die')
 const { echo, echoPromise } = require('./echo')
 const { either } = require('./either')
 const { async } = require('./async')
+const { httpGet } = require('./http')
 
 module.exports = {
   die,
@@ -9,5 +10,6 @@ module.exports = {
   echo,
   echoPromise,
   either,
-  async
+  async,
+  httpGet
 }
