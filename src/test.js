@@ -77,32 +77,6 @@ const testFn = (fn, spec) => {
   }
 }
 
-const args = curry((v, t = []) => {
-  t = [[v]]
-  return { calls: calls(t), end: end(t) }
-})
-
-const calls = curry((t, v) => {
-  t[t.length - 1][1] = v
-  return {
-    returns: returns(t)
-  }
-})
-
-const returns = curry((t, v) => {
-  t[t.length] = [v]
-
-  return {
-    calls: calls(t),
-    end: end(t)
-  }
-})
-
-const end = curry((t, a) => {
-  t[t.length - 1][1] = a
-  return t
-})
-
 function deepEqual(actual, expected) {
   //  a little bit of jest support
   if (typeof expect !== 'undefined' && expect.extend && expect.anything) {
@@ -111,6 +85,33 @@ function deepEqual(actual, expected) {
     assert.deepEqual(actual, expected)
   }
 }
+
+// Semantic test builder
+const args = curry((v, t = []) => {
+  t = [[v]]
+  return { yieldCmd: yieldCmd(t), returns: returns(t) }
+})
+
+const yieldCmd = curry((t, v) => {
+  t[t.length - 1][1] = v
+  return {
+    yieldReturns: yieldReturns(t)
+  }
+})
+
+const yieldReturns = curry((t, v) => {
+  t[t.length] = [v]
+
+  return {
+    yieldCmd: yieldCmd(t),
+    returns: returns(t)
+  }
+})
+
+const returns = curry((t, a) => {
+  t[t.length - 1][1] = a
+  return t
+})
 
 module.exports = {
   testRunner,

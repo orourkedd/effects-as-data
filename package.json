@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Express async workflows using pure functions.",
   "main": "lib/index.js",
   "repository": {
