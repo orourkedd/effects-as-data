@@ -10,7 +10,7 @@ const {
   asyncTest,
   badHandler
 } = functions
-const { testFn } = require('../test')
+const { testFn, args } = require('../test')
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`)
@@ -35,6 +35,16 @@ test('testFn should pass (basic)', () => {
   })()
 })
 
+test('testFn semantic should pass (basic)', () => {
+  testFn(basic, () => {
+    //  prettier-ignore
+    return args('foo')
+      .calls(cmds.echo('foo'))
+      .returns('foo')
+      .end('foo')
+  })()
+})
+
 test('testFn should curry', () => {
   testFn(basic)(() => {
     // prettier-ignore
@@ -56,6 +66,17 @@ test('testFn should pass (basicMultistep)', () => {
   })()
 })
 
+test('testFn semantic should pass (basicMultistep)', () => {
+  testFn(basicMultistep, () => {
+    return args('foo')
+      .calls(cmds.echo('foo1'))
+      .returns('foo1')
+      .calls(cmds.echo('foo2'))
+      .returns('foo2')
+      .end({ s1: 'foo1', s2: 'foo2' })
+  })()
+})
+
 test('testFn should pass (basicParallel)', () => {
   const c = [cmds.echo('foo'), cmds.echo('foo')]
   testFn(basicParallel, () => {
@@ -64,6 +85,16 @@ test('testFn should pass (basicParallel)', () => {
       ['foo', c],
       [['foo', 'foo'], {s1: 'foo1', s2: 'foo2'}]
     ]
+  })()
+})
+
+test('testFn semantic should pass (basicParallel)', () => {
+  const c = [cmds.echo('foo'), cmds.echo('foo')]
+  testFn(basicParallel, () => {
+    return args('foo')
+      .calls(c)
+      .returns(['foo', 'foo'])
+      .end({ s1: 'foo1', s2: 'foo2' })
   })()
 })
 
@@ -80,6 +111,19 @@ test('testFn should pass (basicMultistepParallel)', () => {
   })()
 })
 
+test('testFn semantic should pass (basicMultistepParallel)', () => {
+  const c1 = [cmds.echo('foo'), cmds.echo('foo')]
+  const c2 = [cmds.echo('foo'), cmds.echo('foo')]
+  testFn(basicMultistepParallel, () => {
+    return args('foo')
+      .calls(c1)
+      .returns(['foo', 'foo'])
+      .calls(c2)
+      .returns(['foo', 'foo'])
+      .end({ s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4' })
+  })()
+})
+
 test('testFn should pass (basicEmpty)', () => {
   testFn(basicEmpty, () => {
     // prettier-ignore
@@ -87,6 +131,12 @@ test('testFn should pass (basicEmpty)', () => {
       [null, []],
       [[], []]
     ]
+  })()
+})
+
+test('testFn semantic should pass (basicEmpty)', () => {
+  testFn(basicEmpty, () => {
+    return args(null).calls([]).returns([]).end([])
   })()
 })
 
@@ -100,6 +150,15 @@ test('testFn should pass (eitherTestError)', () => {
   })()
 })
 
+test('testFn semantic should pass (eitherTestError)', () => {
+  testFn(eitherTestError, () => {
+    return args(null)
+      .calls(cmds.either(cmds.die('oops'), 'foo'))
+      .returns('foo')
+      .end('foo')
+  })()
+})
+
 test('testFn should handle errors (badHandler)', () => {
   testFn(badHandler, () => {
     // prettier-ignore
@@ -107,6 +166,15 @@ test('testFn should handle errors (badHandler)', () => {
       [null, cmds.die('oops')],
       [new Error('oops!'), new Error('oops!')]
     ]
+  })()
+})
+
+test('testFn semantic should handle errors (badHandler)', () => {
+  testFn(badHandler, () => {
+    return args(null)
+      .calls(cmds.die('oops'))
+      .returns(new Error('oops!'))
+      .end(new Error('oops!'))
   })()
 })
 
@@ -120,6 +188,15 @@ test('testFn should pass (eitherTestEmpty)', () => {
   })()
 })
 
+test('testFn semantic should pass (eitherTestEmpty)', () => {
+  testFn(eitherTestEmpty, () => {
+    return args(null)
+      .calls(cmds.either(cmds.echo(null), 'foo'))
+      .returns('foo')
+      .end('foo')
+  })()
+})
+
 test('testFn should pass (asyncTest)', () => {
   testFn(asyncTest, () => {
     // prettier-ignore
@@ -127,6 +204,15 @@ test('testFn should pass (asyncTest)', () => {
       [null, cmds.async({ type: 'test' })],
       [null, null]
     ]
+  })()
+})
+
+test('testFn semantic should pass (asyncTest)', () => {
+  testFn(asyncTest, () => {
+    return args(null)
+      .calls(cmds.async({ type: 'test' }))
+      .returns(null)
+      .end(null)
   })()
 })
 
@@ -141,7 +227,17 @@ test(
   })
 )
 
-test('test framework should give proper error message if yielding array but no results', () => {
+test(
+  'testFn semantic single line should not fail',
+  testSingleLine(() => {
+    return args('123')
+      .calls(cmds.httpGet('http://example.com/api/v1/users/123'))
+      .returns({ foo: 'bar' })
+      .end({ foo: 'bar' })
+  })
+)
+
+test('testFn should give proper error message if yielding array but no results', () => {
   try {
     testYieldArray(() => {
       //  prettier-ignore
@@ -156,7 +252,7 @@ test('test framework should give proper error message if yielding array but no r
   }
 })
 
-test('test framework should give proper error message if spec is returning undefined', () => {
+test('testFn should give proper error message if spec is returning undefined', () => {
   try {
     testYieldArray(() => {})()
   } catch (e) {
@@ -166,7 +262,7 @@ test('test framework should give proper error message if spec is returning undef
   }
 })
 
-test('test framework should give proper error message if spec is returning an object', () => {
+test('testFn should give proper error message if spec is returning an object', () => {
   try {
     testYieldArray(() => {
       return {}
@@ -178,7 +274,7 @@ test('test framework should give proper error message if spec is returning an ob
   }
 })
 
-test('test framework should give proper error message if spec is returning an string', () => {
+test('testFn should give proper error message if spec is returning an string', () => {
   try {
     testYieldArray(() => {
       return 'what?'

@@ -77,6 +77,32 @@ const testFn = (fn, spec) => {
   }
 }
 
+const args = curry((v, t = []) => {
+  t = [[v]]
+  return { calls: calls(t), end: end(t) }
+})
+
+const calls = curry((t, v) => {
+  t[t.length - 1][1] = v
+  return {
+    returns: returns(t)
+  }
+})
+
+const returns = curry((t, v) => {
+  t[t.length] = [v]
+
+  return {
+    calls: calls(t),
+    end: end(t)
+  }
+})
+
+const end = curry((t, a) => {
+  t[t.length - 1][1] = a
+  return t
+})
+
 function deepEqual(actual, expected) {
   //  a little bit of jest support
   if (typeof expect !== 'undefined' && expect.extend && expect.anything) {
@@ -88,5 +114,6 @@ function deepEqual(actual, expected) {
 
 module.exports = {
   testRunner,
-  testFn: curry(testFn, 2)
+  testFn: curry(testFn, 2),
+  args
 }
