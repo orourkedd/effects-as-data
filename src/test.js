@@ -19,7 +19,7 @@ const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   if (fn.next) {
     g = fn
   } else {
-    g = fn(input)
+    g = fn.apply(null, input)
   }
 
   let output
@@ -87,10 +87,10 @@ function deepEqual(actual, expected) {
 }
 
 // Semantic test builder
-const args = curry((v, t = []) => {
-  t = [[v]]
+const args = (...fnArgs) => {
+  const t = [[fnArgs]]
   return { yieldCmd: yieldCmd(t), returns: returns(t) }
-})
+}
 
 const yieldCmd = curry((t, v) => {
   t[t.length - 1][1] = v

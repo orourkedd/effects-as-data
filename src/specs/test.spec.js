@@ -5,6 +5,7 @@ const {
   basicParallel,
   basicMultistepParallel,
   basicEmpty,
+  basicMultiArg,
   eitherTestError,
   eitherTestEmpty,
   asyncTest,
@@ -30,7 +31,7 @@ test(
   testFn(basic, () => {
     // prettier-ignore
     return [
-      ['foo', cmds.echo('foo')],
+      [['foo'], cmds.echo('foo')],
       ['foo', 'foo']
     ]
   })
@@ -52,7 +53,7 @@ test(
   testFn(basic)(() => {
     // prettier-ignore
     return [
-      ['foo', cmds.echo('foo')],
+      [['foo'], cmds.echo('foo')],
       ['foo', 'foo']
     ]
   })
@@ -63,10 +64,31 @@ test(
   testFn(basicMultistep, () => {
     // prettier-ignore
     return [
-      ['foo', cmds.echo('foo1')],
+      [['foo'], cmds.echo('foo1')],
       ['foo1', cmds.echo('foo2')],
       ['foo2', {s1: 'foo1', s2: 'foo2'}]
     ]
+  })
+)
+
+test(
+  'testFn should pass (basicMultiArg)',
+  testFn(basicMultiArg, () => {
+    // prettier-ignore
+    return [
+      [['foo', 'bar'], cmds.echo('foobar')],
+      ['foobar', 'foobar']
+    ]
+  })
+)
+
+test(
+  'testFn semantic should pass (basicMultiArg)',
+  testFn(basicMultiArg, () => {
+    return args('foo', 'bar')
+      .yieldCmd(cmds.echo('foobar'))
+      .yieldReturns('foobar')
+      .returns('foobar')
   })
 )
 
@@ -88,7 +110,7 @@ test(
     const c = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
-      ['foo', c],
+      [['foo'], c],
       [['foo', 'foo'], {s1: 'foo1', s2: 'foo2'}]
     ]
   })
@@ -112,7 +134,7 @@ test(
     const c2 = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
-      ['foo', c1],
+      [['foo'], c1],
       [['foo', 'foo'], c2],
       [['foo', 'foo'], {s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4'}]
     ]
@@ -138,7 +160,7 @@ test(
   testFn(basicEmpty, () => {
     // prettier-ignore
     return [
-      [null, []],
+      [[null], []],
       [[], []]
     ]
   })
@@ -156,7 +178,7 @@ test(
   testFn(eitherTestError, () => {
     // prettier-ignore
     return [
-      [null, cmds.either(cmds.die('oops'), 'foo')],
+      [[null], cmds.either(cmds.die('oops'), 'foo')],
       ['foo', 'foo']
     ]
   })
@@ -177,7 +199,7 @@ test(
   testFn(badHandler, () => {
     // prettier-ignore
     return [
-      [null, cmds.die('oops')],
+      [[null], cmds.die('oops')],
       [new Error('oops!'), new Error('oops!')]
     ]
   })
@@ -186,7 +208,7 @@ test(
 test(
   'testFn semantic should handle errors (badHandler)',
   testFn(badHandler, () => {
-    return args(null)
+    return args([null])
       .yieldCmd(cmds.die('oops'))
       .yieldReturns(new Error('oops!'))
       .returns(new Error('oops!'))
@@ -198,7 +220,7 @@ test(
   testFn(eitherTestEmpty, () => {
     // prettier-ignore
     return [
-      [null, cmds.either(cmds.echo(null), 'foo')],
+      [[null], cmds.either(cmds.echo(null), 'foo')],
       ['foo', 'foo']
     ]
   })
@@ -219,7 +241,7 @@ test(
   testFn(asyncTest, () => {
     // prettier-ignore
     return [
-      [null, cmds.async({ type: 'test' })],
+      [[null], cmds.async({ type: 'test' })],
       [null, null]
     ]
   })
@@ -240,7 +262,7 @@ test(
   testSingleLine(() => {
     //  prettier-ignore
     return [
-      ['123', cmds.httpGet('http://example.com/api/v1/users/123')],
+      [['123'], cmds.httpGet('http://example.com/api/v1/users/123')],
       [{foo: 'bar'}, {foo: 'bar'}]
     ]
   })
