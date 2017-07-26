@@ -1,5 +1,6 @@
 const assert = require('assert')
 const curry = require('lodash/curry')
+const chunk = require('lodash/chunk')
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
@@ -77,6 +78,24 @@ const testFn = (fn, spec) => {
   }
 }
 
+const testFnV2 = (fn, spec) => {
+  return function() {
+    let expectedLog = spec()
+    const flat = expectedLog.reduce((p, step, index, log) => {
+      if (index === 0 || index === log.length - 1) {
+        p.push(step)
+        return p
+      }
+
+      p.push(step[0])
+      p.push(step[1])
+      return p
+    }, [])
+    const v1Log = chunk(flat, 2)
+    testRunner(fn, v1Log)
+  }
+}
+
 function deepEqual(actual, expected) {
   //  a little bit of jest support
   if (typeof expect !== 'undefined' && expect.extend && expect.anything) {
@@ -113,8 +132,13 @@ const returns = curry((t, a) => {
   return t
 })
 
+// Modified tuples
+function alt() {}
+
 module.exports = {
   testRunner,
   testFn: curry(testFn, 2),
+  testFnV2: curry(testFnV2, 2),
+  alt,
   args
 }

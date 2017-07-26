@@ -11,7 +11,7 @@ const {
   asyncTest,
   badHandler
 } = functions
-const { testFn, args } = require('../test')
+const { testFn, testFnV2, args } = require('../test')
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`)
@@ -27,6 +27,17 @@ const testSingleLine = testFn(singleLine)
 const testYieldArray = testFn(yieldArray)
 
 test(
+  'testFn should curry',
+  testFn(basic)(() => {
+    // prettier-ignore
+    return [
+      [['foo'], cmds.echo('foo')],
+      ['foo', 'foo']
+    ]
+  })
+)
+
+test(
   'testFn should pass (basic)',
   testFn(basic, () => {
     // prettier-ignore
@@ -36,6 +47,8 @@ test(
     ]
   })
 )
+
+// Basic
 
 test(
   'testFn semantic should pass (basic)',
@@ -48,27 +61,29 @@ test(
 )
 
 test(
-  'testFn should curry',
-  testFn(basic)(() => {
+  'testFnV2 should pass (basic)',
+  testFnV2(basic, () => {
     // prettier-ignore
     return [
-      [['foo'], cmds.echo('foo')],
-      ['foo', 'foo']
+      ['foo'],
+      [cmds.echo('foo'), 'foo'],
+      'foo'
     ]
   })
 )
 
 test(
-  'testFn should pass (basicMultistep)',
-  testFn(basicMultistep, () => {
+  'testFn should pass (basicMultiArg)',
+  testFn(basicMultiArg, () => {
     // prettier-ignore
     return [
-      [['foo'], cmds.echo('foo1')],
-      ['foo1', cmds.echo('foo2')],
-      ['foo2', {s1: 'foo1', s2: 'foo2'}]
+      [['foo', 'bar'], cmds.echo('foobar')],
+      ['foobar', 'foobar']
     ]
   })
 )
+
+// Basic w multiple arguments
 
 test(
   'testFn should pass (basicMultiArg)',
@@ -92,6 +107,32 @@ test(
 )
 
 test(
+  'testFn semantic should pass (basicMultiArg)',
+  testFnV2(basicMultiArg, () => {
+    // prettier-ignore
+    return [
+      ['foo', 'bar'],
+      [cmds.echo('foobar'), 'foobar'],
+      'foobar'
+    ]
+  })
+)
+
+//  Basic with multiple steps
+
+test(
+  'testFn should pass (basicMultistep)',
+  testFn(basicMultistep, () => {
+    // prettier-ignore
+    return [
+      [['foo'], cmds.echo('foo1')],
+      ['foo1', cmds.echo('foo2')],
+      ['foo2', {s1: 'foo1', s2: 'foo2'}]
+    ]
+  })
+)
+
+test(
   'testFn semantic should pass (basicMultistep)',
   testFn(basicMultistep, () => {
     // prettier-ignore
@@ -101,6 +142,21 @@ test(
       .returns({ s1: 'foo1', s2: 'foo2' })
   })
 )
+
+test(
+  'testFnV2 should pass (basicMultistep)',
+  testFnV2(basicMultistep, () => {
+    // prettier-ignore
+    return [
+      ['foo'],
+      [cmds.echo('foo1'), 'foo1'],
+      [cmds.echo('foo2'), 'foo2'],
+      { s1: 'foo1', s2: 'foo2' }
+    ]
+  })
+)
+
+// Basic with parallel commands
 
 test(
   'testFn should pass (basicParallel)',
@@ -124,6 +180,21 @@ test(
       .returns({ s1: 'foo1', s2: 'foo2' })
   })
 )
+
+test(
+  'testFnV2 should pass (basicParallel)',
+  testFnV2(basicParallel, () => {
+    const c = [cmds.echo('foo'), cmds.echo('foo')]
+    // prettier-ignore
+    return [
+      ['foo'],
+      [c, ['foo', 'foo']],
+      { s1: 'foo1', s2: 'foo2' }
+    ]
+  })
+)
+
+//  Basic with multiple steps of parallel commands
 
 test(
   'testFn should pass (basicMultistepParallel)',
@@ -153,6 +224,23 @@ test(
 )
 
 test(
+  'testFnV2 should pass (basicMultistepParallel)',
+  testFnV2(basicMultistepParallel, () => {
+    const c1 = [cmds.echo('foo'), cmds.echo('foo')]
+    const c2 = [cmds.echo('foo'), cmds.echo('foo')]
+    // prettier-ignore
+    return [
+      ['foo'],
+      [c1, ['foo', 'foo']],
+      [c2, ['foo', 'foo']],
+      {s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4'}
+    ]
+  })
+)
+
+//  Basic with empty args
+
+test(
   'testFn should pass (basicEmpty)',
   testFn(basicEmpty, () => {
     // prettier-ignore
@@ -172,6 +260,20 @@ test(
       .returns([])
   })
 )
+
+test(
+  'testFnV2 should pass (basicEmpty)',
+  testFnV2(basicEmpty, () => {
+    // prettier-ignore
+    return [
+      [null],
+      [[], []],
+      []
+    ]
+  })
+)
+
+// Either test with error
 
 test(
   'testFn should pass (eitherTestError)',
@@ -195,6 +297,20 @@ test(
 )
 
 test(
+  'testFnV2 semantic should pass (eitherTestError)',
+  testFnV2(eitherTestError, () => {
+    // prettier-ignore
+    return [
+      [null],
+      [cmds.either(cmds.die('oops'), 'foo'), 'foo'],
+      'foo'
+    ]
+  })
+)
+
+//  Handler error handling
+
+test(
   'testFn should handle errors (badHandler)',
   testFn(badHandler, () => {
     // prettier-ignore
@@ -214,6 +330,20 @@ test(
       .returns(new Error('oops!'))
   })
 )
+
+test(
+  'testFnV2 should handle errors (badHandler)',
+  testFnV2(badHandler, () => {
+    // prettier-ignore
+    return [
+      [null],
+      [cmds.die('oops'), new Error('oops!')],
+      new Error('oops!')
+    ]
+  })
+)
+
+// Either test empty
 
 test(
   'testFn should pass (eitherTestEmpty)',
@@ -237,6 +367,20 @@ test(
 )
 
 test(
+  'testFnV2 should pass (eitherTestEmpty)',
+  testFnV2(eitherTestEmpty, () => {
+    // prettier-ignore
+    return [
+      [null],
+      [cmds.either(cmds.echo(null), 'foo'), 'foo'],
+      'foo'
+    ]
+  })
+)
+
+//  Async cmd
+
+test(
   'testFn should pass (asyncTest)',
   testFn(asyncTest, () => {
     // prettier-ignore
@@ -258,7 +402,21 @@ test(
 )
 
 test(
-  'single line should not fail',
+  'testFnV2 should pass (asyncTest)',
+  testFnV2(asyncTest, () => {
+    // prettier-ignore
+    return [
+      [null],
+      [cmds.async({ type: 'test' }), null],
+      null
+    ]
+  })
+)
+
+//  Single line
+
+test(
+  'single line should pass',
   testSingleLine(() => {
     //  prettier-ignore
     return [
