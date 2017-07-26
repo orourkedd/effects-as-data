@@ -1,1 +1,1 @@
-module.exports = require('./lib/test')
+module.exports = require('./src/test')
