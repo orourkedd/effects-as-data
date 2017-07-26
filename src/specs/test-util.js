@@ -1,4 +1,10 @@
-const { errorToJson } = require('../util')
+function errorToJson(e) {
+  const props = Object.getOwnPropertyNames(e).concat('name')
+  return props.reduce((p, c) => {
+    p[c] = e[c]
+    return p
+  }, {})
+}
 
 function expectError(e1, e2) {
   const ne1 = typeof e1 === 'string' ? new Error(e1) : e1

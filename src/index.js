@@ -1,4 +1,4 @@
-const { isGenerator, toArray, errorToJson, toPromise } = require('./util')
+const { isGenerator, toArray, toPromise } = require('./util')
 
 function call(config, handlers, fn, ...args) {
   if (!fn) {
@@ -32,7 +32,7 @@ function run(config, handlers, fn, input, el, generatorOperation = 'next') {
         return run(config, handlers, fn, e, el1, 'throw')
       })
   } catch (e) {
-    return Promise.reject(errorToJson(e))
+    return Promise.reject(e)
   }
 }
 
@@ -98,7 +98,7 @@ function processCommand(config, handlers, command, el, index) {
         command,
         step: el.step,
         index,
-        result: errorToJson(e),
+        result: e,
         start,
         end
       })
