@@ -1,8 +1,8 @@
 {
   "name": "effects-as-data",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Express async workflows using pure functions.",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/orourkedd/effects-as-data"
@@ -10,8 +10,8 @@
   "scripts": {
     "test": "jest",
     "test-mocha": "mocha src/**/*.spec.js --recursive --compilers js:babel-register --require babel-polyfill",
-    "transpile": "babel src --out-dir lib --source-maps",
-    "deploy": "npm run transpile && npm test && npm publish --tag beta; rm -rf lib",
+    "transpile": "babel src --out-dir es5 --source-maps",
+    "deploy": "npm run transpile && npm test && npm publish --tag beta; rm -rf es5",
     "perf": "node src/perf/fs"
   },
   "author": "orourkedd",
@@ -29,7 +29,8 @@
     "testPathIgnorePatterns": [
       "<rootDir>/test.js",
       "<rootDir>/src/test.js",
-      "<rootDir>/lib/test.js"
+      "<rootDir>/lib/test.js",
+      "<rootDir>/es5/test.js"
     ]
   }
 }
