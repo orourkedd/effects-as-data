@@ -13,7 +13,7 @@ function call(config, handlers, fn, ...args) {
 function run(config, handlers, fn, input, el, generatorOperation = 'next') {
   try {
     const el1 = getExecutionLog(el)
-    const { output, isList, done, fn2 } = getNextOutput(
+    const { output, isList, done } = getNextOutput(
       fn,
       input,
       generatorOperation
@@ -24,12 +24,12 @@ function run(config, handlers, fn, input, el, generatorOperation = 'next') {
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
         el1.step = el1.step + 1 // mutate in place
-        return run(config, handlers, fn2, unwrappedResults, el1)
+        return run(config, handlers, fn, unwrappedResults, el1)
       })
       .catch(e => {
         //  ok to mutate?
         el1.step = el1.step + 1 // mutate in place
-        return run(config, handlers, fn2, e, el1, 'throw')
+        return run(config, handlers, fn, e, el1, 'throw')
       })
   } catch (e) {
     return Promise.reject(errorToJson(e))
@@ -49,13 +49,11 @@ function unwrapResults(isList, results) {
 }
 
 function getNextOutput(fn, input, op = 'next') {
-  // const g = isGenerator(fn) ? fn.apply(null, input) : fn
   const { value: output, done } = fn[op](input)
   return {
     output,
     isList: Array.isArray(output),
-    done,
-    fn2: fn
+    done
   }
 }
 
