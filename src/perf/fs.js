@@ -26,7 +26,7 @@ async function testEAD() {
 }
 
 async function benchmark() {
-  console.log('Wait while operation runs 50,000 times...')
+  console.log(`Wait while operation runs ${iterations} times...`)
   const standard = await testStandard()
   const ead = await testEAD()
   const diff = ead - standard

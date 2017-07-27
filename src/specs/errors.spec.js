@@ -13,7 +13,7 @@ test('call should reject for an undefined function', async () => {
     await call({}, handlers, undefined)
   } catch (actual) {
     const message =
-      'A function is required. Perhaps your function is undefined?'
+      'A function is required. Ensure that the third argument of call() is a function.'
     return expectError(actual, message)
   }
   fail('Function did not reject.')
