@@ -7,7 +7,7 @@ function call(config, handlers, fn, ...args) {
     return Promise.reject(new Error(noFunctionMessage))
   }
   const g = fn.apply(null, args)
-  return run(config, handlers, g, args)
+  return run(config, handlers, g)
 }
 
 function run(config, handlers, fn, input, el, generatorOperation = 'next') {
