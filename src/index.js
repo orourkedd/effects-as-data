@@ -1,11 +1,7 @@
 const { isGenerator, toArray, toPromise } = require('./util')
 
 function call(config, handlers, fn, ...args) {
-  if (!fn) {
-    const noFunctionMessage =
-      'A function is required. Ensure that the third argument of call() is a function.'
-    return Promise.reject(new Error(noFunctionMessage))
-  }
+  if (!fn) return Promise.reject(new Error('A function is required.'))
   const g = fn.apply(null, args)
   return run(config, handlers, g)
 }
