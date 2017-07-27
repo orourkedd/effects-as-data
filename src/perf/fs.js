@@ -27,11 +27,14 @@ async function testEAD() {
 }
 
 async function test() {
-  console.log(`Wait while operation runs ${iterations} times...`)
+  console.log(`Please wait while operation runs ${iterations} times...`)
   const eadLatencies = []
   const standardLatencies = []
   for (let i = 0; i < iterations; i++) {
-    if (i % 5000 === 0) console.log(`${i} complete`)
+    if (i % 250 === 0) {
+      const percentComplete = percent(i, iterations, 0)
+      process.stdout.write(`\r${percentComplete}% Complete`)
+    }
     const startEad = Date.now()
     await call({}, handlers, eadBenchmark, filePath)
     const endEad = Date.now()
@@ -52,8 +55,11 @@ async function test() {
   const perTransaction = diff / iterations
   const microSecondsPerTransaction = (perTransaction * 1000).toFixed(2)
   const percentSlower = ((1 - standardTotal / eadTotal) * 100).toFixed(2)
-  console.log('Effects-as-data total:', eadTotal)
-  console.log('Pure Javascript total:', standardTotal)
+  console.log('\n')
+  console.log('Results')
+  console.log('=====================================')
+  console.log(`Effects-as-data total: ${eadTotal}ms`)
+  console.log(`Pure Javascript total: ${standardTotal}ms`)
   console.log(
     `Per transaction, effects-as-data was ${microSecondsPerTransaction}μs slower than pure Javascript.`
   )
@@ -62,4 +68,7 @@ async function test() {
   )
 }
 
+function percent(a, b, fixed = 2) {
+  return (a / b * 100).toFixed(fixed)
+}
 test().catch(console.error)
