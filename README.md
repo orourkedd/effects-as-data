@@ -118,8 +118,50 @@ functions
 
 Turn your effects-as-data functions into normal promise-returning functions.
 
-### Full Example
+#### Full Example
 
 See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
 
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
+
+### Using existing commands and handlers
+This example demonstrates using the `effects-as-data-universal` module with contains commands/handler that can be used anywhere Javascript runs.
+
+```js
+const { call, buildFunctions } = require('effects-as-data')
+const { testFn, args } = require('effects-as-data/test')
+const { cmds, handlers } = require('effects-as-data-universal')
+
+function* getPeople() {
+  const { payload } = yield cmds.httpGet('https://swapi.co/api/people')
+  const { results } = payload
+  const names = results.map(p => p.name)
+  return names
+}
+
+// Semantic test style
+testFn(getPeople, () => {
+  const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
+  // prettier-ignore
+  return args()
+    .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
+    .returns(['Luke Skywalker'])
+})()
+
+const config = {
+  onCommandComplete: telemetry => {
+    console.log('Telemetry (from onCommandComplete):', telemetry)
+  }
+}
+
+const functions = buildFunctions(config, handlers, { getPeople })
+
+functions
+  .getPeople()
+  .then(names => {
+    console.log('\n')
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
+```
