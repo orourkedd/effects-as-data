@@ -12,6 +12,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ### Getting Started (from scratch)
 
 See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
+
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
 #### First, create a command creator.
@@ -25,7 +26,46 @@ function httpGetCommand(url) {
 }
 ```
 
-#### Second, write your business logic.
+#### Second, test your business logic
+Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions:
+
+Semantic test example:
+```js
+testFn(getPeople, () => {
+  const apiResults = { results: [{ name: 'Luke Skywalker' }] }
+  // prettier-ignore
+  return args()
+    .yieldCmd(httpGetCommand('https://swapi.co/api/people')).yieldReturns(apiResults)
+    .returns(['Luke Skywalker'])
+})()
+```
+
+Using only data V2
+```js
+testFnV2(getPeople, () => {
+  const apiResults = { results: [{ name: 'Luke Skywalker' }] }
+  // prettier-ignore
+  return [
+    [],
+    [httpGetCommand('https://swapi.co/api/people'), apiResults],
+    ['Luke Skywalker']
+  ]
+})()
+```
+
+Using only data V1
+```js
+testFn(getPeople, () => {
+  const apiResults = { results: [{ name: 'Luke Skywalker' }] }
+  // prettier-ignore
+  return [
+    [[], httpGetCommand('https://swapi.co/api/people')],
+    [apiResults, ['Luke Skywalker']]
+  ]
+})()
+```
+
+#### Third, write your business logic.
 Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to effects-as-data.
 ```js
 function* getPeople() {
@@ -35,7 +75,7 @@ function* getPeople() {
 }
 ```
 
-#### Third, create a command handler.
+#### Fourth, create a command handler.
 After the `command` object is `yield`ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).
 ```js
 function httpGetHandler(cmd) {
@@ -43,7 +83,7 @@ function httpGetHandler(cmd) {
 }
 ```
 
-#### Fourth, setting up monitoring / telemetry.
+#### Fifth, setting up monitoring / telemetry.
 The effects-as-data config accepts an `onCommandComplete` callback which will be called every time a `command` completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.
 ```js
 const config = {
@@ -53,7 +93,7 @@ const config = {
 }
 ```
 
-#### Fifth, wire everything up.
+#### Sixth, wire everything up.
 This will turn your effects-as-data functions into normal, promise-returning functions.  In this case, `functions` will be an object with one key, `getPeople`, which will be a promise-returning function.
 ```js
 const functions = buildFunctions(
@@ -63,7 +103,7 @@ const functions = buildFunctions(
 )
 ```
 
-#### Sixth, use your functions.
+#### Lastly, use your functions.
 Once you have built your functions, you can use them like normal promise-returning functions anywhere in your application.
 ```js
 functions
