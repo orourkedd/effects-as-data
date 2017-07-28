@@ -177,7 +177,7 @@ Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master
 
 Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run error-handling`.
 
-The `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.
+Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
 ```js
 const { cmds } = require('effects-as-data-universal')
 
@@ -191,7 +191,7 @@ function* getPeople() {
 module.exports = getPeople
 ```
 
-Tests for the `getPeople` function:
+Tests for the `getPeople` function.  These tests are using Jest:
 ```js
 const { cmds } = require('effects-as-data-universal')
 const { testFn, args } = require('effects-as-data/test')
