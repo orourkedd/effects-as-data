@@ -243,3 +243,62 @@ functions
   .catch(console.error)
 
 ```
+
+### Parallelization of commands
+
+Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization](https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization).
+
+Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run parallelization`.
+
+```js
+const { cmds } = require('effects-as-data-universal')
+
+function* getPeople() {
+  const httpGet1 = cmds.httpGet('https://swapi.co/api/people/1')
+  const httpGet2 = cmds.httpGet('https://swapi.co/api/people/2')
+  const [result1, result2] = yield [httpGet1, httpGet2]
+  return [result1.payload, result2.payload].map(p => p.name)
+}
+
+module.exports = getPeople
+```
+
+Tests for the `getPeople` function.  These tests are using Jest:
+```js
+const { cmds } = require('effects-as-data-universal')
+const { testFn, args } = require('effects-as-data/test')
+const getPeople = require('./get-people')
+
+const testGetPeople = testFn(getPeople)
+
+test(
+  "getPeople should return a list of people's names",
+  testGetPeople(() => {
+    const apiResult1 = { payload: { name: 'Luke Skywalker' } }
+    const apiResult2 = { payload: { name: 'C-3PO' } }
+    const httpGet1 = cmds.httpGet('https://swapi.co/api/people/1')
+    const httpGet2 = cmds.httpGet('https://swapi.co/api/people/2')
+    // prettier-ignore
+    return args()
+      .yieldCmd([httpGet1, httpGet2]).yieldReturns([apiResult1, apiResult2])
+      .returns(['Luke Skywalker', 'C-3PO'])
+  })
+)
+```
+
+The index file that runs it.  `onCommandComplete` is removed for brevity:
+```js
+const { call, buildFunctions } = require('effects-as-data')
+const { handlers } = require('effects-as-data-universal')
+const getPeople = require('./get-people')
+
+const functions = buildFunctions({}, handlers, { getPeople })
+
+functions
+  .getPeople()
+  .then(names => {
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
+```
