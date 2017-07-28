@@ -26,25 +26,27 @@ function httpGetCommand(url) {
 }
 ```
 
-#### Second, test your business logic
+#### Second, test your business logic.
 Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions:
 
 Semantic test example:
 ```js
+const { testFn, args } = require('effects-as-data/test')
+
 testFn(getPeople, () => {
   const apiResults = { results: [{ name: 'Luke Skywalker' }] }
-  // prettier-ignore
   return args()
     .yieldCmd(httpGetCommand('https://swapi.co/api/people')).yieldReturns(apiResults)
     .returns(['Luke Skywalker'])
 })()
 ```
 
-Using only data V2
+Using only data (v2):
 ```js
+const { testFnV2, args } = require('effects-as-data/test')
+
 testFnV2(getPeople, () => {
   const apiResults = { results: [{ name: 'Luke Skywalker' }] }
-  // prettier-ignore
   return [
     [],
     [httpGetCommand('https://swapi.co/api/people'), apiResults],
@@ -53,11 +55,12 @@ testFnV2(getPeople, () => {
 })()
 ```
 
-Using only data V1
+Using only data (v1):
 ```js
+const { testFn } = require('effects-as-data/test')
+
 testFn(getPeople, () => {
   const apiResults = { results: [{ name: 'Luke Skywalker' }] }
-  // prettier-ignore
   return [
     [[], httpGetCommand('https://swapi.co/api/people')],
     [apiResults, ['Luke Skywalker']]
