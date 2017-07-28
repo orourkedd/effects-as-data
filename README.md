@@ -173,6 +173,10 @@ functions
 
 This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
 
+Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/error-handling](https://github.com/orourkedd/effects-as-data-examples/tree/master/error-handling).
+
+Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run error-handling`.
+
 The `getPeople` function:
 ```js
 const { cmds } = require('effects-as-data-universal')
