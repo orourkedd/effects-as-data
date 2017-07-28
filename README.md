@@ -127,6 +127,10 @@ You can run this example by cloning `https://github.com/orourkedd/effects-as-dat
 ### Using existing commands and handlers
 This example demonstrates using the `effects-as-data-universal` module with contains commands/handler that can be used anywhere Javascript runs.
 
+Full example: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js).
+
+Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run basic-existing-handlers`.
+
 ```js
 const { call, buildFunctions } = require('effects-as-data')
 const { testFn, args } = require('effects-as-data/test')
@@ -134,8 +138,7 @@ const { cmds, handlers } = require('effects-as-data-universal')
 
 function* getPeople() {
   const { payload } = yield cmds.httpGet('https://swapi.co/api/people')
-  const { results } = payload
-  const names = results.map(p => p.name)
+  const names = payload.results.map(p => p.name)
   return names
 }
 
@@ -164,4 +167,75 @@ functions
     console.log(names.join(', '))
   })
   .catch(console.error)
+```
+
+### Error handling
+
+This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
+
+The `getPeople` function:
+```js
+const { cmds } = require('effects-as-data-universal')
+
+function* getPeople() {
+  const httpGet = cmds.httpGet('https://swapi.co/api/people')
+  const emptyResults = { payload: { results: [] } }
+  const { payload } = yield cmds.either(httpGet, emptyResults)
+  return payload.results.map(p => p.name)
+}
+
+module.exports = getPeople
+```
+
+Tests for the `getPeople` function:
+```js
+const { cmds } = require('effects-as-data-universal')
+const { testFn, args } = require('effects-as-data/test')
+const getPeople = require('./get-people')
+
+const testGetPeople = testFn(getPeople)
+
+test(
+  "getPeople should return a list of people's names",
+  testGetPeople(() => {
+    const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
+    const httpGet = cmds.httpGet('https://swapi.co/api/people')
+    const emptyResults = { payload: { results: [] } }
+    // prettier-ignore
+    return args()
+      .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(apiResults)
+      .returns(['Luke Skywalker'])
+  })
+)
+
+test(
+  'getPeople should return an empty list if http get errors out',
+  testGetPeople(() => {
+    const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
+    const httpGet = cmds.httpGet('https://swapi.co/api/people')
+    const emptyResults = { payload: { results: [] } }
+    // prettier-ignore
+    return args()
+      .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(emptyResults)
+      .returns([])
+  })
+)
+```
+
+The index file that runs it.  `onCommandComplete` is removed for brevity:
+```js
+const { call, buildFunctions } = require('effects-as-data')
+const { handlers } = require('effects-as-data-universal')
+const getPeople = require('./get-people')
+
+const functions = buildFunctions({}, handlers, { getPeople })
+
+functions
+  .getPeople()
+  .then(names => {
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
+
 ```
