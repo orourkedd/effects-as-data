@@ -89,8 +89,6 @@ functions
 
 ```
 
-Turn your effects-as-data functions into normal promise-returning functions.
-
 #### Full Example
 
 See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
