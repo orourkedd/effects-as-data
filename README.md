@@ -11,10 +11,6 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 
 ### Getting Started (from scratch)
 
-See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
-
-You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
-
 #### First, create a command creator.
 This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed.
 ```js
@@ -27,7 +23,7 @@ function httpGetCommand(url) {
 ```
 
 #### Second, test your business logic.
-Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions:
+Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions demonstrated below.
 
 Semantic test example:
 ```js
@@ -122,81 +118,6 @@ functions
 
 Turn your effects-as-data functions into normal promise-returning functions.
 
-### Full Example
+See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
 
-```js
-const { call, buildFunctions } = require('effects-as-data')
-const fetch = require('isomorphic-fetch')
-
-function httpGetCommand(url) {
-  return {
-    type: 'httpGet',
-    url
-  }
-}
-
-function httpGetHandler(cmd) {
-  return fetch(cmd.url).then(r => r.json())
-}
-
-function* getPeople() {
-  const { results } = yield httpGetCommand('https://swapi.co/api/people')
-  const names = results.map(p => p.name)
-  return names
-}
-
-const config = {
-  onCommandComplete: telemetry => {
-    console.log('Telemetry (from onCommandComplete):', telemetry)
-  }
-}
-
-const functions = buildFunctions(
-  config,
-  { httpGet: httpGetHandler },
-  { getPeople }
-)
-
-functions
-  .getPeople()
-  .then(names => {
-    console.log('\n')
-    console.log('Function Results:')
-    console.log(names.join(', '))
-  })
-  .catch(console.error)
-```
-
-### Using existing commands and handlers
-
-```js
-const { call, buildFunctions } = require('../index')
-const { cmds, handlers } = require('effects-as-data-universal')
-
-// Pure business logic functions
-function* getUsers() {
-  return yield cmds.httpGet('http://example.com/api/users')
-}
-
-function* getUserPosts(userId) {
-  return yield cmds.httpGet(`http://example.com/api/user/${userId}/posts`)
-}
-
-// Use onCommandComplete to gather telemetry
-const config = {
-  onCommandComplete: telemetry => {
-    console.log('Telemetry:', telemetry)
-  }
-}
-
-// Turn effects-as-data functions into normal,
-// promise-returning functions
-const functions = buildFunctions(
-  config,
-  handlers, // command handlers
-  { getUsers, getUserPosts } // effects-as-data functions
-)
-
-// Use the functions like you normally would
-functions.getUsers().then(console.log)
-```
+You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
