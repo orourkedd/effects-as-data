@@ -25,16 +25,18 @@ function httpGetCommand(url) {
 #### Second, write your business logic.
 Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to effects-as-data.
 ```js
-function * getUsers () {
-  return yield httpGetCommand('http://example.com/api/users')
+function* getPeople() {
+  const { results } = yield httpGetCommand('https://swapi.co/api/people')
+  const names = results.map(p => p.name)
+  return names
 }
 ```
 
 #### Third, create a command handler.
 After the `command` object is `yield`ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).
 ```js
-function httpGetHandler (cmd) {
-  return fetch(cmd.url, { method: 'GET'}).then(r => r.json())
+function httpGetHandler(cmd) {
+  return fetch(cmd.url).then(r => r.json())
 }
 ```
 
@@ -43,29 +45,33 @@ The effects-as-data config accepts an `onCommandComplete` callback which will be
 ```js
 const config = {
   onCommandComplete: telemetry => {
-    console.log('Telemetry:', telemetry)
+    console.log('Telemetry (from onCommandComplete):', telemetry)
   }
 }
 ```
 
 #### Fifth, wire everything up.
-This will turn your effects-as-data functions into normal, promise-returning functions.  In this case, `functions` will be an object with one key, `getUsers`, which will be a promise-returning function.
+This will turn your effects-as-data functions into normal, promise-returning functions.  In this case, `functions` will be an object with one key, `getPeople`, which will be a promise-returning function.
 ```js
 const functions = buildFunctions(
   config,
   { httpGet: httpGetHandler },
-  { getUsers }
+  { getPeople }
 )
-
 ```
 
 #### Sixth, use your functions.
 Once you have built your functions, you can use them like normal promise-returning functions anywhere in your application.
 ```js
 functions
-  .getUsers()
-  .then(console.log)
+  .getPeople()
+  .then(names => {
+    console.log('\n')
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
   .catch(console.error)
+
 ```
 
 Turn your effects-as-data functions into normal promise-returning functions.
@@ -74,53 +80,45 @@ Turn your effects-as-data functions into normal promise-returning functions.
 
 ```js
 const { call, buildFunctions } = require('effects-as-data')
+const fetch = require('isomorphic-fetch')
 
-// Pure business logic functions
-function* getUsers() {
-  return yield httpGet('http://example.com/api/users')
-}
-
-function* getUserPosts(userId) {
-  return yield httpGet(`http://example.com/api/user/${userId}/posts`)
-}
-
-// HTTP Get command creator
-function httpGet(url) {
+function httpGetCommand(url) {
   return {
     type: 'httpGet',
     url
   }
 }
 
-// Http Get command handler
 function httpGetHandler(cmd) {
-  // Fake http get handler simulating an API returning
-  // an array of users
-  return [
-    {
-      userId: 'foo'
-    }
-  ]
+  return fetch(cmd.url).then(r => r.json())
 }
 
-// Use onCommandComplete to gather telemetry
+function* getPeople() {
+  const { results } = yield httpGetCommand('https://swapi.co/api/people')
+  const names = results.map(p => p.name)
+  return names
+}
+
 const config = {
   onCommandComplete: telemetry => {
-    console.log('Telemetry:', telemetry)
+    console.log('Telemetry (from onCommandComplete):', telemetry)
   }
 }
 
-// Turn effects-as-data functions into normal,
-// promise-returning functions
 const functions = buildFunctions(
   config,
-  { httpGet: httpGetHandler }, // command handlers
-  { getUsers, getUserPosts } // effects-as-data functions
+  { httpGet: httpGetHandler },
+  { getPeople }
 )
 
-// Use the functions like you normally would
-functions.getUsers().then(console.log)
-
+functions
+  .getPeople()
+  .then(names => {
+    console.log('\n')
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
 ```
 
 ### Using existing commands and handlers

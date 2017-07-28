@@ -1,47 +1,40 @@
-const { call, buildFunctions } = require('../index')
+const { call, buildFunctions } = require('..')
+const fetch = require('isomorphic-fetch')
 
-// Pure business logic functions
-function* getUsers() {
-  return yield httpGet('http://example.com/api/users')
-}
-
-function* getUserPosts(userId) {
-  return yield httpGet(`http://example.com/api/user/${userId}/posts`)
-}
-
-// HTTP Get command creator
-function httpGet(url) {
+function httpGetCommand(url) {
   return {
     type: 'httpGet',
     url
   }
 }
 
-// Http Get command handler
 function httpGetHandler(cmd) {
-  // Fake http get handler simulating an API returning
-  // an array of users
-  return [
-    {
-      userId: 'foo'
-    }
-  ]
+  return fetch(cmd.url).then(r => r.json())
 }
 
-// Use onCommandComplete to gather telemetry
+function* getPeople() {
+  const { results } = yield httpGetCommand('https://swapi.co/api/people')
+  const names = results.map(p => p.name)
+  return names
+}
+
 const config = {
   onCommandComplete: telemetry => {
-    console.log('Telemetry:', telemetry)
+    console.log('Telemetry (from onCommandComplete):', telemetry)
   }
 }
 
-// Turn effects-as-data functions into normal,
-// promise-returning functions
 const functions = buildFunctions(
   config,
-  { httpGet: httpGetHandler }, // command handlers
-  { getUsers, getUserPosts } // effects-as-data functions
+  { httpGet: httpGetHandler },
+  { getPeople }
 )
 
-// Use the functions like you normally would
-functions.getUsers().then(console.log)
+functions
+  .getPeople()
+  .then(names => {
+    console.log('\n')
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
