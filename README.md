@@ -12,12 +12,14 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ### Getting Started (from scratch)
 
 #### First, create a command creator.
-This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed.  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.
+This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  The command is placed on the `cmds` object for convenience.
 ```js
-function httpGetCommand(url) {
-  return {
-    type: 'httpGet',
-    url
+const cmds = {
+  httpGet(url) {
+    return {
+      type: 'httpGet',
+      url
+    }
   }
 }
 ```
@@ -32,7 +34,7 @@ const { testFn, args } = require('effects-as-data/test')
 testFn(getPeople, () => {
   const apiResults = { results: [{ name: 'Luke Skywalker' }] }
   return args()
-    .yieldCmd(httpGetCommand('https://swapi.co/api/people')).yieldReturns(apiResults)
+    .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
     .returns(['Luke Skywalker'])
 })()
 ```
@@ -41,7 +43,7 @@ testFn(getPeople, () => {
 Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to effects-as-data.
 ```js
 function* getPeople() {
-  const { results } = yield httpGetCommand('https://swapi.co/api/people')
+  const { results } = yield cmds.httpGet('https://swapi.co/api/people')
   const names = results.map(p => p.name)
   return names
 }
@@ -50,8 +52,10 @@ function* getPeople() {
 #### Fourth, create a command handler.
 After the `command` object is `yield`ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).  This is the function mentioned in step 1 that actually performs the HTTP GET request.  Notice that the business logic does not call this function directly; the business logic in step 1 simply `yield`s the `httpGet` `command` out, and `effects-as-data` takes care of getting it to the handler.
 ```js
-function httpGetHandler(cmd) {
-  return fetch(cmd.url).then(r => r.json())
+const handlers = {
+  httpGet(cmd) {
+    return fetch(cmd.url).then(r => r.json())
+  }
 }
 ```
 
@@ -68,11 +72,7 @@ const config = {
 #### Sixth, wire everything up.
 This will turn your effects-as-data functions into normal, promise-returning functions.  In this case, `functions` will be an object with one key, `getPeople`, which will be a promise-returning function.
 ```js
-const functions = buildFunctions(
-  config,
-  { httpGet: httpGetHandler },
-  { getPeople }
-)
+const functions = buildFunctions(config, handlers, { getPeople })
 ```
 
 #### Lastly, use your functions.
