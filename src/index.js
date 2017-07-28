@@ -118,6 +118,18 @@ function report({ success, command, index, step, result, config, start, end }) {
   config.onCommandComplete(r)
 }
 
+function buildFunctions(config, handlers, functions) {
+  let promiseFunctions = {}
+  for (let i in functions) {
+    promiseFunctions[i] = function(...args) {
+      const localConfig = Object.assign({ name: i }, config)
+      return call(localConfig, handlers, functions[i], ...args)
+    }
+  }
+  return promiseFunctions
+}
+
 module.exports = {
-  call
+  call,
+  buildFunctions
 }
