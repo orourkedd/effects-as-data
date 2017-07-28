@@ -1,18 +1,18 @@
 # Effects-as-data
 
-Effects-as-data is micro abstraction layer that makes writing, **testing**, and monitoring Javascript side-effects easy.
+Effects-as-data is a micro abstraction layer for Javascript that makes writing, **testing**, and monitoring side-effects easy.
 
 * Using effects-as-data can reduce the time you spend testing by 2-3 times (maybe more depending on who you ask).
-* Effects-as-data outputs a command log allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you detailed insight into your code while it runs in development and production.
+* Effects-as-data outputs a `command` log allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you detailed insight into your code while it runs in development and production.
 * Effects-as-data is <1kb minified+gzipped.
-* Effects-as-data adds *almost* no performance overhead (see `npm run perf`).
+* Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 
 ## Effects-as-data by example
 
 ### Getting Started (from scratch)
 
 #### First, create a command creator.
-This function creates a plain JSON object `command` that effects-as-data will pass to a handler function that will do the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed.
+This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed.
 ```js
 function httpGetCommand(url) {
   return {
@@ -39,7 +39,7 @@ function httpGetHandler (cmd) {
 ```
 
 #### Fourth, setting up monitoring / telemetry.
-The effects-as-data config accepts a `onCommandComplete` callback which will be called every time a `command` completes with detailed information about the operation.  This data can be logged to the console or sent to a logging service.
+The effects-as-data config accepts an `onCommandComplete` callback which will be called every time a `command` completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.
 ```js
 const config = {
   onCommandComplete: telemetry => {
