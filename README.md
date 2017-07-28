@@ -11,7 +11,8 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 
 ### Getting Started (from scratch)
 
-See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js)
+See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
+You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
 #### First, create a command creator.
 This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed.
