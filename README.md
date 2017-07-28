@@ -40,7 +40,7 @@ testFn(getPeople, () => {
 ```
 
 #### Third, write your business logic.
-Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to `effects-as-data`.  It is important to understand that when using effects-as-data, your business logic never actually `httpGet`'s anything.  It ONLY created plain JSON objects and `yield`'s them out.  This is one of the main reasons `effects-as-data` functions are easy to test.
+Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to `effects-as-data`.  It is important to understand that when using effects-as-data that your business logic never actually `httpGet`'s anything.  It ONLY creates plain JSON objects and `yield`'s them out (`cmds.httpGet()` simply returns the JSON object from step 1).  This is one of the main reasons `effects-as-data` functions are easy to test.
 ```js
 function* getPeople() {
   const { results } = yield cmds.httpGet('https://swapi.co/api/people')
