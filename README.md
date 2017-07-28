@@ -96,7 +96,7 @@ See full example in the `effects-as-data-examples` repository: [https://github.c
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
 ### Using existing commands and handlers
-This example demonstrates using the `effects-as-data-universal` module with contains commands/handler that can be used anywhere Javascript runs.
+This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
 
 Full example: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js).
 
