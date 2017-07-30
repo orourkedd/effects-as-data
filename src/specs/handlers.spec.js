@@ -1,5 +1,5 @@
 const { call } = require('../index')
-const { handlers, functions } = require('./effects')
+const { handlers, functions, cmds } = require('./effects')
 const {
   badHandler,
   badHandlerRejection,
@@ -38,4 +38,14 @@ test('call should reject when a handler rejects and is not caught', async () => 
     return expectError(actual, message)
   }
   fail('Function did not reject.')
+})
+
+test('handlers should be able to return an array of results', async () => {
+  const fn = function*(a, b) {
+    const result = yield [cmds.echo(a), cmds.echo(b)]
+    return result
+  }
+  const actual = await call({}, handlers, fn, ['foo', 'bar'], ['foo', 'baz'])
+  const expected = [['foo', 'bar'], ['foo', 'baz']]
+  expect(actual).toEqual(expected)
 })

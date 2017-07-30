@@ -2,42 +2,36 @@ const { isGenerator, toArray, toPromise } = require('./util')
 
 function call(config, handlers, fn, ...args) {
   if (!fn) return Promise.reject(new Error('A function is required.'))
-  const g = fn.apply(null, args)
-  return run(config, handlers, g)
+  const gen = fn.apply(null, args)
+  const el = newExecutionLog()
+  return run(config, handlers, gen, null, el)
 }
 
-function run(config, handlers, fn, input, el, generatorOperation = 'next') {
+function run(config, handlers, fn, input, el, genOperation = 'next') {
   try {
-    const el1 = getExecutionLog(el)
-    const { output, isList, done } = getNextOutput(
-      fn,
-      input,
-      generatorOperation
-    )
+    const { output, done } = getNextOutput(fn, input, genOperation)
     if (done) return toPromise(output)
+    const isList = Array.isArray(output)
     const commandsList = toArray(output)
-    return processCommands(config, handlers, commandsList, el1)
+    return processCommands(config, handlers, commandsList, el)
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
-        el1.step = el1.step + 1 // mutate in place
-        return run(config, handlers, fn, unwrappedResults, el1)
+        el.step++
+        return run(config, handlers, fn, unwrappedResults, el, 'next')
       })
       .catch(e => {
-        //  ok to mutate?
-        el1.step = el1.step + 1 // mutate in place
-        return run(config, handlers, fn, e, el1, 'throw')
+        el.step++
+        return run(config, handlers, fn, e, el, 'throw')
       })
   } catch (e) {
     return Promise.reject(e)
   }
 }
 
-function getExecutionLog(el) {
-  return (
-    el || {
-      step: 0
-    }
-  )
+function newExecutionLog() {
+  return {
+    step: 0
+  }
 }
 
 function unwrapResults(isList, results) {
@@ -46,11 +40,7 @@ function unwrapResults(isList, results) {
 
 function getNextOutput(fn, input, op = 'next') {
   const { value: output, done } = fn[op](input)
-  return {
-    output,
-    isList: Array.isArray(output),
-    done
-  }
+  return { output, done }
 }
 
 function processCommands(config, handlers, commands, el) {
@@ -67,7 +57,10 @@ function processCommand(config, handlers, command, el, index) {
   const start = Date.now()
   let result
   try {
-    result = handlers[command.type](command, { call, config, handlers })
+    const handler = handlers[command.type]
+    if (!handler)
+      throw new Error(`Handler of type "${command.type}" is not registered.`)
+    result = handler(command, { call, config, handlers })
   } catch (e) {
     result = Promise.reject(e)
   }

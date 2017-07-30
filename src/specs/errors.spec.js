@@ -39,3 +39,16 @@ test('call should throw error at the yield and recover', async () => {
   const expected = 'foo'
   expect(actual).toEqual(expected)
 })
+
+test('call should throw error for unregistered handler', async () => {
+  const fn = function*() {
+    yield { type: 'dne' }
+  }
+  try {
+    await call({}, handlers, fn)
+  } catch (e) {
+    expect(e.message).toEqual('Handler of type "dne" is not registered.')
+    return
+  }
+  fail('Did not throw.')
+})
