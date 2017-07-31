@@ -27,6 +27,13 @@ const testSingleLine = testFn(singleLine)
 const testYieldArray = testFn(yieldArray)
 
 test(
+  'testFn should handle undefined returns for semantic test',
+  testFn(function*() {}, () => {
+    return args().returns()
+  })
+)
+
+test(
   'testFn should curry',
   testFn(basic)(() => {
     // prettier-ignore

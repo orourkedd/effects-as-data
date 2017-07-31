@@ -111,26 +111,26 @@ const args = (...fnArgs) => {
   return { yieldCmd: yieldCmd(t), returns: returns(t) }
 }
 
-const yieldCmd = curry((t, v) => {
+const yieldCmd = t => v => {
   t[t.length - 1][1] = v
   return {
     yieldReturns: yieldReturns(t)
   }
-})
+}
 
-const yieldReturns = curry((t, v) => {
+const yieldReturns = t => v => {
   t[t.length] = [v]
 
   return {
     yieldCmd: yieldCmd(t),
     returns: returns(t)
   }
-})
+}
 
-const returns = curry((t, a) => {
+const returns = t => a => {
   t[t.length - 1][1] = a
   return t
-})
+}
 
 // Modified tuples
 function alt() {}
