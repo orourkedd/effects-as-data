@@ -28,7 +28,6 @@
     "testPathIgnorePatterns": [
       "<rootDir>/test.js",
       "<rootDir>/src/test.js",
-      "<rootDir>/lib/test.js",
       "<rootDir>/es5/test.js"
     ]
   }
