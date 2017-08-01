@@ -6,6 +6,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Effects-as-data outputs a `command` log allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you detailed insight into your code while it runs in development and production.
 * Effects-as-data is <1kb minified+gzipped.
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
+* Anywhere you can use promises, you can use effects-as-data.
 
 ## Effects-as-data by example
 
