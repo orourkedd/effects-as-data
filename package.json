@@ -1,7 +1,7 @@
 {
   "name": "effects-as-data",
   "version": "2.5.8",
-  "description": "Express async workflows using pure functions.",
+  "description": "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
   "repository": {
     "type": "git",
@@ -28,7 +28,6 @@
     "testPathIgnorePatterns": [
       "<rootDir>/test.js",
       "<rootDir>/src/test.js",
-      "<rootDir>/lib/test.js",
       "<rootDir>/es5/test.js"
     ]
   }
