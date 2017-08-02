@@ -4,7 +4,11 @@ function call(config, handlers, fn, ...args) {
   if (!fn) return Promise.reject(new Error('A function is required.'))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
-  return run(config, handlers, gen, null, el)
+  onCall({ args, fn, config })
+  return run(config, handlers, gen, null, el).then(result => {
+    onComplete({ result, config })
+    return result
+  })
 }
 
 function run(config, handlers, fn, input, el, genOperation = 'next') {
@@ -67,7 +71,7 @@ function processCommand(config, handlers, command, el, index) {
   return toPromise(result)
     .then(r => {
       const end = Date.now()
-      report({
+      onCommandComplete({
         success: true,
         config,
         command,
@@ -81,7 +85,7 @@ function processCommand(config, handlers, command, el, index) {
     })
     .catch(e => {
       const end = Date.now()
-      report({
+      onCommandComplete({
         success: false,
         config,
         command,
@@ -95,8 +99,8 @@ function processCommand(config, handlers, command, el, index) {
     })
 }
 
-function report({ success, command, index, step, result, config, start, end }) {
-  if (!config.onCommandComplete) return
+function onCommandComplete({ success, command, index, step, result, config, start, end }) {
+  if (!config.onCommandComplete || typeof config.onCommandComplete !== 'function') return
   const r = {
     success,
     command,
@@ -109,6 +113,25 @@ function report({ success, command, index, step, result, config, start, end }) {
     config
   }
   config.onCommandComplete(r)
+}
+
+function onCall({ args, fn, config }) {
+  if (!config.onCall || typeof config.onCall !== 'function') return
+  const r = {
+    args,
+    fn,
+    config
+  };
+  config.onCall(r)
+}
+
+function onComplete({ result, config }) {
+  if (!config.onComplete || typeof config.onComplete !== 'function') return
+  const r = {
+    result,
+    config
+  };
+  config.onComplete(r)
 }
 
 function buildFunctions(config, handlers, functions) {
