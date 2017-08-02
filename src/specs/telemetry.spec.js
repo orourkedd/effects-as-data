@@ -3,24 +3,6 @@ const { handlers, functions, cmds } = require('./effects')
 const { basicMultistep, badHandler, basic } = functions
 const { sleep } = require('./test-util')
 
-test('telemetry - onCommandCall', async () => {
-  let telemetry
-  const onCommandCall = t => {
-    telemetry = t
-  }
-  const config = { onCommandCall, name: 'telemetry' }
-  await call(config, handlers, basicMultistep, 'foo')
-  expect(telemetry.length).toEqual(2)
-  telemetry.forEach((t, i) => {
-    const message = 'foo' + (i + 1)
-    expect(t.args).toEqual([message])
-    expect(t.command).toEqual(cmds.echo(message))
-    expect(t.index).toEqual(0)
-    expect(t.step).toEqual(i)
-    expect(t.config).toEqual(config)
-  })
-})
-
 test('telemetry - onCommandComplete', async () => {
   let telemetry = []
   const onCommandComplete = t => {
