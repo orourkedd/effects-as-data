@@ -1,17 +1,17 @@
-const assert = require('assert')
-const curry = require('lodash/curry')
-const chunk = require('lodash/chunk')
+const assert = require("assert")
+const curry = require("lodash/curry")
+const chunk = require("lodash/chunk")
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
 
-  assert(fn, 'The function you are trying to test is undefined.')
+  assert(fn, "The function you are trying to test is undefined.")
 
   const step = expected[index]
 
   if (step === undefined) {
     throw new Error(
-      'Your spec does not have as many steps as your function.  Are you missing a return line?'
+      "Your spec does not have as many steps as your function.  Are you missing a return line?"
     )
   }
 
@@ -31,11 +31,18 @@ const testRunner = (fn, expected, index = 0, previousOutput = null) => {
       output = { value: e, done: true }
     }
   } else {
-    output = g.next(input)
+    try {
+      output = g.next(input)
+    } catch (e) {
+      output = { value: e, done: true }
+    }
   }
+
+  const endOnError = isError(output.value)
 
   try {
     deepEqual(output.value, expectedOutput)
+    if (endOnError) return
   } catch (e) {
     e.name = `Error on Step ${index + 1}`
     throw e
@@ -65,7 +72,7 @@ const checkForExpectedTypeMismatches = expected => {
     if (Array.isArray(output)) {
       assert(
         Array.isArray(nextInput),
-        'If an array of actions is yielded, it should return an array of results.'
+        "If an array of actions is yielded, it should return an array of results."
       )
     }
   }
@@ -98,7 +105,7 @@ const testFnV2 = (fn, spec) => {
 
 function deepEqual(actual, expected) {
   //  a little bit of jest support
-  if (typeof expect !== 'undefined' && expect.extend && expect.anything) {
+  if (typeof expect !== "undefined" && expect.extend && expect.anything) {
     expect(actual).toEqual(expected)
   } else {
     assert.deepEqual(actual, expected)
@@ -114,7 +121,9 @@ const args = (...fnArgs) => {
 const yieldCmd = t => v => {
   t[t.length - 1][1] = v
   return {
-    yieldReturns: yieldReturns(t)
+    yieldReturns: yieldReturns(t),
+    throws: yieldReturnThrows(t),
+    returns: returnCmdResult(t)
   }
 }
 
@@ -123,8 +132,24 @@ const yieldReturns = t => v => {
 
   return {
     yieldCmd: yieldCmd(t),
+    throws: throwAfterCmdReturns(t),
     returns: returns(t)
   }
+}
+
+const returnCmdResult = t => v => {
+  t[t.length] = [v, v]
+  return t
+}
+
+const yieldReturnThrows = t => v => {
+  t[t.length] = [v, v]
+  return t
+}
+
+const throwAfterCmdReturns = t => v => {
+  t[t.length - 1][1] = v
+  return t
 }
 
 const returns = t => a => {
