@@ -1,12 +1,14 @@
-const { isGenerator, toArray, toPromise } = require('./util')
+const { isGenerator, toArray, toPromise, delay } = require('./util')
 
 function call(config, handlers, fn, ...args) {
   if (!fn) return Promise.reject(new Error('A function is required.'))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
+  const start = Date.now()
   onCall({ args, fn, config })
   return run(config, handlers, gen, null, el).then(result => {
-    onComplete({ result, config })
+    const end = Date.now()
+    onComplete({ result, config, start, end, latency: end - start })
     return result
   })
 }
@@ -112,7 +114,7 @@ function onCommandComplete({ success, command, index, step, result, config, star
     result,
     config
   }
-  config.onCommandComplete(r)
+  delay(() => config.onCommandComplete(r))
 }
 
 function onCall({ args, fn, config }) {
@@ -121,17 +123,20 @@ function onCall({ args, fn, config }) {
     args,
     fn,
     config
-  };
-  config.onCall(r)
+  }
+  delay(() => config.onCall(r))
 }
 
-function onComplete({ result, config }) {
+function onComplete({ result, config, start, end, latency }) {
   if (!config.onComplete || typeof config.onComplete !== 'function') return
   const r = {
+    config,
+    end,
+    latency,
     result,
-    config
-  };
-  config.onComplete(r)
+    start
+  }
+  delay(() => config.onComplete(r))
 }
 
 function buildFunctions(config, handlers, functions) {
