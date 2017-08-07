@@ -140,9 +140,9 @@ test("onCall", done => {
   call(config, handlers, basicMultistep, "foo", "bar", "baz")
 })
 
-test("onComplete", done => {
+test("onCallComplete", done => {
   const now = Date.now()
-  const onComplete = complete => {
+  const onCallComplete = complete => {
     expect(complete.success).toEqual(true)
     expect(complete.fn).toEqual(basic)
     expect(complete.result).toEqual("foo")
@@ -151,13 +151,13 @@ test("onComplete", done => {
     expect(complete.end).toBeGreaterThanOrEqual(complete.start)
     done()
   }
-  const config = { onComplete, name: "telemetry" }
+  const config = { onCallComplete, name: "telemetry" }
   call(config, handlers, basic, "foo")
 })
 
-test("onComplete for errors", done => {
+test("onCallComplete for errors", done => {
   const now = Date.now()
-  const onComplete = complete => {
+  const onCallComplete = complete => {
     expect(complete.success).toEqual(false)
     expect(complete.fn).toEqual(badHandler)
     expect(complete.result.message).toEqual("oops")
@@ -166,6 +166,6 @@ test("onComplete for errors", done => {
     expect(complete.end).toBeGreaterThanOrEqual(complete.start)
     done()
   }
-  const config = { onComplete, name: "telemetry" }
+  const config = { onCallComplete, name: "telemetry" }
   call(config, handlers, badHandler, "foo").catch(e => e)
 })

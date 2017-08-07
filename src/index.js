@@ -17,7 +17,7 @@ function call(config, handlers, fn, ...args) {
   return run(config, handlers, fn, gen, null, el)
     .then(result => {
       const end = Date.now()
-      onComplete({
+      onCallComplete({
         success: true,
         fn,
         result,
@@ -30,7 +30,7 @@ function call(config, handlers, fn, ...args) {
     })
     .catch(e => {
       const end = Date.now()
-      onComplete({
+      onCallComplete({
         success: false,
         fn,
         result: e,
@@ -195,8 +195,9 @@ function onCall({ args, fn, config }) {
   delay(() => config.onCall(r))
 }
 
-function onComplete({ success, result, fn, config, start, end, latency }) {
-  if (!config.onComplete || typeof config.onComplete !== "function") return
+function onCallComplete({ success, result, fn, config, start, end, latency }) {
+  if (!config.onCallComplete || typeof config.onCallComplete !== "function")
+    return
   const r = {
     success,
     fn,
@@ -206,7 +207,7 @@ function onComplete({ success, result, fn, config, start, end, latency }) {
     result,
     start
   }
-  delay(() => config.onComplete(r))
+  delay(() => config.onCallComplete(r))
 }
 
 function buildFunctions(config, handlers, functions) {
