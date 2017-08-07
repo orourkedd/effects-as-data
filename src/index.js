@@ -83,6 +83,13 @@ function processCommands(config, handlers, commands, el) {
 
 function processCommand(config, handlers, command, el, index) {
   const start = Date.now()
+  onCommand({
+    command,
+    start,
+    index,
+    step: el.step,
+    config
+  })
   let result
   try {
     const handler = handlers[command.type]
@@ -121,6 +128,18 @@ function processCommand(config, handlers, command, el, index) {
       })
       throw e
     })
+}
+
+function onCommand({ command, index, step, config, start }) {
+  if (!config.onCommand || typeof config.onCommand !== "function") return
+  const r = {
+    command,
+    start,
+    index,
+    step,
+    config
+  }
+  delay(() => config.onCommand(r))
 }
 
 function onCommandComplete({
