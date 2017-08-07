@@ -26,6 +26,26 @@ function* yieldArray() {
 const testSingleLine = testFn(singleLine)
 const testYieldArray = testFn(yieldArray)
 
+function* rethrow() {
+  try {
+    return yield cmds.echo("foo")
+  } catch (e) {
+    throw new Error("bar")
+  }
+}
+
+test(
+  "should be able to rethrow errors",
+  testFnV2(rethrow)(() => {
+    // prettier-ignore
+    return [
+      [],
+      [cmds.echo('foo'), new Error("whatever")],
+      new Error("bar")
+    ]
+  })
+)
+
 test(
   "testFn should handle undefined returns for semantic test",
   testFn(function*() {}, () => {
