@@ -134,7 +134,7 @@ test(
     return [
       [['foo'], cmds.echo('foo1')],
       ['foo1', cmds.echo('foo2')],
-      ['foo2', {s1: 'foo1', s2: 'foo2'}]
+      ['foo2', { s1: 'foo1', s2: 'foo2' }]
     ]
   })
 )
@@ -172,7 +172,7 @@ test(
     // prettier-ignore
     return [
       [['foo'], c],
-      [['foo', 'foo'], {s1: 'foo1', s2: 'foo2'}]
+      [['foo', 'foo'], { s1: 'foo1', s2: 'foo2' }]
     ]
   })
 )
@@ -212,7 +212,7 @@ test(
     return [
       [['foo'], c1],
       [['foo', 'foo'], c2],
-      [['foo', 'foo'], {s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4'}]
+      [['foo', 'foo'], { s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4' }]
     ]
   })
 )
@@ -240,7 +240,7 @@ test(
       ['foo'],
       [c1, ['foo', 'foo']],
       [c2, ['foo', 'foo']],
-      {s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4'}
+      { s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4' }
     ]
   })
 )
@@ -485,7 +485,7 @@ test(
     //  prettier-ignore
     return [
       [['123'], cmds.httpGet('http://example.com/api/v1/users/123')],
-      [{foo: 'bar'}, {foo: 'bar'}]
+      [{ foo: 'bar' }, { foo: 'bar' }]
     ]
   })
 )
@@ -505,7 +505,7 @@ test("testFn should give proper error message if yielding array but no results",
     testYieldArray(() => {
       //  prettier-ignore
       return [
-        [undefined, [{type: 'test'}]]
+        [undefined, [{ type: 'test' }]]
       ]
     })()
   } catch (e) {
