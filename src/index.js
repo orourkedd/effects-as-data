@@ -5,9 +5,16 @@ function call(config, handlers, fn, ...args) {
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
   config.cid = config.cid || uuid()
+  config.stack = config.stack || []
+  config.stack.push({
+    config,
+    handlers,
+    fn,
+    args
+  })
   const start = Date.now()
   onCall({ args, fn, config })
-  return run(config, handlers, gen, null, el)
+  return run(config, handlers, fn, gen, null, el)
     .then(result => {
       const end = Date.now()
       onComplete({
@@ -36,21 +43,21 @@ function call(config, handlers, fn, ...args) {
     })
 }
 
-function run(config, handlers, fn, input, el, genOperation = "next") {
+function run(config, handlers, fn, gen, input, el, genOperation = "next") {
   try {
-    const { output, done } = getNextOutput(fn, input, genOperation)
+    const { output, done } = getNextOutput(gen, input, genOperation)
     if (done) return toPromise(output)
     const isList = Array.isArray(output)
     const commandsList = toArray(output)
-    return processCommands(config, handlers, commandsList, el)
+    return processCommands(config, handlers, fn, commandsList, el)
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
         el.step++
-        return run(config, handlers, fn, unwrappedResults, el, "next")
+        return run(config, handlers, fn, gen, unwrappedResults, el, "next")
       })
       .catch(e => {
         el.step++
-        return run(config, handlers, fn, e, el, "throw")
+        return run(config, handlers, fn, gen, e, el, "throw")
       })
   } catch (e) {
     return Promise.reject(e)
@@ -72,9 +79,9 @@ function getNextOutput(fn, input, op = "next") {
   return { output, done }
 }
 
-function processCommands(config, handlers, commands, el) {
+function processCommands(config, handlers, fn, commands, el) {
   try {
-    const pc = (c, index) => processCommand(config, handlers, c, el, index)
+    const pc = (c, index) => processCommand(config, handlers, fn, c, el, index)
     const promises = commands.map(pc)
     return Promise.all(promises)
   } catch (e) {
@@ -82,10 +89,11 @@ function processCommands(config, handlers, commands, el) {
   }
 }
 
-function processCommand(config, handlers, command, el, index) {
+function processCommand(config, handlers, fn, command, el, index) {
   const start = Date.now()
   onCommand({
     command,
+    fn,
     start,
     index,
     step: el.step,
@@ -107,6 +115,7 @@ function processCommand(config, handlers, command, el, index) {
         success: true,
         config,
         command,
+        fn,
         step: el.step,
         index,
         result: r,
@@ -121,6 +130,7 @@ function processCommand(config, handlers, command, el, index) {
         success: false,
         config,
         command,
+        fn,
         step: el.step,
         index,
         result: e,
@@ -131,14 +141,15 @@ function processCommand(config, handlers, command, el, index) {
     })
 }
 
-function onCommand({ command, index, step, config, start }) {
+function onCommand({ command, index, step, config, start, fn }) {
   if (!config.onCommand || typeof config.onCommand !== "function") return
   const r = {
     command,
     start,
     index,
     step,
-    config
+    config,
+    fn
   }
   delay(() => config.onCommand(r))
 }
@@ -151,7 +162,8 @@ function onCommandComplete({
   result,
   config,
   start,
-  end
+  end,
+  fn
 }) {
   if (
     !config.onCommandComplete ||
@@ -167,7 +179,8 @@ function onCommandComplete({
     index,
     step,
     result,
-    config
+    config,
+    fn
   }
   delay(() => config.onCommandComplete(r))
 }

@@ -3,7 +3,7 @@ const { handlers, functions, cmds } = require("./effects")
 const { basicMultistep, badHandler, basic } = functions
 const { sleep } = require("./test-util")
 
-test("telemetry - ead should add a correlation id to the config", async () => {
+test("telemetry - should add a correlation id to the config", async () => {
   let telemetry
   const onCommand = t => {
     telemetry = t
@@ -15,7 +15,7 @@ test("telemetry - ead should add a correlation id to the config", async () => {
   expect(telemetry.config.cid.length).toEqual(36)
 })
 
-test("telemetry - ead should use an existing correlation id if on the config", async () => {
+test("telemetry - should use an existing correlation id if on the config", async () => {
   let telemetry
   const onCommand = t => {
     telemetry = t
@@ -25,6 +25,40 @@ test("telemetry - ead should use an existing correlation id if on the config", a
   await call(config, handlers, basic, "bar")
   await sleep(10)
   expect(telemetry.config.cid).toEqual("foo")
+})
+
+test("telemetry - should add a stack to the config and push the current frame", async () => {
+  let telemetry
+  const onCommand = t => {
+    telemetry = t
+  }
+  const config = { onCommand, name: "telemetry" }
+  const now = Date.now()
+  await call(config, handlers, basic, "foo")
+  await sleep(10)
+  expect(telemetry.config.stack[0]).toEqual({
+    fn: basic,
+    config,
+    handlers,
+    args: ["foo"]
+  })
+})
+
+test("telemetry - should add a stack to the config for child calls", async () => {
+  let telemetry
+  const onCommand = t => {
+    telemetry = t
+  }
+  const config = { onCommand, name: "telemetry" }
+  const now = Date.now()
+  await call(config, handlers, basic, "foo")
+  await sleep(10)
+  expect(telemetry.config.stack[0]).toEqual({
+    fn: basic,
+    config,
+    handlers,
+    args: ["foo"]
+  })
 })
 
 test("telemetry - onCommand", async () => {
@@ -40,6 +74,7 @@ test("telemetry - onCommand", async () => {
   telemetry.forEach((t, i) => {
     const message = "foo" + (i + 1)
     expect(t.command).toEqual(cmds.echo(message))
+    expect(t.fn).toEqual(basicMultistep)
     expect(t.start).toBeGreaterThanOrEqual(now)
     expect(t.index).toEqual(0)
     expect(t.step).toEqual(i)
@@ -68,6 +103,7 @@ test("telemetry - onCommandComplete", async () => {
     expect(t.step).toEqual(i)
     expect(t.result).toEqual(message)
     expect(t.config).toEqual(config)
+    expect(t.fn).toEqual(basicMultistep)
   })
 })
 
@@ -92,6 +128,7 @@ test("telemetry on error - onCommandComplete", async () => {
   expect(telemetry.step).toEqual(0)
   expect(telemetry.result.message).toEqual("oops")
   expect(telemetry.config).toEqual(config)
+  expect(telemetry.fn).toEqual(badHandler)
 })
 
 test("onCall", done => {
