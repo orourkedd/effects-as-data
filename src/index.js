@@ -1,19 +1,41 @@
-const { isGenerator, toArray, toPromise, delay } = require('./util')
+const { isGenerator, toArray, toPromise, delay } = require("./util")
 
 function call(config, handlers, fn, ...args) {
-  if (!fn) return Promise.reject(new Error('A function is required.'))
+  if (!fn) return Promise.reject(new Error("A function is required."))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
   const start = Date.now()
   onCall({ args, fn, config })
-  return run(config, handlers, gen, null, el).then(result => {
-    const end = Date.now()
-    onComplete({ result, config, start, end, latency: end - start })
-    return result
-  })
+  return run(config, handlers, gen, null, el)
+    .then(result => {
+      const end = Date.now()
+      onComplete({
+        success: true,
+        fn,
+        result,
+        config,
+        start,
+        end,
+        latency: end - start
+      })
+      return result
+    })
+    .catch(e => {
+      const end = Date.now()
+      onComplete({
+        success: false,
+        fn,
+        result: e,
+        config,
+        start,
+        end,
+        latency: end - start
+      })
+      throw e
+    })
 }
 
-function run(config, handlers, fn, input, el, genOperation = 'next') {
+function run(config, handlers, fn, input, el, genOperation = "next") {
   try {
     const { output, done } = getNextOutput(fn, input, genOperation)
     if (done) return toPromise(output)
@@ -23,11 +45,11 @@ function run(config, handlers, fn, input, el, genOperation = 'next') {
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
         el.step++
-        return run(config, handlers, fn, unwrappedResults, el, 'next')
+        return run(config, handlers, fn, unwrappedResults, el, "next")
       })
       .catch(e => {
         el.step++
-        return run(config, handlers, fn, e, el, 'throw')
+        return run(config, handlers, fn, e, el, "throw")
       })
   } catch (e) {
     return Promise.reject(e)
@@ -44,7 +66,7 @@ function unwrapResults(isList, results) {
   return isList ? results : results[0]
 }
 
-function getNextOutput(fn, input, op = 'next') {
+function getNextOutput(fn, input, op = "next") {
   const { value: output, done } = fn[op](input)
   return { output, done }
 }
@@ -101,8 +123,21 @@ function processCommand(config, handlers, command, el, index) {
     })
 }
 
-function onCommandComplete({ success, command, index, step, result, config, start, end }) {
-  if (!config.onCommandComplete || typeof config.onCommandComplete !== 'function') return
+function onCommandComplete({
+  success,
+  command,
+  index,
+  step,
+  result,
+  config,
+  start,
+  end
+}) {
+  if (
+    !config.onCommandComplete ||
+    typeof config.onCommandComplete !== "function"
+  )
+    return
   const r = {
     success,
     command,
@@ -118,7 +153,7 @@ function onCommandComplete({ success, command, index, step, result, config, star
 }
 
 function onCall({ args, fn, config }) {
-  if (!config.onCall || typeof config.onCall !== 'function') return
+  if (!config.onCall || typeof config.onCall !== "function") return
   const r = {
     args,
     fn,
@@ -127,9 +162,11 @@ function onCall({ args, fn, config }) {
   delay(() => config.onCall(r))
 }
 
-function onComplete({ result, config, start, end, latency }) {
-  if (!config.onComplete || typeof config.onComplete !== 'function') return
+function onComplete({ success, result, fn, config, start, end, latency }) {
+  if (!config.onComplete || typeof config.onComplete !== "function") return
   const r = {
+    success,
+    fn,
     config,
     end,
     latency,

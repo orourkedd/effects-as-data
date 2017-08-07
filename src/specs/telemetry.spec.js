@@ -62,6 +62,8 @@ test("onCall", done => {
 test("onComplete", done => {
   const now = Date.now()
   const onComplete = complete => {
+    expect(complete.success).toEqual(true)
+    expect(complete.fn).toEqual(basic)
     expect(complete.result).toEqual("foo")
     expect(typeof complete.latency).toEqual("number")
     expect(complete.start).toBeGreaterThanOrEqual(now)
@@ -70,4 +72,19 @@ test("onComplete", done => {
   }
   const config = { onComplete, name: "telemetry" }
   call(config, handlers, basic, "foo")
+})
+
+test("onComplete for errors", done => {
+  const now = Date.now()
+  const onComplete = complete => {
+    expect(complete.success).toEqual(false)
+    expect(complete.fn).toEqual(badHandler)
+    expect(complete.result.message).toEqual("oops")
+    expect(typeof complete.latency).toEqual("number")
+    expect(complete.start).toBeGreaterThanOrEqual(now)
+    expect(complete.end).toBeGreaterThanOrEqual(complete.start)
+    done()
+  }
+  const config = { onComplete, name: "telemetry" }
+  call(config, handlers, badHandler, "foo").catch(e => e)
 })
