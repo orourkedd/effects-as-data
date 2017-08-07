@@ -1,9 +1,10 @@
-const { isGenerator, toArray, toPromise, delay } = require("./util")
+const { isGenerator, toArray, toPromise, delay, uuid } = require("./util")
 
 function call(config, handlers, fn, ...args) {
   if (!fn) return Promise.reject(new Error("A function is required."))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
+  config.cid = config.cid || uuid()
   const start = Date.now()
   onCall({ args, fn, config })
   return run(config, handlers, gen, null, el)

@@ -3,6 +3,30 @@ const { handlers, functions, cmds } = require("./effects")
 const { basicMultistep, badHandler, basic } = functions
 const { sleep } = require("./test-util")
 
+test("telemetry - ead should add a correlation id to the config", async () => {
+  let telemetry
+  const onCommand = t => {
+    telemetry = t
+  }
+  const config = { onCommand, name: "telemetry" }
+  const now = Date.now()
+  await call(config, handlers, basic, "foo")
+  await sleep(10)
+  expect(telemetry.config.cid.length).toEqual(36)
+})
+
+test("telemetry - ead should use an existing correlation id if on the config", async () => {
+  let telemetry
+  const onCommand = t => {
+    telemetry = t
+  }
+  const config = { onCommand, name: "telemetry", cid: "foo" }
+  const now = Date.now()
+  await call(config, handlers, basic, "bar")
+  await sleep(10)
+  expect(telemetry.config.cid).toEqual("foo")
+})
+
 test("telemetry - onCommand", async () => {
   let telemetry = []
   const onCommand = t => {
