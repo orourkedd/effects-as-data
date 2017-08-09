@@ -12,7 +12,7 @@ const {
   badHandler
 } = functions
 const { testFn, testFnV2, args } = require("../test")
-const { deepEqual } = require("../util")
+const { deepEqual } = require("./test-util")
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`)

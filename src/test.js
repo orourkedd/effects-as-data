@@ -1,7 +1,7 @@
 const assert = require("assert")
 const curry = require("lodash/curry")
 const chunk = require("lodash/chunk")
-const { deepEqual } = require("./util")
+const { deepEqual } = require("./specs/test-util")
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
@@ -157,6 +157,5 @@ module.exports = {
   testFn: curry(testFn, 2),
   testFnV2: curry(testFnV2, 2),
   alt,
-  args,
-  deepEqual
+  args
 }

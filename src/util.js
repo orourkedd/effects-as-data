@@ -1,5 +1,3 @@
-const assert = require("assert")
-
 function isGenerator(fn) {
   return fn && fn.constructor && fn.constructor.name === "GeneratorFunction"
 }
@@ -36,26 +34,10 @@ function uuid(
   return b
 }
 
-function deepEqual(actual, expected) {
-  // Error comparisons aren't consistent across assertion libraries
-  if (actual instanceof Error && expected instanceof Error) {
-    const actualError = { message: actual.message, name: actual.name }
-    const expectedError = { message: expected.message, name: expected.name }
-    assert.deepEqual(actualError, expectedError)
-  } 
-  //  a little bit of jest support
-  else if (typeof expect !== "undefined" && expect.extend && expect.anything) {
-    expect(actual).toEqual(expected)
-  } else {
-    assert.deepEqual(actual, expected)
-  }
-}
-
 module.exports = {
   isGenerator,
   toArray,
   toPromise,
   delay,
-  uuid,
-  deepEqual
+  uuid
 }
