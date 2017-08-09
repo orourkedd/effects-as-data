@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "description": "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "jest",
-    "test-mocha": "mocha src/**/*.spec.js --recursive --compilers js:babel-register --require babel-polyfill",
+    "test:mocha": "mocha --opts mocha.opts",
     "transpile": "babel src --out-dir es5 --source-maps",
     "deploy": "npm run transpile && npm test && npm publish; rm -rf es5",
     "perf": "node src/perf/fs"
@@ -23,7 +23,8 @@
     "babel-cli": "^6.24.1",
     "babel-jest": "^20.0.0",
     "babel-preset-es2015": "^6.24.1",
-    "jest-cli": "^20.0.0"
+    "jest-cli": "^20.0.0",
+    "mocha": "^3.5.0"
   },
   "jest": {
     "testPathIgnorePatterns": [

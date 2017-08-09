@@ -12,6 +12,7 @@ const {
   badHandler
 } = functions
 const { testFn, testFnV2, args } = require("../test")
+const { deepEqual } = require("../util")
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`)
@@ -34,9 +35,30 @@ function* rethrow() {
   }
 }
 
+function* throwFoo() {
+  throw new Error("foo")
+}
+
+test(
+  "testFn should fail if the function error is different than the test error",() => {
+    try {
+      testFn(throwFoo, () => {
+        // prettier-ignore
+        return [
+          [ [], new Error("bar") ]
+        ]
+      })()
+    } catch (e) {
+      deepEqual(e.name, 'Error on Step 1')
+      return
+    }
+    throw new Error("Failed: Did not compare error messages")
+  }
+)
+
 test(
   "should be able to rethrow errors",
-  testFnV2(rethrow)(() => {
+  testFnV2(rethrow, () => {
     // prettier-ignore
     return [
       [],
@@ -491,10 +513,10 @@ test("testFn should throw proper error if function throws incorrect error", () =
         .throws(new Error("wrong"))
     })()
   } catch (e) {
-    expect(e.name).toEqual("Error on Step 2")
+    deepEqual(e.name, "Error on Step 2")
     return
   }
-  fail("Did not throw")
+  throw new Error("Failed: Did not throw")
 })
 
 //  Single line
@@ -529,9 +551,7 @@ test("testFn should give proper error message if yielding array but no results",
       ]
     })()
   } catch (e) {
-    expect(e.message).toEqual(
-      "Your spec does not have as many steps as your function.  Are you missing a return line?"
-    )
+    deepEqual(e.message, "Your spec does not have as many steps as your function.  Are you missing a return line?")
   }
 })
 
@@ -539,9 +559,7 @@ test("testFn should give proper error message if spec is returning undefined", (
   try {
     testYieldArray(() => {})()
   } catch (e) {
-    expect(e.message).toEqual(
-      'Your spec must return an array of tuples.  It is currently returning a value of type "undefined".'
-    )
+    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "undefined".')
   }
 })
 
@@ -551,9 +569,7 @@ test("testFn should give proper error message if spec is returning an object", (
       return {}
     })()
   } catch (e) {
-    expect(e.message).toEqual(
-      'Your spec must return an array of tuples.  It is currently returning a value of type "object".'
-    )
+    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "object".')
   }
 })
 
@@ -563,8 +579,6 @@ test("testFn should give proper error message if spec is returning an string", (
       return "what?"
     })()
   } catch (e) {
-    expect(e.message).toEqual(
-      'Your spec must return an array of tuples.  It is currently returning a value of type "string".'
-    )
+    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "string".')
   }
 })

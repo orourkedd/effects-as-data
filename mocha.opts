@@ -1,0 +1,6 @@
+--reporter spec
+--compilers js:babel-register
+--require babel-polyfill
+--ui tdd
+
+src/specs/test.spec.js

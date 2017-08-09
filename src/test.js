@@ -1,6 +1,7 @@
 const assert = require("assert")
 const curry = require("lodash/curry")
 const chunk = require("lodash/chunk")
+const { deepEqual } = require("./util")
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
@@ -103,15 +104,6 @@ const testFnV2 = (fn, spec) => {
   }
 }
 
-function deepEqual(actual, expected) {
-  //  a little bit of jest support
-  if (typeof expect !== "undefined" && expect.extend && expect.anything) {
-    expect(actual).toEqual(expected)
-  } else {
-    assert.deepEqual(actual, expected)
-  }
-}
-
 // Semantic test builder
 const args = (...fnArgs) => {
   const t = [[fnArgs]]
@@ -165,5 +157,6 @@ module.exports = {
   testFn: curry(testFn, 2),
   testFnV2: curry(testFnV2, 2),
   alt,
-  args
+  args,
+  deepEqual
 }
