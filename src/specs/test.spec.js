@@ -39,6 +39,19 @@ function* throwFoo() {
   throw new Error("foo")
 }
 
+
+test(
+  "testFn should accept the V2 syntax",
+  testFn(basic, () => {
+    // prettier-ignore
+    return [
+      ['foo'],
+      [ cmds.echo('foo'), 'foo' ],
+      'foo'
+    ]
+  })
+)
+
 test(
   "testFn should fail if the function error is different than the test error",() => {
     try {
