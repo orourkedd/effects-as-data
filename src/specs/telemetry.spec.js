@@ -36,12 +36,18 @@ test("telemetry - should add a stack to the config and push the current frame", 
   const now = Date.now()
   await call(config, handlers, basic, "foo")
   await sleep(10)
-  expect(telemetry.config.stack[0]).toEqual({
-    fn: basic,
-    config,
-    handlers,
-    args: ["foo"]
-  })
+  expect(telemetry.config.stack[0].fn).toEqual(basic)
+  expect(telemetry.config.stack[0].handlers).toEqual(handlers)
+  expect(telemetry.config.stack[0].args).toEqual(["foo"])
+  expect(telemetry.config.stack[0].config.onCommand).toEqual(onCommand)
+  expect(telemetry.config.stack[0].config.name).toEqual("telemetry")
+  expect(telemetry.config.stack[0].config.cid.length).toEqual(36)
+  expect(telemetry.config.stack[0].config.stack[0].handlers).toEqual(handlers)
+  expect(telemetry.config.stack[0].config.stack[0].args).toEqual(["foo"])
+  expect(telemetry.config.stack[0].config.stack[0].fn).toEqual(basic)
+  expect(telemetry.config.stack[0].config.stack[0].config.name).toEqual(
+    "telemetry"
+  )
 })
 
 test("telemetry - should add a stack to the config for child calls", async () => {
@@ -53,12 +59,18 @@ test("telemetry - should add a stack to the config for child calls", async () =>
   const now = Date.now()
   await call(config, handlers, basic, "foo")
   await sleep(10)
-  expect(telemetry.config.stack[0]).toEqual({
-    fn: basic,
-    config,
-    handlers,
-    args: ["foo"]
-  })
+  expect(telemetry.config.stack[0].fn).toEqual(basic)
+  expect(telemetry.config.stack[0].handlers).toEqual(handlers)
+  expect(telemetry.config.stack[0].args).toEqual(["foo"])
+  expect(telemetry.config.stack[0].config.onCommand).toEqual(onCommand)
+  expect(telemetry.config.stack[0].config.name).toEqual("telemetry")
+  expect(telemetry.config.stack[0].config.cid.length).toEqual(36)
+  expect(telemetry.config.stack[0].config.stack[0].handlers).toEqual(handlers)
+  expect(telemetry.config.stack[0].config.stack[0].args).toEqual(["foo"])
+  expect(telemetry.config.stack[0].config.stack[0].fn).toEqual(basic)
+  expect(telemetry.config.stack[0].config.stack[0].config.name).toEqual(
+    "telemetry"
+  )
 })
 
 test("telemetry - onCommand", async () => {
@@ -78,7 +90,8 @@ test("telemetry - onCommand", async () => {
     expect(t.start).toBeGreaterThanOrEqual(now)
     expect(t.index).toEqual(0)
     expect(t.step).toEqual(i)
-    expect(t.config).toEqual(config)
+    expect(t.config.name).toEqual("telemetry")
+    expect(t.config.stack[0].fn).toEqual(basicMultistep)
   })
 })
 
@@ -102,7 +115,8 @@ test("telemetry - onCommandComplete", async () => {
     expect(t.index).toEqual(0)
     expect(t.step).toEqual(i)
     expect(t.result).toEqual(message)
-    expect(t.config).toEqual(config)
+    expect(t.config.name).toEqual("telemetry")
+    expect(t.config.stack[0].fn).toEqual(basicMultistep)
     expect(t.fn).toEqual(basicMultistep)
   })
 })
@@ -112,7 +126,7 @@ test("telemetry on error - onCommandComplete", async () => {
   const onCommandComplete = t => {
     telemetry = t
   }
-  const config = { onCommandComplete }
+  const config = { onCommandComplete, name: "badHandler" }
   const now = Date.now()
   const message = "oops"
   try {
@@ -127,7 +141,8 @@ test("telemetry on error - onCommandComplete", async () => {
   expect(telemetry.index).toEqual(0)
   expect(telemetry.step).toEqual(0)
   expect(telemetry.result.message).toEqual("oops")
-  expect(telemetry.config).toEqual(config)
+  expect(telemetry.config.name).toEqual("badHandler")
+  expect(telemetry.config.stack[0].fn).toEqual(badHandler)
   expect(telemetry.fn).toEqual(badHandler)
 })
 

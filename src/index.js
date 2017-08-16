@@ -4,24 +4,25 @@ function call(config, handlers, fn, ...args) {
   if (!fn) return Promise.reject(new Error("A function is required."))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
-  config.cid = config.cid || uuid()
-  config.stack = config.stack || []
-  config.stack.push({
-    config,
+  const childConfig = Object.assign({}, config)
+  childConfig.cid = childConfig.cid || uuid()
+  const stack = config.stack || []
+  childConfig.stack = stack.concat({
+    config: childConfig,
     handlers,
     fn,
     args
   })
   const start = Date.now()
-  onCall({ args, fn, config })
-  return run(config, handlers, fn, gen, null, el)
+  onCall({ args, fn, config: childConfig })
+  return run(childConfig, handlers, fn, gen, null, el)
     .then(result => {
       const end = Date.now()
       onCallComplete({
         success: true,
         fn,
         result,
-        config,
+        config: childConfig,
         start,
         end,
         latency: end - start
@@ -34,7 +35,7 @@ function call(config, handlers, fn, ...args) {
         success: false,
         fn,
         result: e,
-        config,
+        config: childConfig,
         start,
         end,
         latency: end - start
