@@ -1,6 +1,7 @@
 const {
   basic,
   basicMultiArg,
+  basicMultiArgWithArray,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
@@ -20,6 +21,7 @@ const { asyncTest } = require('./async-test')
 module.exports = {
   basic,
   basicMultiArg,
+  basicMultiArgWithArray,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
