@@ -8,6 +8,10 @@ function* basicMultiArg(a, b) {
   return yield cmds.echo(a + b)
 }
 
+function* basicMultiArgWithArray(arr, c) {
+  return yield cmds.echo(arr[0] + arr[1] + c)
+}
+
 function* basicMultistep(message) {
   const s1 = yield cmds.echo(message + "1")
   const s2 = yield cmds.echo(message + "2")
@@ -40,6 +44,7 @@ function* basicEmpty() {
 module.exports = {
   basic,
   basicMultiArg,
+  basicMultiArgWithArray,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,

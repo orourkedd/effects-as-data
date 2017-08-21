@@ -6,6 +6,7 @@ const {
   basicMultistepParallel,
   basicEmpty,
   basicMultiArg,
+  basicMultiArgWithArray,
   eitherTestError,
   eitherTestEmpty,
   asyncTest,
@@ -38,6 +39,43 @@ function* rethrow() {
 function* throwFoo() {
   throw new Error("foo")
 }
+
+
+test(
+  "testFn should pass (basic) with V2 syntax",
+  testFn(basic, () => {
+    // prettier-ignore
+    return [
+      ['foo'],
+      [ cmds.echo('foo'), 'foo' ],
+      'foo'
+    ]
+  })
+)
+
+test(
+  "testFn should pass (basicMultiArg) with V2 syntax",
+  testFn(basicMultiArg, () => {
+    // prettier-ignore
+    return [
+      ['foo', 'bar'],
+      [ cmds.echo('foobar'), 'foobar' ],
+      'foobar'
+    ]
+  })
+)
+
+test(
+  "testFn should pass (basicMultiArgWithArray) with V2 syntax",
+  testFnV2(basicMultiArgWithArray, () => {
+    // prettier-ignore
+    return [
+      [ ['foo', 'bar'], 'baz'],
+      [ cmds.echo('foobarbaz'), 'foobarbaz' ],
+      'foobarbaz'
+    ]
+  })
+)
 
 test(
   "testFn should fail if the function error is different than the test error",() => {

@@ -4,8 +4,6 @@ const chunk = require("lodash/chunk")
 const { deepEqual } = require("./specs/test-util")
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
-  checkForExpectedTypeMismatches(expected)
-
   assert(fn, "The function you are trying to test is undefined.")
 
   const step = expected[index]
@@ -59,12 +57,29 @@ function isError(e) {
   return e instanceof Error
 }
 
-const checkForExpectedTypeMismatches = expected => {
-  if (!Array.isArray(expected)) {
-    throw new Error(
-      `Your spec must return an array of tuples.  It is currently returning a value of type "${typeof expected}".`
-    )
+const testFn = (fn, spec) => {
+  let expectedLog = normalizeToTuples(spec())
+
+  checkCmdsArraySyntax(expectedLog)
+
+  return function() {
+    testRunner(fn, expectedLog)
   }
+}
+
+const testFnV2 = (fn, spec) => {
+  console.warn('Deprecation Warning: `testFnV2` will be removed in a future release. `testFn` now supports the v1 and v2 syntax')
+  return testFn(fn, spec)
+}
+
+function isTuplesArray(log) {  
+  return log.reduce((prev, curr) => {
+    if(prev === false) return false
+    return curr.length === 2
+  }, true)
+}
+
+const checkCmdsArraySyntax = expected => {
   for (let i = 0; i < expected.length; i++) {
     if (i + 1 >= expected.length) return
     let output = expected[i][1]
@@ -73,35 +88,33 @@ const checkForExpectedTypeMismatches = expected => {
     if (Array.isArray(output)) {
       assert(
         Array.isArray(nextInput),
-        "If an array of actions is yielded, it should return an array of results."
+        "If an array of cmds is yielded, it should return an array of results."
       )
     }
   }
 }
 
-const testFn = (fn, spec) => {
-  return function() {
-    let expectedLog = spec()
-    testRunner(fn, expectedLog)
+function normalizeToTuples(log) {
+  if (!Array.isArray(log)) {
+    throw new Error(
+      `Your spec must return an array of tuples.  It is currently returning a value of type "${typeof log}".`
+    )
   }
-}
 
-const testFnV2 = (fn, spec) => {
-  return function() {
-    let expectedLog = spec()
-    const flat = expectedLog.reduce((p, step, index, log) => {
-      if (index === 0 || index === log.length - 1) {
-        p.push(step)
-        return p
-      }
+  if (isTuplesArray(log)) return log
 
-      p.push(step[0])
-      p.push(step[1])
+  const flat = log.reduce((p, step, index, log) => {
+    if (index === 0 || index === log.length - 1) {
+      p.push(step)
       return p
-    }, [])
-    const v1Log = chunk(flat, 2)
-    testRunner(fn, v1Log)
-  }
+    }
+
+    p.push(step[0])
+    p.push(step[1])
+    return p
+  }, [])
+  
+  return chunk(flat, 2)
 }
 
 // Semantic test builder
