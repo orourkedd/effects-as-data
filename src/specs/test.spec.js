@@ -1,4 +1,4 @@
-const { functions, cmds } = require("./effects")
+const { functions, cmds } = require('./effects')
 const {
   basic,
   basicMultistep,
@@ -11,8 +11,8 @@ const {
   asyncTest,
   badHandler
 } = functions
-const { testFn, testFnV2, args } = require("../test")
-const { deepEqual } = require("./test-util")
+const { testFn, testFnV2, args } = require('../test')
+const { deepEqual } = require('./test-util')
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`)
@@ -20,7 +20,7 @@ function* singleLine(id) {
 }
 
 function* yieldArray() {
-  const s1 = yield [{ type: "test" }]
+  const s1 = yield [{ type: 'test' }]
   return s1
 }
 
@@ -29,35 +29,51 @@ const testYieldArray = testFn(yieldArray)
 
 function* rethrow() {
   try {
-    return yield cmds.echo("foo")
+    return yield cmds.echo('foo')
   } catch (e) {
-    throw new Error("bar")
+    throw new Error('bar')
   }
 }
+
+test('testFn should fail if tuples[0][0] is not an array', () => {
+  try {
+    testFn(throwFoo, () => {
+      // prettier-ignore
+      return [
+        [ null, new Error("bar") ]
+      ]
+    })()
+  } catch (e) {
+    deepEqual(
+      e.message,
+      'The first argument of the first tuple must be an array representing the arguments of the function.'
+    )
+    return
+  }
+  throw new Error('Failed: Did not compare error messages')
+})
 
 function* throwFoo() {
-  throw new Error("foo")
+  throw new Error('foo')
 }
 
-test(
-  "testFn should fail if the function error is different than the test error",() => {
-    try {
-      testFn(throwFoo, () => {
-        // prettier-ignore
-        return [
+test('testFn should fail if the function error is different than the test error', () => {
+  try {
+    testFn(throwFoo, () => {
+      // prettier-ignore
+      return [
           [ [], new Error("bar") ]
         ]
-      })()
-    } catch (e) {
-      deepEqual(e.name, 'Error on Step 1')
-      return
-    }
-    throw new Error("Failed: Did not compare error messages")
+    })()
+  } catch (e) {
+    deepEqual(e.name, 'Error on Step 1')
+    return
   }
-)
+  throw new Error('Failed: Did not compare error messages')
+})
 
 test(
-  "should be able to rethrow errors",
+  'should be able to rethrow errors',
   testFnV2(rethrow, () => {
     // prettier-ignore
     return [
@@ -69,14 +85,14 @@ test(
 )
 
 test(
-  "testFn should handle undefined returns for semantic test",
+  'testFn should handle undefined returns for semantic test',
   testFn(function*() {}, () => {
     return args().returns()
   })
 )
 
 test(
-  "testFn should curry",
+  'testFn should curry',
   testFn(basic)(() => {
     // prettier-ignore
     return [
@@ -87,7 +103,7 @@ test(
 )
 
 test(
-  "testFn should pass (basic)",
+  'testFn should pass (basic)',
   testFn(basic, () => {
     // prettier-ignore
     return [
@@ -100,7 +116,7 @@ test(
 // Basic
 
 test(
-  "testFn semantic should pass (basic)",
+  'testFn semantic should pass (basic)',
   testFn(basic, () => {
     //  prettier-ignore
     return args('foo')
@@ -110,7 +126,7 @@ test(
 )
 
 test(
-  "testFnV2 should pass (basic)",
+  'testFnV2 should pass (basic)',
   testFnV2(basic, () => {
     // prettier-ignore
     return [
@@ -122,7 +138,7 @@ test(
 )
 
 test(
-  "testFn should pass (basicMultiArg)",
+  'testFn should pass (basicMultiArg)',
   testFn(basicMultiArg, () => {
     // prettier-ignore
     return [
@@ -135,7 +151,7 @@ test(
 // Basic w multiple arguments
 
 test(
-  "testFn should pass (basicMultiArg)",
+  'testFn should pass (basicMultiArg)',
   testFn(basicMultiArg, () => {
     // prettier-ignore
     return [
@@ -146,7 +162,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicMultiArg)",
+  'testFn semantic should pass (basicMultiArg)',
   testFn(basicMultiArg, () => {
     // prettier-ignore
     return args('foo', 'bar')
@@ -156,7 +172,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicMultiArg)",
+  'testFn semantic should pass (basicMultiArg)',
   testFnV2(basicMultiArg, () => {
     // prettier-ignore
     return [
@@ -170,7 +186,7 @@ test(
 //  Basic with multiple steps
 
 test(
-  "testFn should pass (basicMultistep)",
+  'testFn should pass (basicMultistep)',
   testFn(basicMultistep, () => {
     // prettier-ignore
     return [
@@ -182,7 +198,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicMultistep)",
+  'testFn semantic should pass (basicMultistep)',
   testFn(basicMultistep, () => {
     // prettier-ignore
     return args('foo')
@@ -193,7 +209,7 @@ test(
 )
 
 test(
-  "testFnV2 should pass (basicMultistep)",
+  'testFnV2 should pass (basicMultistep)',
   testFnV2(basicMultistep, () => {
     // prettier-ignore
     return [
@@ -208,9 +224,9 @@ test(
 // Basic with parallel commands
 
 test(
-  "testFn should pass (basicParallel)",
+  'testFn should pass (basicParallel)',
   testFn(basicParallel, () => {
-    const c = [cmds.echo("foo"), cmds.echo("foo")]
+    const c = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
       [['foo'], c],
@@ -220,9 +236,9 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicParallel)",
+  'testFn semantic should pass (basicParallel)',
   testFn(basicParallel, () => {
-    const c = [cmds.echo("foo"), cmds.echo("foo")]
+    const c = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return args('foo')
       .yieldCmd(c).yieldReturns(['foo', 'foo'])
@@ -231,9 +247,9 @@ test(
 )
 
 test(
-  "testFnV2 should pass (basicParallel)",
+  'testFnV2 should pass (basicParallel)',
   testFnV2(basicParallel, () => {
-    const c = [cmds.echo("foo"), cmds.echo("foo")]
+    const c = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
       ['foo'],
@@ -246,10 +262,10 @@ test(
 //  Basic with multiple steps of parallel commands
 
 test(
-  "testFn should pass (basicMultistepParallel)",
+  'testFn should pass (basicMultistepParallel)',
   testFn(basicMultistepParallel, () => {
-    const c1 = [cmds.echo("foo"), cmds.echo("foo")]
-    const c2 = [cmds.echo("foo"), cmds.echo("foo")]
+    const c1 = [cmds.echo('foo'), cmds.echo('foo')]
+    const c2 = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
       [['foo'], c1],
@@ -260,10 +276,10 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicMultistepParallel)",
+  'testFn semantic should pass (basicMultistepParallel)',
   testFn(basicMultistepParallel, () => {
-    const c1 = [cmds.echo("foo"), cmds.echo("foo")]
-    const c2 = [cmds.echo("foo"), cmds.echo("foo")]
+    const c1 = [cmds.echo('foo'), cmds.echo('foo')]
+    const c2 = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return args('foo')
       .yieldCmd(c1).yieldReturns(['foo', 'foo'])
@@ -273,10 +289,10 @@ test(
 )
 
 test(
-  "testFnV2 should pass (basicMultistepParallel)",
+  'testFnV2 should pass (basicMultistepParallel)',
   testFnV2(basicMultistepParallel, () => {
-    const c1 = [cmds.echo("foo"), cmds.echo("foo")]
-    const c2 = [cmds.echo("foo"), cmds.echo("foo")]
+    const c1 = [cmds.echo('foo'), cmds.echo('foo')]
+    const c2 = [cmds.echo('foo'), cmds.echo('foo')]
     // prettier-ignore
     return [
       ['foo'],
@@ -290,7 +306,7 @@ test(
 //  Basic with empty args
 
 test(
-  "testFn should pass (basicEmpty)",
+  'testFn should pass (basicEmpty)',
   testFn(basicEmpty, () => {
     // prettier-ignore
     return [
@@ -301,7 +317,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (basicEmpty)",
+  'testFn semantic should pass (basicEmpty)',
   testFn(basicEmpty, () => {
     // prettier-ignore
     return args(null)
@@ -311,7 +327,7 @@ test(
 )
 
 test(
-  "testFnV2 should pass (basicEmpty)",
+  'testFnV2 should pass (basicEmpty)',
   testFnV2(basicEmpty, () => {
     // prettier-ignore
     return [
@@ -325,7 +341,7 @@ test(
 // Either test with error
 
 test(
-  "testFn should pass (eitherTestError)",
+  'testFn should pass (eitherTestError)',
   testFn(eitherTestError, () => {
     // prettier-ignore
     return [
@@ -336,7 +352,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (eitherTestError)",
+  'testFn semantic should pass (eitherTestError)',
   testFn(eitherTestError, () => {
     // prettier-ignore
     return args(null)
@@ -346,7 +362,7 @@ test(
 )
 
 test(
-  "testFnV2 semantic should pass (eitherTestError)",
+  'testFnV2 semantic should pass (eitherTestError)',
   testFnV2(eitherTestError, () => {
     // prettier-ignore
     return [
@@ -360,7 +376,7 @@ test(
 //  Handler error handling
 
 test(
-  "testFn should handle errors (badHandler)",
+  'testFn should handle errors (badHandler)',
   testFn(badHandler, () => {
     // prettier-ignore
     return [
@@ -371,7 +387,7 @@ test(
 )
 
 test(
-  "testFn semantic should handle errors (badHandler)",
+  'testFn semantic should handle errors (badHandler)',
   testFn(badHandler, () => {
     // prettier-ignore
     return args([null])
@@ -381,7 +397,7 @@ test(
 )
 
 test(
-  "testFn semantic should handle errors without returns (badHandler)",
+  'testFn semantic should handle errors without returns (badHandler)',
   testFn(badHandler, () => {
     // prettier-ignore
     return args([null])
@@ -390,7 +406,7 @@ test(
 )
 
 test(
-  "testFnV2 should handle errors (badHandler)",
+  'testFnV2 should handle errors (badHandler)',
   testFnV2(badHandler, () => {
     // prettier-ignore
     return [
@@ -404,7 +420,7 @@ test(
 // Either test empty
 
 test(
-  "testFn should pass (eitherTestEmpty)",
+  'testFn should pass (eitherTestEmpty)',
   testFn(eitherTestEmpty, () => {
     // prettier-ignore
     return [
@@ -415,7 +431,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (eitherTestEmpty)",
+  'testFn semantic should pass (eitherTestEmpty)',
   testFn(eitherTestEmpty, () => {
     // prettier-ignore
     return args(null)
@@ -425,7 +441,7 @@ test(
 )
 
 test(
-  "testFnV2 should pass (eitherTestEmpty)",
+  'testFnV2 should pass (eitherTestEmpty)',
   testFnV2(eitherTestEmpty, () => {
     // prettier-ignore
     return [
@@ -439,7 +455,7 @@ test(
 //  Async cmd
 
 test(
-  "testFn should pass (asyncTest)",
+  'testFn should pass (asyncTest)',
   testFn(asyncTest, () => {
     // prettier-ignore
     return [
@@ -450,7 +466,7 @@ test(
 )
 
 test(
-  "testFn semantic should pass (asyncTest)",
+  'testFn semantic should pass (asyncTest)',
   testFn(asyncTest, () => {
     // prettier-ignore
     return args(null)
@@ -460,7 +476,7 @@ test(
 )
 
 test(
-  "testFnV2 should pass (asyncTest)",
+  'testFnV2 should pass (asyncTest)',
   testFnV2(asyncTest, () => {
     // prettier-ignore
     return [
@@ -475,11 +491,11 @@ test(
 //  Throw from semantic test builder
 
 function* returnCmdResult() {
-  return yield cmds.echo("foo")
+  return yield cmds.echo('foo')
 }
 
 test(
-  "testFn semantic should return cmd result",
+  'testFn semantic should return cmd result',
   testFn(returnCmdResult, () => {
     //  prettier-ignore
     return args()
@@ -490,12 +506,12 @@ test(
 //  Throw from semantic test builder
 
 function* throwSemantic() {
-  const value = yield cmds.echo("foo")
-  throw new Error("oops")
+  const value = yield cmds.echo('foo')
+  throw new Error('oops')
 }
 
 test(
-  "testFn semantic should throw if .throws is used",
+  'testFn semantic should throw if .throws is used',
   testFn(throwSemantic, () => {
     //  prettier-ignore
     return args()
@@ -504,7 +520,7 @@ test(
   })
 )
 
-test("testFn should throw proper error if function throws incorrect error", () => {
+test('testFn should throw proper error if function throws incorrect error', () => {
   try {
     testFn(throwSemantic, () => {
       //  prettier-ignore
@@ -513,16 +529,16 @@ test("testFn should throw proper error if function throws incorrect error", () =
         .throws(new Error("wrong"))
     })()
   } catch (e) {
-    deepEqual(e.name, "Error on Step 2")
+    deepEqual(e.name, 'Error on Step 2')
     return
   }
-  throw new Error("Failed: Did not throw")
+  throw new Error('Failed: Did not throw')
 })
 
 //  Single line
 
 test(
-  "single line should pass",
+  'single line should pass',
   testSingleLine(() => {
     //  prettier-ignore
     return [
@@ -533,7 +549,7 @@ test(
 )
 
 test(
-  "testFn semantic single line should not fail",
+  'testFn semantic single line should not fail',
   testSingleLine(() => {
     // prettier-ignore
     return args('123')
@@ -542,43 +558,55 @@ test(
   })
 )
 
-test("testFn should give proper error message if yielding array but no results", () => {
+test('testFn should give proper error message if yielding array but no results', () => {
   try {
     testYieldArray(() => {
       //  prettier-ignore
       return [
-        [undefined, [{ type: 'test' }]]
+        [[], [{ type: 'test' }]]
       ]
     })()
   } catch (e) {
-    deepEqual(e.message, "Your spec does not have as many steps as your function.  Are you missing a return line?")
+    deepEqual(
+      e.message,
+      'Your spec does not have as many steps as your function.  Are you missing a return line?'
+    )
   }
 })
 
-test("testFn should give proper error message if spec is returning undefined", () => {
+test('testFn should give proper error message if spec is returning undefined', () => {
   try {
     testYieldArray(() => {})()
   } catch (e) {
-    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "undefined".')
+    deepEqual(
+      e.message,
+      'Your spec must return an array of tuples.  It is currently returning a value of type "undefined".'
+    )
   }
 })
 
-test("testFn should give proper error message if spec is returning an object", () => {
+test('testFn should give proper error message if spec is returning an object', () => {
   try {
     testYieldArray(() => {
       return {}
     })()
   } catch (e) {
-    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "object".')
+    deepEqual(
+      e.message,
+      'Your spec must return an array of tuples.  It is currently returning a value of type "object".'
+    )
   }
 })
 
-test("testFn should give proper error message if spec is returning an string", () => {
+test('testFn should give proper error message if spec is returning an string', () => {
   try {
     testYieldArray(() => {
-      return "what?"
+      return 'what?'
     })()
   } catch (e) {
-    deepEqual(e.message, 'Your spec must return an array of tuples.  It is currently returning a value of type "string".')
+    deepEqual(
+      e.message,
+      'Your spec must return an array of tuples.  It is currently returning a value of type "string".'
+    )
   }
 })

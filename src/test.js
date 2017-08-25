@@ -1,22 +1,28 @@
-const assert = require("assert")
-const curry = require("lodash/curry")
-const chunk = require("lodash/chunk")
-const { deepEqual } = require("./specs/test-util")
+const assert = require('assert')
+const curry = require('lodash/curry')
+const chunk = require('lodash/chunk')
+const { deepEqual } = require('./specs/test-util')
 
 const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   checkForExpectedTypeMismatches(expected)
 
-  assert(fn, "The function you are trying to test is undefined.")
+  assert(fn, 'The function you are trying to test is undefined.')
 
   const step = expected[index]
 
   if (step === undefined) {
     throw new Error(
-      "Your spec does not have as many steps as your function.  Are you missing a return line?"
+      'Your spec does not have as many steps as your function.  Are you missing a return line?'
     )
   }
 
   const [input, expectedOutput] = step
+
+  if (index === 0 && !Array.isArray(input)) {
+    throw new Error(
+      'The first argument of the first tuple must be an array representing the arguments of the function.'
+    )
+  }
   let g
   if (fn.next) {
     g = fn
@@ -73,7 +79,7 @@ const checkForExpectedTypeMismatches = expected => {
     if (Array.isArray(output)) {
       assert(
         Array.isArray(nextInput),
-        "If an array of actions is yielded, it should return an array of results."
+        'If an array of actions is yielded, it should return an array of results.'
       )
     }
   }
