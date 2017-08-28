@@ -396,6 +396,19 @@ test(
   })
 )
 
+function* throwImmediately() {
+  throw new Error('oops!')
+}
+
+test(
+  'testFn semantic should handle errors thrown immediately',
+  testFn(throwImmediately, () => {
+    // prettier-ignore
+    return args()
+      .throws(new Error('oops!'))
+  })
+)
+
 test(
   'testFn semantic should handle errors without returns (badHandler)',
   testFn(badHandler, () => {

@@ -113,7 +113,11 @@ const testFnV2 = (fn, spec) => {
 // Semantic test builder
 const args = (...fnArgs) => {
   const t = [[fnArgs]]
-  return { yieldCmd: yieldCmd(t), returns: returns(t) }
+  return {
+    yieldCmd: yieldCmd(t),
+    throws: throwAfterCmdReturns(t),
+    returns: returns(t)
+  }
 }
 
 const yieldCmd = t => v => {
