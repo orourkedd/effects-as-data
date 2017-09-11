@@ -8,6 +8,11 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 * Anywhere you can use promises, you can use effects-as-data.
 
+## Usage in Node and the Browser (ES6 and ES5)
+
+Node: `require('effects-as-data')`  
+Browser: `require('effects-as-data/es5')`
+
 ## Effects-as-data by example
 
 ### Getting Started (from scratch)
