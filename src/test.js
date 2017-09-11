@@ -51,7 +51,9 @@ const testRunner = (fn, expected, index = 0, previousOutput = null) => {
     deepEqual(output.value, expectedOutput)
     if (endOnError) return
   } catch (e) {
-    e.name = `Error on Step ${index + 1}`
+    const stepError = `Error on Step ${index + 1}`
+    e.name = stepError
+    e.stack = `${stepError}\n\n${e.stack}`
     throw e
   }
 
