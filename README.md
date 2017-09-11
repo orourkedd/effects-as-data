@@ -2,11 +2,15 @@
 
 Effects-as-data is a micro abstraction layer for Javascript that makes writing, **testing**, and monitoring side-effects easy.
 
-* Using effects-as-data can reduce the time you spend testing by 2-3 times (maybe more depending on who you ask).
-* Effects-as-data outputs detailed telemetry allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you detailed insight into your code while it runs in development and production.
+* Using effects-as-data can dramatically reduce the time it takes to deliver tested code.
+* Effects-as-data outputs detailed telemetry, during runtime, allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you insight into your code while it runs in development and production.
 * Effects-as-data is ~1kb minified+gzipped.
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 * Anywhere you can use promises, you can use effects-as-data.
+
+## Examples
+
+There are several working examples in `effects-as-data-examples`: [Open](https://github.com/orourkedd/effects-as-data-examples)
 
 ## Usage in Node and the Browser (ES6 and ES5)
 
