@@ -8,7 +8,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Effects-as-data is ~1kb minified+gzipped.
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 * Anywhere you can use promises, you can use effects-as-data.
-* The effects-as-data runtime is 100% stateless.
+* The effects-as-data runtime is a stateless function call.
 
 ## Table of Contents
 * [Examples of How to Do Things](#examples-of-how-to-do-things)
