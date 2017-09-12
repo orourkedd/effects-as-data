@@ -67,8 +67,8 @@ test(
     const apiResults = { results: [{ name: "Luke Skywalker" }] };
     // prettier-ignore
     return args()
-    .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
-    .returns(['Luke Skywalker'])
+      .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
+      .returns(['Luke Skywalker'])
   })
 );
 
@@ -475,7 +475,139 @@ const config = {
 
 ## Testing
 
-Coming soon
+Testing in effects-as-data is really easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Below are a few examples of testing with effects-as-data:
+
+### Standard Test
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  return person.name;
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: 'C-3P0'})
+      .returns('C-3P0')
+  }))
+})
+```
+
+### Short Return
+
+When your code does nothing to the result of the command and returns it immediately.
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+})
+```
+
+### Test that an error is thrown
+
+This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because its handled by effects-as-data.
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  const result = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  if (!result.name) throw new Error('oops')
+  return result
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+
+  it('should throw an error if person has no name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: '' })
+      .throws(new Error('oops'))
+  }))
+})
+```
+
+### Test that an error is re-thrown from a handler
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  try {
+    return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  } catch (e) {
+    throw new Error('some other error')
+  }
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+
+  it('should catch and throw a different error', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns(new Error('oops'))
+      .throws(new Error('some other error'))
+  }))
+})
+```
 
 ## Meta Command Handlers
 
