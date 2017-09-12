@@ -328,7 +328,7 @@ const config = {
 }
 ```
 
-### Output from `onCall`
+### Telemetry output from `onCall`
 
 ```js
 {
@@ -337,7 +337,44 @@ const config = {
   fn: [Function: getPeople],
   // the effects-as-data config
   config:
-   { name: 'getPeople',
+   {
+     name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique string correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ]
+    }
+  }
+}
+```
+
+### Telemetry output from `onCallComplete`
+
+```js
+{
+  // a boolean indicating if the function succeeded or threw an error
+  success: true,
+  // the function arguments
+  args: [],
+  fn: [Function: getPeople],
+  // time started
+  start: 1505229612164
+  // time ended
+  end: 1505229614506,
+  // how long the function took to run
+  latency: 2342,
+  // what the function returned (or threw)
+  result: [ 'Luke Skywalker', 'C-3PO' ],
+  // the effects-as-data config
+  config:
+   {
+     name: 'getPeople',
      onCall: [Function: onCall],
      onCallComplete: [Function: onCallComplete],
      onCommand: [Function: onCommand],
