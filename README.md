@@ -190,16 +190,12 @@ const { call, buildFunctions } = require('effects-as-data')
 const { cmds, handlers } = require('effects-as-data-universal')
 
 function* getPeople() {
-  const { payload } = yield cmds.httpGet('https://swapi.co/api/people')
-  const names = payload.results.map(p => p.name)
+  const { results } = yield cmds.httpGet('https://swapi.co/api/people')
+  const names = results.map(p => p.name)
   return names
 }
 
-const config = {
-  onCommandComplete: telemetry => {
-    console.log('Telemetry (from onCommandComplete):', telemetry)
-  }
-}
+const config = { /* lifecycle callbacks, etc */}
 
 const functions = buildFunctions(config, handlers, { getPeople })
 
