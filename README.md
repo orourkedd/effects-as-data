@@ -535,7 +535,7 @@ describe('getPerson()', () => {
 })
 ```
 
-### Test that an error is thrown
+### Test that an error is thrown from your code
 
 This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because they are handled by effects-as-data.
 
@@ -545,7 +545,7 @@ const cmds = require('effects-as-data-universal')
 
 function* getPerson(id) {
   const result = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  if (!result.name) throw new Error('oops')
+  if (!result.name) throw new Error('No Name!')
   return result
 }
 ```
@@ -567,7 +567,7 @@ describe('getPerson()', () => {
   it('should throw an error if person has no name', testGetPerson(() => {
     return args(2)
       .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: '' })
-      .throws(new Error('oops'))
+      .throws(new Error('No Name!'))
   }))
 })
 ```
