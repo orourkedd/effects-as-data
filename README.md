@@ -43,7 +43,7 @@ Why generators?  Generators allow us to write pure functions that perform multip
 
 ## Think in terms of inputs and outputs only
 
-Effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, there are only `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function.  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
+Effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, these are all considered `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function.  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
 
 ## Getting Started From Scratch
 
