@@ -326,10 +326,11 @@ const config = {
     console.log("Telemetry (from onCommandComplete):", telemetry);
   }
 }
+```
 
 ### Output from onCall
 
-```
+```js
 { args: [],
   fn: [Function: getPeople],
   config:
