@@ -624,9 +624,10 @@ const testGetPerson = testFn(getPerson)
 
 describe('getPerson()', () => {
   it('should get a person return his/her name', testGetPerson(() => {
+    const person = { name: 'C-3P0'}
     return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: 'C-3P0'})
-      .returns('C-3P0')
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns(person)
+      .returns(person.name)
   }))
 })
 ```
