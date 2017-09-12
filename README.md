@@ -183,11 +183,10 @@ fns
 See full example in the `effects-as-data-examples` repository: [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
 ## Getting Starting Using Existing Commands and Handlers
-This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
+This example demonstrates using the `effects-as-data-universal` module which contains commands/handlers that can be used anywhere Javascript runs.
 
 ```js
 const { call, buildFunctions } = require('effects-as-data')
-const { testFn, args } = require('effects-as-data/test')
 const { cmds, handlers } = require('effects-as-data-universal')
 
 function* getPeople() {
@@ -195,14 +194,6 @@ function* getPeople() {
   const names = payload.results.map(p => p.name)
   return names
 }
-
-// Semantic test style
-testFn(getPeople, () => {
-  const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
-  return args()
-    .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
-    .returns(['Luke Skywalker'])
-})()
 
 const config = {
   onCommandComplete: telemetry => {
