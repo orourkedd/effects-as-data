@@ -11,7 +11,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * The effects-as-data runtime is 100% stateless.
 
 ## Table of Contents
-* [Example Projects](#example-projects)
+* [Examples of How to Do Things](#examples-of-how-to-do-things)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
@@ -24,7 +24,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Parallelization of Commands](#parallelization-of-commands)
 * [Declarative Application Architecture](#declarative-application-architecture)
 
-## Example Projects
+## Examples of How to Do Things
 
 There are several working examples in `effects-as-data-examples`: [Open](https://github.com/orourkedd/effects-as-data-examples)
 
