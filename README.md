@@ -15,6 +15,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
+* [Calling an Effects-as-data Function](#calling-an-effects-as-data-function)
 * [Creating Your Own Commands and Handlers](#creating-your-own-commands-and-handlers)
 * [Error handling](#error-handling)
 * [Parallelization of Commands](#parallelization-of-commands)
@@ -201,6 +202,34 @@ const functions = buildFunctions(config, handlers, { getPeople })
 
 functions
   .getPeople()
+  .then(names => {
+    console.log('\n')
+    console.log('Function Results:')
+    console.log(names.join(', '))
+  })
+  .catch(console.error)
+```
+
+## Calling an Effects-as-data Function
+
+There are two ways to call an effects-as-data function.
+
+The first is to use `buildFunctions()` which will turn multiple effects-as-data functions in to normal, promise-returning functions.  You can see an example of this in [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers).
+
+The second way is to use the call function:
+```js
+const { call } = require('effects-as-data')
+const { cmds, handlers } = require('effects-as-data-universal')
+
+function* getPeople() {
+  const { results } = yield cmds.httpGet('https://swapi.co/api/people')
+  const names = results.map(p => p.name)
+  return names
+}
+
+const config = { /* lifecycle callbacks, etc */ }
+
+call(config, handlers, getPeople, /* arg1, arg2, etc */)
   .then(names => {
     console.log('\n')
     console.log('Function Results:')
