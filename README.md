@@ -69,7 +69,7 @@ module.exports = {
 ```
 
 ### Second, test your business logic.
-Write a test for the `getPeople` function that you are about to create.  Effects-as-data tests are compatible with any test runner like Jest, Mocha, etc.  For more on testing, see [Testing](#testing).
+Write a test for the `getPeople` function (that you are about to create).  Effects-as-data tests are compatible with any test runner like Jest, Mocha, etc.  For more on testing, see [Testing](#testing).
 
 Semantic test example:
 ```js
@@ -94,7 +94,7 @@ test(
 ```
 
 ### Third, write your business logic.
-Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to `effects-as-data`.  It is important to understand that when using effects-as-data that your business logic never actually `httpGet`'s anything.  It ONLY creates plain JSON objects and `yield`'s them out (`cmds.httpGet()` simply returns the JSON object from step 1).  This is one of the main reasons `effects-as-data` functions are easy to test. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/functions.js)
+Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to `effects-as-data`.  It is important to understand that when using effects-as-data that your business logic never actually `httpGet`'s anything.  It ONLY creates plain JSON objects and `yield`'s them out (`cmds.httpGet()` simply returns the JSON object from [Step 1](#first-create-a-command-creator)).  This is one of the main reasons `effects-as-data` functions are easy to test. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/functions.js)
 ```js
 // functions.js
 
@@ -112,7 +112,7 @@ module.exports = {
 ```
 
 ### Fourth, create a command handler.
-After the `command` object is `yield`ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).  This is the function mentioned in step 1 that actually performs the HTTP GET request.  Notice that the business logic does not call this function directly; the business logic in step 1 simply `yield`s the `httpGet` `command` out, and `effects-as-data` takes care of getting it to the handler.  The handler does the `effect` in `effects-as-data`. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/handlers.js)
+After the `command` object is `yield`-ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).  This is the function mentioned in [Step 1](#first-create-a-command-creator) that actually performs the HTTP GET request.  Notice that the business logic does not call this function directly; the business logic in [Step 1](#first-create-a-command-creator) simply `yield`-s the `httpGet` `command` out, and `effects-as-data` takes care of getting it to the handler.  The handler does the `effect` in `effects-as-data`. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/handlers.js)
 ```js
 // handlers.js
 
