@@ -32,6 +32,8 @@ When using in the browser (or in an old version of node): `require('effects-as-d
 ### First, create a command creator.
 This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  The command is placed on the `cmds` object for convenience.  This command represents the `data` in `effects-as-data`. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/cmds.js)
 ```js
+// cmds.js
+
 function httpGet(url) {
   return {
     type: "httpGet",
