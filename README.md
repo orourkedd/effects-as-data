@@ -307,7 +307,7 @@ test(
 
 ## Telemetry
 
-Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and use for monitoring and alerting.
+Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and used for monitoring and alerting.
 
 ```js
 const config = {
@@ -477,7 +477,11 @@ const config = {
 
 ## Testing
 
-Testing in effects-as-data is really easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Below are a few examples of testing with effects-as-data:
+Testing in effects-as-data is really easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Effects-as-data tests don't make assertions; they simply declare a data-structure and the test runner validates that the inputs and outputs in the data structure match the inputs and outputs of the function.
+
+NOTE: effects-as-data does not think in terms of `yield`, `return`s, `throw`s, etc.  In effects-as-data, there are only `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`ing out a command, `return`ing from the function, and `throw`ing an error are considered outputs.
+
+Below are a few examples of testing with effects-as-data:
 
 ### Standard Test
 
