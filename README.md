@@ -114,16 +114,14 @@ functions
 
 #### Full Example
 
-See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/index.js).
+See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
 ### Using existing commands and handlers
 This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
 
-Full example: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic-existing-handlers/index.js).
-
-Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run basic-existing-handlers`.
+Full example: [https://github.com/orourkedd/effects-as-data-examples/blob/master/misc-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/misc-examples).
 
 ```js
 const { call, buildFunctions } = require('effects-as-data')
@@ -166,10 +164,6 @@ functions
 ### Error handling
 
 This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
-
-Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/error-handling](https://github.com/orourkedd/effects-as-data-examples/tree/master/error-handling).
-
-Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run error-handling`.
 
 Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
 ```js
@@ -241,8 +235,6 @@ functions
 ### Parallelization of commands
 
 Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization](https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization).
-
-Run it: Clone `https://github.com/orourkedd/effects-as-data-examples` and run `npm run parallelization`.
 
 ```js
 const { cmds } = require('effects-as-data-universal')
