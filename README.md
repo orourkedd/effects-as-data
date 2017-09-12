@@ -14,6 +14,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Examples of How to Do Things](#examples-of-how-to-do-things)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
+* [Usage with React and Redux](#usage-with-react-and-redux)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Using Core Commands and Handlers](#using-core-commands-and-handlers)
 * [Testing](#testing)
@@ -50,6 +51,10 @@ Consider this diagram which shows the mental model for decomposing a generator t
 
 When using in Node: `require('effects-as-data')`  
 When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
+
+## Usage with React and Redux
+
+See [effects-as-data-redux](https://github.com/orourkedd/effects-as-data-redux) for how to use effects-as-data with React and Redux.
 
 ## Getting Started From Scratch
 
