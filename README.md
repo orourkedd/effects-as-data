@@ -208,13 +208,15 @@ This example demonstrates handling errors with `either`.  Unlike the above examp
 
 Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
 ```js
+// get-people.js
+
 const { cmds } = require('effects-as-data-universal')
 
 function* getPeople() {
   const httpGet = cmds.httpGet('https://swapi.co/api/people')
-  const emptyResults = { payload: { results: [] } }
-  const { payload } = yield cmds.either(httpGet, emptyResults)
-  return payload.results.map(p => p.name)
+  const defaultResults = { results: [] }
+  const { results } = yield cmds.either(httpGet, defaultResults)
+  return results.map(p => p.name)
 }
 
 module.exports = getPeople
@@ -222,6 +224,8 @@ module.exports = getPeople
 
 Tests for the `getPeople` function.  These tests are using Jest:
 ```js
+// get-people.spec.js
+
 const { cmds } = require('effects-as-data-universal')
 const { testFn, args } = require('effects-as-data/test')
 const getPeople = require('./get-people')
@@ -231,9 +235,9 @@ const testGetPeople = testFn(getPeople)
 test(
   "getPeople should return a list of people's names",
   testGetPeople(() => {
-    const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
+    const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
-    const emptyResults = { payload: { results: [] } }
+    const emptyResults = { results: [] }
     // prettier-ignore
     return args()
       .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(apiResults)
@@ -244,33 +248,15 @@ test(
 test(
   'getPeople should return an empty list if http get errors out',
   testGetPeople(() => {
-    const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
+    const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
-    const emptyResults = { payload: { results: [] } }
+    const emptyResults = { results: [] }
     // prettier-ignore
     return args()
       .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(emptyResults)
       .returns([])
   })
 )
-```
-
-The index file that runs it.  `onCommandComplete` is removed for brevity:
-```js
-const { call, buildFunctions } = require('effects-as-data')
-const { handlers } = require('effects-as-data-universal')
-const getPeople = require('./get-people')
-
-const functions = buildFunctions({}, handlers, { getPeople })
-
-functions
-  .getPeople()
-  .then(names => {
-    console.log('Function Results:')
-    console.log(names.join(', '))
-  })
-  .catch(console.error)
-
 ```
 
 ## Parallelization of commands
@@ -280,11 +266,10 @@ Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master
 ```js
 const { cmds } = require('effects-as-data-universal')
 
-function* getPeople(person1, person2) {
-  const httpGet1 = cmds.httpGet(`https://swapi.co/api/people/${person1}`)
-  const httpGet2 = cmds.httpGet(`https://swapi.co/api/people/${person2}`)
-  const [result1, result2] = yield [httpGet1, httpGet2]
-  return [result1.payload, result2.payload].map(p => p.name)
+function* getPeople(people) {
+  const getCmds = people.map(id => cmds.httpGet(`https://swapi.co/api/people/${id}`))
+  const results = yield getCmds
+  return results.map(p => p.name)
 }
 
 module.exports = getPeople
@@ -301,33 +286,16 @@ const testGetPeople = testFn(getPeople)
 test(
   "getPeople should return a list of people's names",
   testGetPeople(() => {
-    const apiResult1 = { payload: { name: 'Luke Skywalker' } }
-    const apiResult2 = { payload: { name: 'C-3PO' } }
+    const apiResult1 = { name: 'Luke Skywalker' }
+    const apiResult2 = { name: 'C-3PO' }
     const httpGet1 = cmds.httpGet('https://swapi.co/api/people/1')
     const httpGet2 = cmds.httpGet('https://swapi.co/api/people/2')
     // prettier-ignore
-    return args(1, 2)
+    return args([1, 2])
       .yieldCmd([httpGet1, httpGet2]).yieldReturns([apiResult1, apiResult2])
       .returns(['Luke Skywalker', 'C-3PO'])
   })
 )
-```
-
-The index file that runs it.  `onCommandComplete` is removed for brevity:
-```js
-const { call, buildFunctions } = require('effects-as-data')
-const { handlers } = require('effects-as-data-universal')
-const getPeople = require('./get-people')
-
-const functions = buildFunctions({}, handlers, { getPeople })
-
-functions
-  .getPeople(1, 2)
-  .then(names => {
-    console.log('Function Results:')
-    console.log(names.join(', '))
-  })
-  .catch(console.error)
 ```
 
 ## Telemetry
