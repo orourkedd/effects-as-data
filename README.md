@@ -16,12 +16,12 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
+* [Testing](#testing)
+* [Telemetry](#telemetry)
 * [Calling an Effects-as-data Function](#calling-an-effects-as-data-function)
 * [Creating Your Own Commands and Handlers](#creating-your-own-commands-and-handlers)
 * [Error handling](#error-handling)
 * [Parallelization of Commands](#parallelization-of-commands)
-* [Telemetry](#telemetry)
-* [Testing](#testing)
 * [Declarative Application Architecture](#declarative-application-architecture)
 
 ## Example Projects
@@ -209,6 +209,357 @@ functions
     console.log(names.join(', '))
   })
   .catch(console.error)
+```
+
+## Testing
+
+Testing in effects-as-data is easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Effects-as-data tests don't make assertions; they simply declare a data-structure and the test runner validates that the inputs and outputs in the data structure match the inputs and outputs of the function.
+
+Below are a few examples of testing with effects-as-data:
+
+### Standard Test
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  return person.name;
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    const person = { name: 'C-3P0'}
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns(person)
+      .returns(person.name)
+  }))
+})
+```
+
+### Standard Test with Multiple Steps
+
+```js
+// get-people-with-same-name.js
+const cmds = require('effects-as-data-universal')
+const { postgres } = require('some-effects-as-data-postgres-module')
+
+function* getPeopleWithSameName(id) {
+  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  const peopleWSameName = yield postgres('SELECT * FROM users WHERE name = $1', [person.name])
+  return peopleWSameName
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const { postgres } = require('some-effects-as-data-postgres-module')
+const getPeopleWithSameName = require('./get-person')
+
+const testGetPeopleWithSameName = testFn(getPeopleWithSameName)
+
+describe('getPeopleWithSameName()', () => {
+  it('should get a person return his/her name', testGetPeopleWithSameName(() => {
+    const dbResults = []
+    const person = {
+      id: 2,
+      name: 'Foo'
+    }
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/${person.id}`)).yieldReturns(person)
+      .yieldCmd(postgres('SELECT * FROM users WHERE name = $1', [person.name])).yieldReturns(dbResults)
+      .returns(dbResults)
+  }))
+})
+```
+
+### Short Return
+
+When your code does nothing to the result of the command and returns it immediately.
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+})
+```
+
+### Test that an error is thrown from your code
+
+This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because they are handled by effects-as-data.
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  const result = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  if (!result.name) throw new Error('No Name!')
+  return result
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+
+  it('should throw an error if person has no name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: '' })
+      .throws(new Error('No Name!'))
+  }))
+})
+```
+
+### Test that an error is re-thrown from a handler
+
+```js
+// get-person.js
+const cmds = require('effects-as-data-universal')
+
+function* getPerson(id) {
+  try {
+    return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  } catch (e) {
+    throw new Error('some other error')
+  }
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPerson = require('./get-person')
+
+const testGetPerson = testFn(getPerson)
+
+describe('getPerson()', () => {
+  it('should get a person return his/her name', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
+  }))
+
+  it('should catch and throw a different error', testGetPerson(() => {
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldThrows(new Error('oops'))
+      .throws(new Error('some other error'))
+  }))
+})
+```
+
+## Telemetry
+
+Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and used for monitoring and alerting.  This telemetry covers all inputs and outputs of the function.
+
+```js
+const config = {
+  // Before a function is called
+  onCall: telemetry => {
+    console.log("Telemetry (from onCall):", telemetry);
+  },
+  // After a function completes
+  onCallComplete: telemetry => {
+    console.log("Telemetry (from onCallComplete):", telemetry);
+  },
+  // Before a command is processed
+  onCommand: telemetry => {
+    console.log("Telemetry (from onCommand):", telemetry);
+  },
+  // After a command is processed
+  onCommandComplete: telemetry => {
+    console.log("Telemetry (from onCommandComplete):", telemetry);
+  }
+}
+```
+
+### Telemetry output from `onCall`
+
+```js
+{
+  // the function arguments
+  args: [],
+  fn: [Function: getPeople],
+  // the effects-as-data config
+  config:
+   {
+     name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique string correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
+    }
+  }
+}
+```
+
+### Telemetry output from `onCallComplete`
+
+```js
+{
+  // a boolean indicating if the function succeeded or threw an error
+  success: true,
+  // the function arguments
+  args: [],
+  fn: [Function: getPeople],
+  // time started
+  start: 1505229612164
+  // time ended
+  end: 1505229614506,
+  // how long the function took to run
+  latency: 2342,
+  // what the function returned (or threw)
+  result: [ 'Luke Skywalker', 'C-3PO' ],
+  // the effects-as-data config
+  config:
+   {
+     name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique string correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
+    }
+  }
+}
+```
+
+### Telemetry output from `onCommand`
+
+```js
+{
+  // the command
+  command: {
+    type: 'httpGet',
+    url: 'https://swapi.co/api/people',
+    headers: {},
+    options: {}
+  },
+  // time command started to be processed,
+  start: 1505229612164,
+  // the step in the effects-as-data (ie, which yield)
+  step: 0,
+  // the index of the function in the above step (always 0 for a
+  // single command.  Could be greater than 0 if parallelizing commands).
+  index: 0,
+  fn: [Function: getPeople],
+  // the effects-as-data config
+  config:
+   {
+     name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique string correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
+    }
+  }
+}
+```
+
+### Telemetry output from `onCommandComplete`
+
+```js
+{
+  // a boolean indicating if the function succeeded or threw an error
+  success: true,
+  // the command
+  command: {
+    type: 'httpGet',
+    url: 'https://swapi.co/api/people',
+    headers: {},
+    options: {}
+  },
+  // time started
+  start: 1505229612164
+  // time ended
+  end: 1505229614506,
+  // how long the function took to run
+  latency: 342,
+  // the step in the effects-as-data (ie, which yield)
+  step: 0,
+  // the index of the function in the above step (always 0 for a
+  // single command.  Could be greater than 0 if parallelizing commands).
+  index: 0,
+  // what is returned from the handler (or an error if the handler threw)
+  result: [ 'Luke Skywalker', 'C-3PO' ],
+  // the effects-as-data config
+  config:
+   {
+     name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique string correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
+    }
+  }
+}
 ```
 
 ## Calling an Effects-as-data Function
@@ -497,357 +848,6 @@ test(
       .returns(['Luke Skywalker', 'C-3PO'])
   })
 )
-```
-
-## Telemetry
-
-Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and used for monitoring and alerting.  This telemetry covers all inputs and outputs of the function.
-
-```js
-const config = {
-  // Before a function is called
-  onCall: telemetry => {
-    console.log("Telemetry (from onCall):", telemetry);
-  },
-  // After a function completes
-  onCallComplete: telemetry => {
-    console.log("Telemetry (from onCallComplete):", telemetry);
-  },
-  // Before a command is processed
-  onCommand: telemetry => {
-    console.log("Telemetry (from onCommand):", telemetry);
-  },
-  // After a command is processed
-  onCommandComplete: telemetry => {
-    console.log("Telemetry (from onCommandComplete):", telemetry);
-  }
-}
-```
-
-### Telemetry output from `onCall`
-
-```js
-{
-  // the function arguments
-  args: [],
-  fn: [Function: getPeople],
-  // the effects-as-data config
-  config:
-   {
-     name: 'getPeople',
-     onCall: [Function: onCall],
-     onCallComplete: [Function: onCallComplete],
-     onCommand: [Function: onCommand],
-     onCommandComplete: [Function: onCommandComplete],
-     cid: [a unique string correlation id],
-     //  the stack represents the effects-as-data call stack.  This is used when
-     //  effects-as-data functions are chained together using cmds.call(fn)
-     stack: [
-       {config, handlers, fn: [Function: getPeople], args}
-     ],
-     // ... whatever other arbitrary values you put onto the effects-as-data config
-    }
-  }
-}
-```
-
-### Telemetry output from `onCallComplete`
-
-```js
-{
-  // a boolean indicating if the function succeeded or threw an error
-  success: true,
-  // the function arguments
-  args: [],
-  fn: [Function: getPeople],
-  // time started
-  start: 1505229612164
-  // time ended
-  end: 1505229614506,
-  // how long the function took to run
-  latency: 2342,
-  // what the function returned (or threw)
-  result: [ 'Luke Skywalker', 'C-3PO' ],
-  // the effects-as-data config
-  config:
-   {
-     name: 'getPeople',
-     onCall: [Function: onCall],
-     onCallComplete: [Function: onCallComplete],
-     onCommand: [Function: onCommand],
-     onCommandComplete: [Function: onCommandComplete],
-     cid: [a unique string correlation id],
-     //  the stack represents the effects-as-data call stack.  This is used when
-     //  effects-as-data functions are chained together using cmds.call(fn)
-     stack: [
-       {config, handlers, fn: [Function: getPeople], args}
-     ],
-     // ... whatever other arbitrary values you put onto the effects-as-data config
-    }
-  }
-}
-```
-
-### Telemetry output from `onCommand`
-
-```js
-{
-  // the command
-  command: {
-    type: 'httpGet',
-    url: 'https://swapi.co/api/people',
-    headers: {},
-    options: {}
-  },
-  // time command started to be processed,
-  start: 1505229612164,
-  // the step in the effects-as-data (ie, which yield)
-  step: 0,
-  // the index of the function in the above step (always 0 for a
-  // single command.  Could be greater than 0 if parallelizing commands).
-  index: 0,
-  fn: [Function: getPeople],
-  // the effects-as-data config
-  config:
-   {
-     name: 'getPeople',
-     onCall: [Function: onCall],
-     onCallComplete: [Function: onCallComplete],
-     onCommand: [Function: onCommand],
-     onCommandComplete: [Function: onCommandComplete],
-     cid: [a unique string correlation id],
-     //  the stack represents the effects-as-data call stack.  This is used when
-     //  effects-as-data functions are chained together using cmds.call(fn)
-     stack: [
-       {config, handlers, fn: [Function: getPeople], args}
-     ],
-     // ... whatever other arbitrary values you put onto the effects-as-data config
-    }
-  }
-}
-```
-
-### Telemetry output from `onCommandComplete`
-
-```js
-{
-  // a boolean indicating if the function succeeded or threw an error
-  success: true,
-  // the command
-  command: {
-    type: 'httpGet',
-    url: 'https://swapi.co/api/people',
-    headers: {},
-    options: {}
-  },
-  // time started
-  start: 1505229612164
-  // time ended
-  end: 1505229614506,
-  // how long the function took to run
-  latency: 342,
-  // the step in the effects-as-data (ie, which yield)
-  step: 0,
-  // the index of the function in the above step (always 0 for a
-  // single command.  Could be greater than 0 if parallelizing commands).
-  index: 0,
-  // what is returned from the handler (or an error if the handler threw)
-  result: [ 'Luke Skywalker', 'C-3PO' ],
-  // the effects-as-data config
-  config:
-   {
-     name: 'getPeople',
-     onCall: [Function: onCall],
-     onCallComplete: [Function: onCallComplete],
-     onCommand: [Function: onCommand],
-     onCommandComplete: [Function: onCommandComplete],
-     cid: [a unique string correlation id],
-     //  the stack represents the effects-as-data call stack.  This is used when
-     //  effects-as-data functions are chained together using cmds.call(fn)
-     stack: [
-       {config, handlers, fn: [Function: getPeople], args}
-     ],
-     // ... whatever other arbitrary values you put onto the effects-as-data config
-    }
-  }
-}
-```
-
-## Testing
-
-Testing in effects-as-data is easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Effects-as-data tests don't make assertions; they simply declare a data-structure and the test runner validates that the inputs and outputs in the data structure match the inputs and outputs of the function.
-
-Below are a few examples of testing with effects-as-data:
-
-### Standard Test
-
-```js
-// get-person.js
-const cmds = require('effects-as-data-universal')
-
-function* getPerson(id) {
-  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  return person.name;
-}
-```
-
-```js
-// get-person.spec.js
-const { testFn, args } = require('effects-as-data/test')
-const cmds = require('effects-as-data-universal')
-const getPerson = require('./get-person')
-
-const testGetPerson = testFn(getPerson)
-
-describe('getPerson()', () => {
-  it('should get a person return his/her name', testGetPerson(() => {
-    const person = { name: 'C-3P0'}
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns(person)
-      .returns(person.name)
-  }))
-})
-```
-
-### Standard Test with Multiple Steps
-
-```js
-// get-people-with-same-name.js
-const cmds = require('effects-as-data-universal')
-const { postgres } = require('some-effects-as-data-postgres-module')
-
-function* getPeopleWithSameName(id) {
-  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  const peopleWSameName = yield postgres('SELECT * FROM users WHERE name = $1', [person.name])
-  return peopleWSameName
-}
-```
-
-```js
-// get-person.spec.js
-const { testFn, args } = require('effects-as-data/test')
-const cmds = require('effects-as-data-universal')
-const { postgres } = require('some-effects-as-data-postgres-module')
-const getPeopleWithSameName = require('./get-person')
-
-const testGetPeopleWithSameName = testFn(getPeopleWithSameName)
-
-describe('getPeopleWithSameName()', () => {
-  it('should get a person return his/her name', testGetPeopleWithSameName(() => {
-    const dbResults = []
-    const person = {
-      id: 2,
-      name: 'Foo'
-    }
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/${person.id}`)).yieldReturns(person)
-      .yieldCmd(postgres('SELECT * FROM users WHERE name = $1', [person.name])).yieldReturns(dbResults)
-      .returns(dbResults)
-  }))
-})
-```
-
-### Short Return
-
-When your code does nothing to the result of the command and returns it immediately.
-
-```js
-// get-person.js
-const cmds = require('effects-as-data-universal')
-
-function* getPerson(id) {
-  return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-}
-```
-
-```js
-// get-person.spec.js
-const { testFn, args } = require('effects-as-data/test')
-const cmds = require('effects-as-data-universal')
-const getPerson = require('./get-person')
-
-const testGetPerson = testFn(getPerson)
-
-describe('getPerson()', () => {
-  it('should get a person return his/her name', testGetPerson(() => {
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
-  }))
-})
-```
-
-### Test that an error is thrown from your code
-
-This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because they are handled by effects-as-data.
-
-```js
-// get-person.js
-const cmds = require('effects-as-data-universal')
-
-function* getPerson(id) {
-  const result = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  if (!result.name) throw new Error('No Name!')
-  return result
-}
-```
-
-```js
-// get-person.spec.js
-const { testFn, args } = require('effects-as-data/test')
-const cmds = require('effects-as-data-universal')
-const getPerson = require('./get-person')
-
-const testGetPerson = testFn(getPerson)
-
-describe('getPerson()', () => {
-  it('should get a person return his/her name', testGetPerson(() => {
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
-  }))
-
-  it('should throw an error if person has no name', testGetPerson(() => {
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns({ name: '' })
-      .throws(new Error('No Name!'))
-  }))
-})
-```
-
-### Test that an error is re-thrown from a handler
-
-```js
-// get-person.js
-const cmds = require('effects-as-data-universal')
-
-function* getPerson(id) {
-  try {
-    return yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  } catch (e) {
-    throw new Error('some other error')
-  }
-}
-```
-
-```js
-// get-person.spec.js
-const { testFn, args } = require('effects-as-data/test')
-const cmds = require('effects-as-data-universal')
-const getPerson = require('./get-person')
-
-const testGetPerson = testFn(getPerson)
-
-describe('getPerson()', () => {
-  it('should get a person return his/her name', testGetPerson(() => {
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).returns({ name: 'C-3P0'})
-  }))
-
-  it('should catch and throw a different error', testGetPerson(() => {
-    return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldThrows(new Error('oops'))
-      .throws(new Error('some other error'))
-  }))
-})
 ```
 
 ## Declarative Application Architecture
