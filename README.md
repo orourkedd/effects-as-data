@@ -11,7 +11,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ## Table of Contents
 * [Example Projects](#example-projects)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
-* [Pure Functions and Effects-as-data](#pure-functions-and-effects-as-data)
+* [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Think in terms of inputs and outputs only](#think-in-terms-of-inputs-and-outputs-only)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
