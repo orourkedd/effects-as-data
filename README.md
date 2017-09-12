@@ -15,6 +15,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
+* [Creating Your Own Commands and Handlers](#creating-your-own-commands-and-handlers)
 * [Error handling](#error-handling)
 * [Parallelization of Commands](#parallelization-of-commands)
 * [Telemetry](#telemetry)
@@ -220,6 +221,10 @@ functions
   })
   .catch(console.error)
 ```
+
+## Creating Your Own Commands and Handlers
+
+See [Getting Started From Scratch](#getting-started-from-scratch) to learn how to create your own commands and handlers.  You can also reference [effects-as-data-universal](https://github.com/orourkedd/effects-as-data-universal) for many examples of commands and handlers.
 
 ## Error handling
 
