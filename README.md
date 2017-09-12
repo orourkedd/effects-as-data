@@ -231,6 +231,8 @@ Below are various examples of error handling with effects-as-data.  It is import
 
 By default errors should act just like they do in `async/await`.  Things get fun, however, when you use command modifiers like [either](#using-cmdseither) or [retry](#using-cmdsretry).  Using command modifiers can add sophisticated error handling to your code without adding complexity.  Pro tip: Because command modifiers are not really a thing (I just call them that because they run other commands), they are all composable.
 
+NOTE: you can easily write your own command modifiers.  Follow the example of `either` here: [either cmd](https://github.com/orourkedd/effects-as-data-universal/blob/master/src/cmds/either.js), [either handler](https://github.com/orourkedd/effects-as-data-universal/blob/master/src/handlers/either.js).
+
 ### Using `try/catch` like in `async/await`
 
 ```js
