@@ -126,6 +126,7 @@ const yieldCmd = t => v => {
   t[t.length - 1][1] = v
   return {
     yieldReturns: yieldReturns(t),
+    yieldThrows: yieldReturns(t),
     throws: yieldReturnThrows(t),
     returns: returnCmdResult(t)
   }

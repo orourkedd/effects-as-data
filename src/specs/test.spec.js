@@ -396,6 +396,16 @@ test(
   })
 )
 
+test(
+  'testFn semantic should handle errors using yieldThrows and throws (badHandler)',
+  testFn(badHandler, () => {
+    // prettier-ignore
+    return args([null])
+      .yieldCmd(cmds.die('oops')).yieldThrows(new Error('oops!'))
+      .throws(new Error('oops!'))
+  })
+)
+
 function* throwImmediately() {
   throw new Error('oops!')
 }

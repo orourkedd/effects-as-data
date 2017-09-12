@@ -537,7 +537,7 @@ describe('getPerson()', () => {
 
 ### Test that an error is thrown
 
-This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because its handled by effects-as-data.
+This does not apply to errors are thrown by handlers.  Errors thrown by handlers don't need to be tested because they are handled by effects-as-data.
 
 ```js
 // get-person.js
@@ -603,7 +603,7 @@ describe('getPerson()', () => {
 
   it('should catch and throw a different error', testGetPerson(() => {
     return args(2)
-      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldReturns(new Error('oops'))
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/2`)).yieldThrows(new Error('oops'))
       .throws(new Error('some other error'))
   }))
 })
