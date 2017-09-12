@@ -1,6 +1,6 @@
 # Effects-as-data
 
-Effects-as-data is a micro abstraction layer for Javascript that makes writing, **testing**, and monitoring side-effects easy.
+Effects-as-data is a micro abstraction layer for Javascript that makes writing, [testing](https://github.com/orourkedd/effects-as-data#second-test-your-business-logic), and [monitoring](https://github.com/orourkedd/effects-as-data#fifth-optionally-setting-up-monitoring--telemetry) side-effects easy.
 
 * Using effects-as-data can dramatically reduce the time it takes to deliver tested code.
 * Effects-as-data outputs detailed telemetry, during runtime, allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you insight into your code while it runs in development and production.
@@ -73,8 +73,21 @@ const handlers = {
 The effects-as-data config accepts an `onCommandComplete` callback which will be called every time a `command` completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.  *Note*, this step is optional.
 ```js
 const config = {
+  // Before a function is called
+  onCall: telemetry => {
+    console.log("Telemetry (from onCall):", telemetry);
+  },
+  // After a function completes
+  onCallComplete: telemetry => {
+    console.log("Telemetry (from onCallComplete):", telemetry);
+  },
+  // Before a command is processed
+  onCommand: telemetry => {
+    console.log("Telemetry (from onCommand):", telemetry);
+  },
+  // After a command is processed
   onCommandComplete: telemetry => {
-    console.log('Telemetry (from onCommandComplete):', telemetry)
+    console.log("Telemetry (from onCommandComplete):", telemetry);
   }
 }
 ```
