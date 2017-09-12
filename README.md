@@ -11,6 +11,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ## Table of Contents
 * [Example Projects](#example-projects)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
+* [Pure Functions and Effects-as-data](#pure-functions-and-effects-as-data)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
 * [Error handling](#error-handling)
@@ -28,6 +29,18 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 
 When using in Node: `require('effects-as-data')`  
 When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
+
+## Pure Functions and Effects-as-data
+
+Pure functions are almost magical compared to normal functions.  In fact, impure functions are not really functions (they are more like scripts).  Pure functions are easy to test, are composable, and are not as concerned with dependencies.  All around, pure functions are easier to use.
+
+In Javascript, there is no built-in way to write a pure function that can also perform a <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a> (i.e. write to a database, http request, etc).  Because of this we end up writing difficult to test spaghetti code and resort to brittle testing techniques like mocking and dependency injection.
+
+In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  This allows you to write ALL of your business logic as pure functions.
+
+Why generators?  Generators allow us to write pure functions that perform multiple side effects.  The best you can do with a normal pure function is to return multiple side effects that are run in parallel.
+
+Effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, there are only `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function.  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
 
 ## Getting Started From Scratch
 
@@ -307,7 +320,7 @@ test(
 
 ## Telemetry
 
-Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and used for monitoring and alerting.
+Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and used for monitoring and alerting.  This telemetry covers all inputs and outputs of the function.
 
 ```js
 const config = {
@@ -478,8 +491,6 @@ const config = {
 ## Testing
 
 Testing in effects-as-data is really easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Effects-as-data tests don't make assertions; they simply declare a data-structure and the test runner validates that the inputs and outputs in the data structure match the inputs and outputs of the function.
-
-NOTE on theory: effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, there are only `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function.  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
 
 Below are a few examples of testing with effects-as-data:
 
