@@ -28,7 +28,7 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 
 ## Pure Functions, Generators, and Effects-as-data
 
-Pure functions are almost magical compared to normal functions.  In fact, impure functions are not really functions (they are more like scripts).  Pure functions are easy to test, are composable, and are not as concerned with dependencies.  All around, pure functions are easier to use.
+[Pure functions](https://en.wikipedia.org/wiki/Pure_function) are almost magical compared to normal functions.  In fact, impure functions are not really functions (they are more like scripts).  Pure functions are easy to test, are composable, and are not as concerned with dependencies.  All around, pure functions are easier to use.
 
 In Javascript, there is no built-in way to write a pure function that can also perform a <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a> (i.e. write to a database, http request, etc).  Because of this we end up writing difficult to test spaghetti code "functions" and resort to brittle testing techniques like mocking and dependency injection.
 
