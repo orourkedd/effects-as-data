@@ -227,7 +227,7 @@ Below are various examples of error handling with effects-as-data.  It is import
 
   1. Pass the error to the `onCommandComplete` or `onCallComplete` lifecycle callbacks.  This means you don't have to do any logging in your business logic.  
   1. Reject the promise created by effects-as-data around your running function and pass the error out.
-  1. You don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-trycatch))
+  1. You don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-trycatch-like-in-asyncawait))
 
 By default errors should act just like they do in `async/await`.  Things get fun, however, when you use command modifiers like [either](#using-cmdseither) or [retry](#using-cmdsretry).  Using command modifiers can add sophisticated error handling to your code without adding complexity.  Pro tip: Because command modifiers are not really a thing (I just call them that because they run other commands), they are all composable.
 
