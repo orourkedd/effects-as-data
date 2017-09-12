@@ -32,7 +32,7 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 
 In Javascript, there is no built-in way to write a pure function that can also perform a <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a> (i.e. write to a database, http request, etc).  Because of this we end up writing difficult to test spaghetti code "functions" and resort to brittle testing techniques like mocking and dependency injection.
 
-In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  A generator is like a "function with multiple returns".  Effects-as-data used generators. The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
+In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  Effects-as-data used generators. A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
 
 Why generators?  Generators allow us to write pure functions that perform multiple side effects.  The best you can do with a normal pure function is to return multiple side effects that are run in parallel.
 
