@@ -266,6 +266,8 @@ test(
 
 ## Parallelization of commands
 
+Parallelization of commands in effects-as-data is easy.  Simply yield an array of commands, and an array of results will be returned in the same order.
+
 See Working Example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/misc-examples).
 
 ```js
