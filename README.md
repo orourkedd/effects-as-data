@@ -185,7 +185,7 @@ fns
 See full example in the `effects-as-data-examples` repository: [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
 ## Using Core Commands and Handlers
-This example demonstrates using the `effects-as-data-universal` module which contains commands/handlers that can be used anywhere Javascript runs.  You can use commands and handers from any module and/or [create your own](getting-started-from-scratch).
+This example demonstrates using the [effects-as-data-universal](https://github.com/orourkedd/effects-as-data-universal) module which contains commands/handlers that can be used anywhere Javascript runs.  You can use commands and handers from any module and/or [create your own](getting-started-from-scratch).
 
 ```js
 const { buildFunctions } = require('effects-as-data')
