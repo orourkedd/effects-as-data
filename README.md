@@ -10,9 +10,9 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 
 ## Table of Contents
 * [Example Projects](#example-projects)
-* [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Think in terms of inputs and outputs only](#think-in-terms-of-inputs-and-outputs-only)
+* [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
 * [Error handling](#error-handling)
@@ -25,11 +25,6 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ## Example Projects
 
 There are several working examples in `effects-as-data-examples`: [Open](https://github.com/orourkedd/effects-as-data-examples)
-
-## Usage in Node and the Browser (ES6 and ES5)
-
-When using in Node: `require('effects-as-data')`  
-When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
 
 ## Pure Functions, Generators, and Effects-as-data
 
@@ -44,6 +39,11 @@ Why generators?  Generators allow us to write pure functions that perform multip
 ## Think in terms of inputs and outputs only
 
 Effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, these are all considered `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function (i.e. it has a deterministic domain and range).  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
+
+## Usage in Node and the Browser (ES6 and ES5)
+
+When using in Node: `require('effects-as-data')`  
+When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
 
 ## Getting Started From Scratch
 
