@@ -305,7 +305,49 @@ test(
 
 ## Telemetry
 
-Coming soon
+Detailed telemetry about your effects-as-data code can be gathered by adding any of these lifecycle callbacks to your effects-as-data config.  This data can be pushed to your logging system, dropped onto Kafka, etc, and use for monitoring and alerting.
+
+```js
+const config = {
+  // Before a function is called
+  onCall: telemetry => {
+    console.log("Telemetry (from onCall):", telemetry);
+  },
+  // After a function completes
+  onCallComplete: telemetry => {
+    console.log("Telemetry (from onCallComplete):", telemetry);
+  },
+  // Before a command is processed
+  onCommand: telemetry => {
+    console.log("Telemetry (from onCommand):", telemetry);
+  },
+  // After a command is processed
+  onCommandComplete: telemetry => {
+    console.log("Telemetry (from onCommandComplete):", telemetry);
+  }
+}
+
+### Output from onCall
+
+```
+{ args: [],
+  fn: [Function: getPeople],
+  config:
+   { name: 'getPeople',
+     onCall: [Function: onCall],
+     onCallComplete: [Function: onCallComplete],
+     onCommand: [Function: onCommand],
+     onCommandComplete: [Function: onCommandComplete],
+     cid: [a unique correlation id],
+     //  the stack represents the effects-as-data call stack.  This is used when
+     //  effects-as-data functions are chained together using cmds.call(fn)
+     stack: [
+       {config, handlers, fn: [Function: getPeople], args}
+     ]
+    }
+  }
+}
+```
 
 ## Testing
 
