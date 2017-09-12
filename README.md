@@ -85,7 +85,6 @@ test(
   "getPeople() should return list of names",
   testGetPeople(() => {
     const apiResults = { results: [{ name: "Luke Skywalker" }] };
-    // prettier-ignore
     return args()
       .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
       .returns(['Luke Skywalker'])
@@ -200,7 +199,6 @@ function* getPeople() {
 // Semantic test style
 testFn(getPeople, () => {
   const apiResults = { payload: { results: [{ name: 'Luke Skywalker' }] } }
-  // prettier-ignore
   return args()
     .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldReturns(apiResults)
     .returns(['Luke Skywalker'])
@@ -226,9 +224,17 @@ functions
 
 ## Error handling
 
-This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
+Below are various example of error handling with effects-as-data.  It is important to note that effects-as-data will catch any error thrown by your effects-as-data function or a handler and will:
 
-Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
+  1. Pass the error to the `onCommandComplete` or `onCallComplete` lifecycle callbacks.  This means you don't have to do any logging in your business logic.  
+  1. Reject the promise created by effects-as-data around your running function and pass the error out.
+  1. You don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-try-catch))
+
+### Using `cmds.either`
+
+This example demonstrates handling errors using the `either` command found in `effects-as-data-universal`.
+
+Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `defaultResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
 
 See Working Example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/misc-examples).
 
@@ -263,7 +269,6 @@ test(
     const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
     const emptyResults = { results: [] }
-    // prettier-ignore
     return args()
       .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(apiResults)
       .returns(['Luke Skywalker'])
@@ -271,12 +276,63 @@ test(
 )
 
 test(
-  'getPeople should return an empty list if http get errors out',
+  'getPeople should return an empty list if httpGet errors out',
   testGetPeople(() => {
     const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
     const emptyResults = { results: [] }
-    // prettier-ignore
+    return args()
+      .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(emptyResults)
+      .returns([])
+  })
+)
+```
+
+### Using `try/catch`
+
+```js
+// get-people.js
+
+const { cmds } = require('effects-as-data-universal')
+
+function* getPeople() {
+  try {
+    const results = yield cmds.httpGet('https://swapi.co/api/people')
+    return results.map(p => p.name)
+  } catch (e) {
+    const defaultResults = { results: [] }
+    return defaultResults
+  }
+}
+
+module.exports = getPeople
+```
+
+Tests for the `getPeople` function.  These tests are using Jest:
+```js
+// get-people.spec.js
+
+const { cmds } = require('effects-as-data-universal')
+const { testFn, args } = require('effects-as-data/test')
+const getPeople = require('./get-people')
+
+const testGetPeople = testFn(getPeople)
+
+test(
+  "getPeople should catch an httpGet error and return a default value",
+  testGetPeople(() => {
+    return args()
+      .yieldCmd(cmds.httpGet('https://swapi.co/api/people')).yieldThrows(new Error('oops'))
+      .returns({ results: [] })
+  })
+)
+
+test(
+  'getPeople should return an empty list if httpGet errors out',
+  testGetPeople(() => {
+    const apiResults = { results: [{ name: 'Luke Skywalker' }] }
+    const httpGet = cmds.httpGet('https://swapi.co/api/people')
+    const emptyResults = { results: [] }
     return args()
       .yieldCmd(cmds.either(httpGet, emptyResults)).yieldReturns(emptyResults)
       .returns([])
@@ -317,7 +373,6 @@ test(
     const apiResult2 = { name: 'C-3PO' }
     const httpGet1 = cmds.httpGet('https://swapi.co/api/people/1')
     const httpGet2 = cmds.httpGet('https://swapi.co/api/people/2')
-    // prettier-ignore
     return args([1, 2])
       .yieldCmd([httpGet1, httpGet2]).yieldReturns([apiResult1, apiResult2])
       .returns(['Luke Skywalker', 'C-3PO'])
