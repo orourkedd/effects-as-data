@@ -18,6 +18,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Telemetry](#telemetry)
 * [Testing](#testing)
 * [Meta Command Handlers](#meta-command-handlers)
+* [Declarative Application Architecture](#declarative-application-architecture)
 
 ## Example Projects
 
@@ -313,3 +314,9 @@ Coming soon
 ## Meta Command Handlers
 
 Coming Soon
+
+## Declarative Application Architecture
+
+The DAA is an architecture wherein all business logic functions in the application are pure functions, the outputs of which declare side effects with plain JSON objects (these declarations are also known as “commands”).  Applications written using DAA do not need dependency injection, singletons, globals, etc, to use side effect producing code in a testable manner.  Business logic functions in DAA do not have dependencies on or references to side effect producing code and do nothing but output plain JSON commands.  Writing all business logic with highly testable, pure functions and not having to be concerned with how dependencies are accessed throughout the application contribute to a dramatic increase in developer velocity for new applications and while refactoring existing DAA applications.
+
+![Declarative Application Architecture](https://s3-us-west-2.amazonaws.com/effects-as-data/daa.png)
