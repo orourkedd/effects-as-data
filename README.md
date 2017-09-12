@@ -15,7 +15,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
-* [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
+* [Using Existing Commands and Handlers](#using-existing-commands-and-handlers)
 * [Testing](#testing)
 * [Error handling](#error-handling)
 * [Telemetry](#telemetry)
@@ -184,8 +184,8 @@ fns
 
 See full example in the `effects-as-data-examples` repository: [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
-## Getting Starting Using Existing Commands and Handlers
-This example demonstrates using the `effects-as-data-universal` module which contains commands/handlers that can be used anywhere Javascript runs.
+## Using Existing Commands and Handlers
+This example demonstrates using the `effects-as-data-universal` module which contains commands/handlers that can be used anywhere Javascript runs.  You can use commands and handers from any module and/or [create your own](getting-started-from-scratch).
 
 ```js
 const { buildFunctions } = require('effects-as-data')
@@ -735,7 +735,7 @@ const config = {
 
 There are two ways to call an effects-as-data function.
 
-The first is to use `buildFunctions()` which will turn multiple effects-as-data functions in to normal, promise-returning functions.  You can see an example of this in [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers).
+The first is to use `buildFunctions()` which will turn multiple effects-as-data functions in to normal, promise-returning functions.  You can see an example of this in [Getting Starting Using Existing Commands and Handlers](#using-existing-commands-and-handlers).
 
 The second way is to use the call function:
 ```js
