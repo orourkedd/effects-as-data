@@ -17,6 +17,10 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Parallelization of Commands](#parallelization-of-commands)
 * [Telemetry](#telemetry)
 * [Testing](#testing)
+* [Meta Command Handlers](#meta-command-handlers)
+  * either
+  * retry
+  * hit
 
 ## Example Projects
 
@@ -207,6 +211,9 @@ functions
 This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
 
 Below is the `getPeople` function.  Notice the use of `cmds.either`.  The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `emptyResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `emptyResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
+
+See Working Example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/misc-examples).
+
 ```js
 // get-people.js
 
@@ -261,7 +268,7 @@ test(
 
 ## Parallelization of commands
 
-Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization](https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization).
+See Working Example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/misc-examples).
 
 ```js
 const { cmds } = require('effects-as-data-universal')
@@ -305,3 +312,7 @@ Coming soon
 ## Testing
 
 Coming soon
+
+## Meta Command Handlers
+
+Coming Soon
