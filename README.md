@@ -1,6 +1,6 @@
 # Effects-as-data
 
-Effects-as-data is a micro abstraction layer for Javascript that makes writing, [testing](https://github.com/orourkedd/effects-as-data#second-test-your-business-logic), and [monitoring](https://github.com/orourkedd/effects-as-data#fifth-optionally-setting-up-monitoring--telemetry) side-effects easy.
+Effects-as-data is a micro abstraction layer for Javascript that makes writing, [testing](#testing), and [monitoring](#telemetry) side-effects easy.
 
 * Using effects-as-data can dramatically reduce the time it takes to deliver tested code.
 * Effects-as-data outputs detailed telemetry, during runtime, allowing you to see every side-effect (HTTP, Disk IO, etc), its latency, and its result giving you insight into your code while it runs in development and production.
