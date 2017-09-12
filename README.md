@@ -32,9 +32,9 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 
 In Javascript, there is no built-in way to write a pure function that can also perform a <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a> (i.e. write to a database, http request, etc).  Because of this we end up writing difficult to test spaghetti code "functions" and resort to brittle testing techniques like mocking and dependency injection.
 
-In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  Effects-as-data uses [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators).
+In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  The runtime will take care of handling the command.  In effects-as-data, you write these pure functions using [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators).
 
-Why generators? A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
+Why generators? A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives you the power to write very complex side effect production operations as a pure function.
 
 ### Think in terms of inputs and outputs only
 
@@ -52,7 +52,7 @@ When using in the browser (or in an old version of node): `require('effects-as-d
 ## Getting Started From Scratch
 
 ### First, create a command creator.
-This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  The command is placed on the `cmds` object for convenience.  This command represents the `data` in `effects-as-data`. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/cmds.js)
+This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  This command represents the `data` in `effects-as-data`. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/cmds.js)
 ```js
 // cmds.js
 
@@ -69,7 +69,7 @@ module.exports = {
 ```
 
 ### Second, test your business logic.
-Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions demonstrated below. [See Working Code](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic/functions.spec.js)
+Write a test for the `getPeople` function that you are about to create.  Effects-as-data tests are compatible with any test runner like Jest, Mocha, etc.  For more on testing, see [Testing](#testing).
 
 Semantic test example:
 ```js
