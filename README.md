@@ -328,18 +328,21 @@ const config = {
 }
 ```
 
-### Output from onCall
+### Output from `onCall`
 
 ```js
-{ args: [],
+{
+  // the function arguments
+  args: [],
   fn: [Function: getPeople],
+  // the effects-as-data config
   config:
    { name: 'getPeople',
      onCall: [Function: onCall],
      onCallComplete: [Function: onCallComplete],
      onCommand: [Function: onCommand],
      onCommandComplete: [Function: onCommandComplete],
-     cid: [a unique correlation id],
+     cid: [a unique string correlation id],
      //  the stack represents the effects-as-data call stack.  This is used when
      //  effects-as-data functions are chained together using cmds.call(fn)
      stack: [
