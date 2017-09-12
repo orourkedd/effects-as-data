@@ -44,7 +44,7 @@ Effects-as-data does not think in terms of functions `yield`-ing, `return`-ing, 
 
 Consider this diagram which shows the mental model for decomposing a generator to pure functions.  Note, this diagram merely represents a way to think of generators as a series of pure functions.  This model is very effective, but remember "all models are wrong [though] some are useful."  When you are testing this generator function, in your mind you should be really testing `a()` and `b()` in the diagram below.  For more info on testing, see [Testing](#testing).
 
-![Think of Generators as pure functions](https://s3-us-west-2.amazonaws.com/effects-as-data/pure-generator.png)
+![Think of Generators as pure functions](https://s3-us-west-2.amazonaws.com/effects-as-data/pure-generator-white.png)
 
 ## Usage in Node and the Browser (ES6 and ES5)
 
