@@ -8,6 +8,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Effects-as-data is ~1kb minified+gzipped.
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 * Anywhere you can use promises, you can use effects-as-data.
+* The effects-as-data runtime is 100% stateless.
 
 ## Table of Contents
 * [Example Projects](#example-projects)
@@ -187,7 +188,7 @@ See full example in the `effects-as-data-examples` repository: [effects-as-data-
 This example demonstrates using the `effects-as-data-universal` module which contains commands/handlers that can be used anywhere Javascript runs.
 
 ```js
-const { call, buildFunctions } = require('effects-as-data')
+const { buildFunctions } = require('effects-as-data')
 const { cmds, handlers } = require('effects-as-data-universal')
 
 function* getPeople() {
@@ -241,6 +242,52 @@ call(config, handlers, getPeople, /* arg1, arg2, etc */)
 ## Creating Your Own Commands and Handlers
 
 See [Getting Started From Scratch](#getting-started-from-scratch) to learn how to create your own commands and handlers.  You can also reference [effects-as-data-universal](https://github.com/orourkedd/effects-as-data-universal) for many examples of commands and handlers.
+
+### Anatomy of a handler
+
+A handler is simply a function that receives a command object and does something with it.
+
+A few notes on handlers:
+  1. Effects-as-data will handle errors from handlers so they should throw errors when things go wrong.
+  1. Handlers can return a promise, return a normal value (string, number, object, etc), return nothing, or throw an error.
+  1. Handlers can call another effects-as-data function (see below).
+
+#### Simple Handler
+
+```js
+function httpGet(cmd) {
+  return fetch(cmd.url).then(r => r.json());
+}
+```
+
+#### Simple Handler Returning a Number
+
+```js
+// notice that the cmd is not even used
+function now(cmd) {
+  return Date.now()
+}
+```
+
+#### Handler that calls another effects-as-data function
+
+This example is taken from the [either](https://github.com/orourkedd/effects-as-data-universal/blob/master/src/handlers/either.js) hander in [effects-as-data-universal](https://github.com/orourkedd/effects-as-data-universal).
+
+Notice that all handlers receive an object as a second argument.  This object has a reference to the [call](#calling-an-effects-as-data-function) function, the current effects-as-data config and handlers.
+
+```js
+// notice that the command has a cmd property
+function either({ cmd, defaultValue }, { call, config, handlers }) {
+  return call(config, handlers, function*() {
+    try {
+      const result = yield cmd
+      return result || defaultValue
+    } catch (e) {
+      return defaultValue
+    }
+  })
+}
+```
 
 ## Error handling
 
