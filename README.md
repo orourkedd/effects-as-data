@@ -529,6 +529,42 @@ describe('getPerson()', () => {
 })
 ```
 
+### Standard Test with Multiple Steps
+
+```js
+// get-people-with-same-name.js
+const cmds = require('effects-as-data-universal')
+
+function* getPeopleWithSameName(id) {
+  const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  const peopleWSameName = yield cmds.postgres('SELECT * FROM users WHERE name = $1', [person.name])
+  return peopleWSameName
+}
+```
+
+```js
+// get-person.spec.js
+const { testFn, args } = require('effects-as-data/test')
+const cmds = require('effects-as-data-universal')
+const getPeopleWithSameName = require('./get-person')
+
+const testGetPeopleWithSameName = testFn(getPeopleWithSameName)
+
+describe('getPeopleWithSameName()', () => {
+  it('should get a person return his/her name', testGetPeopleWithSameName(() => {
+    const dbResults = []
+    const person = {
+      id: 2,
+      name: 'Foo'
+    }
+    return args(2)
+      .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/${person.id}`)).yieldReturns(person)
+      .yieldCmd(cmds.postgres('SELECT * FROM users WHERE name = $1', [person.name])).yieldReturns(dbResults)
+      .returns(dbResults)
+  }))
+})
+```
+
 ### Short Return
 
 When your code does nothing to the result of the command and returns it immediately.
