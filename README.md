@@ -224,11 +224,13 @@ functions
 
 ## Error handling
 
-Below are various example of error handling with effects-as-data.  It is important to note that effects-as-data will catch any error thrown by your effects-as-data function or a handler and will:
+Below are various example of error handling with effects-as-data.  It is important to note that effects-as-data will catch any error thrown by your effects-as-data function or thrown by handler and will:
 
   1. Pass the error to the `onCommandComplete` or `onCallComplete` lifecycle callbacks.  This means you don't have to do any logging in your business logic.  
   1. Reject the promise created by effects-as-data around your running function and pass the error out.
-  1. You don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-try-catch))
+  1. You don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-trycatch))
+
+By default error should act just like they do in `async/await`.  Things get fun, however, when you use meta commands like [either](#using-cmdseither) or [retry](#using-cmdsretry).  Using command modifiers can add sophisticated error handling to your code without adding complexity.  Pro tip: Because command modifiers are not really a thing (we just call them that because they run other commands), they are all composable.
 
 ### Using `try/catch`
 
@@ -344,7 +346,7 @@ test(
 
 This example demonstrates handling errors using the `retry` command found in `effects-as-data-universal`.
 
-The `retry` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails, the `retry` handler will continue to retry the command n-number of times and at the times specified by the durations array.  If a default value is supplied, it will return this value on failure, otherwise it will throw the error from the last failed command.
+The `retry` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails, the `retry` handler will continue to retry the command `durations.length` number of times and at the times specified by the `durations` array.  If a default value is supplied, it will return this value when all retries fail, otherwise it will throw the error from the last failed command.
 
 ```js
 // get-people.js
@@ -386,13 +388,13 @@ test(
 )
 
 test(
-  'getPeople should return an empty list if httpGet errors out',
+  'getPeople should return an empty list if all retried fail',
   testGetPeople(() => {
     const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
     const defaultResults = { results: [] }
     return args()
-      .yieldCmd(cmds.either(httpGet, defaultResults)).yieldReturns(defaultResults)
+      .yieldCmd(cmds.retry(httpGet, [100, 500, 1000], defaultResults)).yieldReturns(defaultResults)
       .returns([])
   })
 )
