@@ -637,7 +637,7 @@ describe('getPerson()', () => {
 ```js
 // get-people-with-same-name.js
 const cmds = require('effects-as-data-universal')
-const { postgres } = require('effects-as-data-postgres')
+const { postgres } = require('some-effects-as-data-postgres-module')
 
 function* getPeopleWithSameName(id) {
   const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
@@ -650,7 +650,7 @@ function* getPeopleWithSameName(id) {
 // get-person.spec.js
 const { testFn, args } = require('effects-as-data/test')
 const cmds = require('effects-as-data-universal')
-const { postgres } = require('effects-as-data-postgres')
+const { postgres } = require('some-effects-as-data-postgres-module')
 const getPeopleWithSameName = require('./get-person')
 
 const testGetPeopleWithSameName = testFn(getPeopleWithSameName)
