@@ -12,6 +12,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * [Example Projects](#example-projects)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Pure Functions and Effects-as-data](#pure-functions-and-effects-as-data)
+* [Think in terms of inputs and outputs only](#think-in-terms-of-inputs-and-outputs-only)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
 * [Error handling](#error-handling)
@@ -36,9 +37,11 @@ Pure functions are almost magical compared to normal functions.  In fact, impure
 
 In Javascript, there is no built-in way to write a pure function that can also perform a <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a> (i.e. write to a database, http request, etc).  Because of this we end up writing difficult to test spaghetti code "functions" and resort to brittle testing techniques like mocking and dependency injection.
 
-In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  This allows you to write ALL of your business logic as pure functions.
+In comes effects-as-data.  Effects-as-data is a runtime that allows you to write pure functions that merely declare side effects (commands).  A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and can normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
 
 Why generators?  Generators allow us to write pure functions that perform multiple side effects.  The best you can do with a normal pure function is to return multiple side effects that are run in parallel.
+
+## Think in terms of inputs and outputs only
 
 Effects-as-data does not think in terms of `yield`, `return`'s, `throw`'s, etc.  In effects-as-data, there are only `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By only thining in terms of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be used a pure function.  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
 
