@@ -8,6 +8,16 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Effects-as-data has *almost* no performance overhead (see `npm run perf`).
 * Anywhere you can use promises, you can use effects-as-data.
 
+## Table of Contents
+* [Examples](#examples)
+* [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
+* [Getting Started From Scratch](#getting-started-from-scratch)
+* [Getting Starting Using Existing Commands and Handlers](#getting-started-from-scratch)
+* [Error handling](#error-handling)
+* [Parallelization of Commands](#parallelization-of-commands)
+* [Telemetry](#telemetry)
+* [Testing](#testing)
+
 ## Examples
 
 There are several working examples in `effects-as-data-examples`: [Open](https://github.com/orourkedd/effects-as-data-examples)
@@ -17,9 +27,7 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 When using in Node: `require('effects-as-data')`  
 When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
 
-## Effects-as-data by example
-
-### Getting Started (from scratch)
+### Getting Started From Scratch
 
 #### First, create a command creator.
 This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  The command is placed on the `cmds` object for convenience.  This command represents the `data` in `effects-as-data`.
@@ -118,10 +126,8 @@ See full example in the `effects-as-data-examples` repository: [https://github.c
 
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
-### Using existing commands and handlers
+### Getting Starting Using Existing Commands and Handlers
 This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
-
-Full example: [https://github.com/orourkedd/effects-as-data-examples/blob/master/misc-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/misc-examples).
 
 ```js
 const { call, buildFunctions } = require('effects-as-data')
@@ -288,3 +294,11 @@ functions
   })
   .catch(console.error)
 ```
+
+### Telemetry
+
+Coming soon
+
+### Testing
+
+Coming soon
