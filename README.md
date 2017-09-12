@@ -534,10 +534,11 @@ describe('getPerson()', () => {
 ```js
 // get-people-with-same-name.js
 const cmds = require('effects-as-data-universal')
+const { postgres } = require('effects-as-data-postgres')
 
 function* getPeopleWithSameName(id) {
   const person = yield cmds.httpGet(`https://swapi.co/api/people/${id}`);
-  const peopleWSameName = yield cmds.postgres('SELECT * FROM users WHERE name = $1', [person.name])
+  const peopleWSameName = yield postgres('SELECT * FROM users WHERE name = $1', [person.name])
   return peopleWSameName
 }
 ```
@@ -546,6 +547,7 @@ function* getPeopleWithSameName(id) {
 // get-person.spec.js
 const { testFn, args } = require('effects-as-data/test')
 const cmds = require('effects-as-data-universal')
+const { postgres } = require('effects-as-data-postgres')
 const getPeopleWithSameName = require('./get-person')
 
 const testGetPeopleWithSameName = testFn(getPeopleWithSameName)
@@ -559,7 +561,7 @@ describe('getPeopleWithSameName()', () => {
     }
     return args(2)
       .yieldCmd(cmds.httpGet(`https://swapi.co/api/people/${person.id}`)).yieldReturns(person)
-      .yieldCmd(cmds.postgres('SELECT * FROM users WHERE name = $1', [person.name])).yieldReturns(dbResults)
+      .yieldCmd(postgres('SELECT * FROM users WHERE name = $1', [person.name])).yieldReturns(dbResults)
       .returns(dbResults)
   }))
 })
