@@ -11,7 +11,6 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ## Table of Contents
 * [Example Projects](#example-projects)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
-* [Think in terms of inputs and outputs only](#think-in-terms-of-inputs-and-outputs-only)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Getting Started From Scratch](#getting-started-from-scratch)
 * [Getting Starting Using Existing Commands and Handlers](#getting-starting-using-existing-commands-and-handlers)
@@ -36,7 +35,7 @@ In comes effects-as-data.  Effects-as-data is a runtime that allows you to write
 
 Why generators? A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
 
-## Think in terms of inputs and outputs only
+### Think in terms of inputs and outputs only
 
 Effects-as-data does not think in terms of functions `yield`-ing, `return`-ing, `throw`-ing, etc.  In effects-as-data, these are all considered `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By using this mental model of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be reasoned about as pure function (i.e. it has a deterministic domain and range).  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
 
