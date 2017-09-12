@@ -180,7 +180,7 @@ fns
 
 ### Full Example
 
-See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
+See full example in the `effects-as-data-examples` repository: [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
 ## Getting Starting Using Existing Commands and Handlers
 This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
