@@ -222,7 +222,7 @@ Below are various examples of error handling with effects-as-data.  It is import
 
 Because the runtime handles errors for you, you don't have to write a test to verify that an error is handled ([unless you are doing something specific in a `catch` block](#using-trycatch-like-in-asyncawait))
 
-By default errors should act just like they do in `async/await`.  Things get fun, however, when you use command modifiers like [either](#using-cmdseither) or [retry](#using-cmdsretry).  Using command modifiers can add sophisticated error handling to your code without adding complexity.  Pro tip: Because command modifiers are not really a thing (I just call them that because they run other commands), they are all composable.
+By default errors should act just like they do in `async/await`.  Things get fun, however, when you use command modifiers like [either](#using-cmdseither) or [retry](#using-cmdsretry).  Using command modifiers can add sophisticated error handling to your code without adding complexity.
 
 NOTE: you can easily write your own command modifiers.  Follow the example of `either` here: [either cmd](https://github.com/orourkedd/effects-as-data-universal/blob/master/src/cmds/either.js), [either handler](https://github.com/orourkedd/effects-as-data-universal/blob/master/src/handlers/either.js).
 
@@ -270,7 +270,7 @@ test(
 
 This example demonstrates handling errors using the `either` command found in `effects-as-data-universal`.
 
-The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `defaultResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `defaultResults`, there is no need for an `if` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
+The `either` handler will process the `httpGet` command, and if the command is successful, will return the response.  If the `httpGet` command fails or returns a falsey value, the `either` handler will return `defaultResults`.  Because the `either` handler will never throw an exception and will either return a successful result or `defaultResults`, there is no need for an `if` or a `try/catch` statement to ensure success before the `map`.  Using this pattern will reduce the number of code paths and simplify code.
 
 See Working Example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/misc-examples).
 
@@ -370,7 +370,7 @@ test(
 )
 
 test(
-  'getPeople should return an empty list if all retried fail',
+  'getPeople should return an empty list if all retries fail',
   testGetPeople(() => {
     const apiResults = { results: [{ name: 'Luke Skywalker' }] }
     const httpGet = cmds.httpGet('https://swapi.co/api/people')
@@ -467,7 +467,8 @@ const config = {
      //  effects-as-data functions are chained together using cmds.call(fn)
      stack: [
        {config, handlers, fn: [Function: getPeople], args}
-     ]
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
     }
   }
 }
@@ -503,7 +504,8 @@ const config = {
      //  effects-as-data functions are chained together using cmds.call(fn)
      stack: [
        {config, handlers, fn: [Function: getPeople], args}
-     ]
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
     }
   }
 }
@@ -541,7 +543,8 @@ const config = {
      //  effects-as-data functions are chained together using cmds.call(fn)
      stack: [
        {config, handlers, fn: [Function: getPeople], args}
-     ]
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
     }
   }
 }
@@ -586,7 +589,8 @@ const config = {
      //  effects-as-data functions are chained together using cmds.call(fn)
      stack: [
        {config, handlers, fn: [Function: getPeople], args}
-     ]
+     ],
+     // ... whatever other arbitrary values you put onto the effects-as-data config
     }
   }
 }
