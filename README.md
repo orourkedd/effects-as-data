@@ -269,18 +269,6 @@ test(
       .returns({ results: [] })
   })
 )
-
-test(
-  'getPeople should return an empty list if httpGet errors out',
-  testGetPeople(() => {
-    const apiResults = { results: [{ name: 'Luke Skywalker' }] }
-    const httpGet = cmds.httpGet('https://swapi.co/api/people')
-    const defaultResults = { results: [] }
-    return args()
-      .yieldCmd(cmds.either(httpGet, defaultResults)).yieldReturns(defaultResults)
-      .returns([])
-  })
-)
 ```
 
 ### Using `cmds.either()`
