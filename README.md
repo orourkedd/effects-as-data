@@ -215,6 +215,8 @@ functions
 
 Testing in effects-as-data is easy, even for complex asynchronous operations.  This is because effects-as-data functions are pure functions and only output JSON objects.  Effects-as-data tests don't make assertions; they simply declare a data-structure and the test runner validates that the inputs and outputs in the data structure match the inputs and outputs of the function.
 
+Its important to note that effects-as-data tests cover 1 full code path through a function.  Effects-as-data are thorough (on a mathematical level): your test CANNOT leave things out or skip things in a given code path.  If your function has 2 code paths (because of something like an `if`), you'll need at least 2 tests.  The nice thing about effects-as-data tests is that they combine the Chicago and London schools of testing.  An effects-as-data test will ensure that your side effects happen in the right way, in the right order, and in the right number of times, but only by checking state.  Its the best of both schools of thought.
+
 Below are a few examples of testing with effects-as-data:
 
 ### Standard Test
