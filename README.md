@@ -248,6 +248,7 @@ See [Getting Started From Scratch](#getting-started-from-scratch) to learn how t
 A handler is simply a function that receives a command object and does something with it.
 
 A few notes on handlers:
+  1. The type field on a command indicates which handler handles it.
   1. Effects-as-data will handle errors from handlers so they should throw or reject when things go wrong.
   1. Handlers can return a promise, return a normal value (string, number, object, etc), return nothing, or throw an error.
   1. Handlers can call another effects-as-data functions (see below).
