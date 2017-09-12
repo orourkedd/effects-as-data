@@ -127,7 +127,7 @@ module.exports = {
 ```
 
 ### Fifth, optionally setting up monitoring / telemetry.
-The effects-as-data config accepts an `onCommandComplete` callback which will be called every time a `command` completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.  *Note*, this step is optional.
+The effects-as-data config accepts several lifecycle callbacks which will be called when a function is called and completes and when a command is called and completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.  *Note*, this step is optional.
 ```js
 // Normally this will be in index.js (see below)
 
