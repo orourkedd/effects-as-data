@@ -36,13 +36,13 @@ In comes effects-as-data.  Effects-as-data is a runtime that allows you to write
 
 Why generators? A generator is like a "function with multiple returns".  The power of a generator is that it can hold a lexical scope between these returns and normal control flow operators can be used.  This gives us the power to write very complex side effect production operations as a pure function.
 
-Consider this diagram which shows the mental model for decomposing a generator to pure functions.  Note, merely represents a way to think of generators as a series of pure functions.  This model is very effective, but "all models are wrong [though] some are useful."
-
-![Think of Generators as pure functions](https://s3-us-west-2.amazonaws.com/effects-as-data/pure-generator.png)
-
 ## Think in terms of inputs and outputs only
 
 Effects-as-data does not think in terms of functions `yield`-ing, `return`-ing, `throw`-ing, etc.  In effects-as-data, these are all considered `inputs` and `outputs`. The function arguments and the return value from a `yield` are considered inputs. `yield`-ing out a command, `return`-ing from the function, and `throw`-ing an error are considered outputs.  By using this mental model of inputs and outputs, a Javascript generator that can receive arguments, `yield` in and out, `throw` and `return` can be reasoned about as pure function (i.e. it has a deterministic domain and range).  The litmus test I use for determining purity is to ask the question: can I close over this construct with a pure function?
+
+Consider this diagram which shows the mental model for decomposing a generator to pure functions.  Note, merely represents a way to think of generators as a series of pure functions.  This model is very effective, but "all models are wrong [though] some are useful."
+
+![Think of Generators as pure functions](https://s3-us-west-2.amazonaws.com/effects-as-data/pure-generator.png)
 
 ## Usage in Node and the Browser (ES6 and ES5)
 
