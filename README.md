@@ -27,9 +27,9 @@ There are several working examples in `effects-as-data-examples`: [Open](https:/
 When using in Node: `require('effects-as-data')`  
 When using in the browser (or in an old version of node): `require('effects-as-data/es5')`
 
-### Getting Started From Scratch
+## Getting Started From Scratch
 
-#### First, create a command creator.
+### First, create a command creator.
 This function creates a plain JSON `command` object that effects-as-data will pass to a handler function which will perform the actual HTTP request.  The `type` field on the command matches the name of the handler to which it will be passed (see step 4).  *Note* we have not yet actually implemented the function that will actual do the HTTP GET request, we have just defined a `command`.  The command is placed on the `cmds` object for convenience.  This command represents the `data` in `effects-as-data`.
 ```js
 const cmds = {
@@ -42,7 +42,7 @@ const cmds = {
 }
 ```
 
-#### Second, test your business logic.
+### Second, test your business logic.
 Write a test for `getPeople` function that you are about to create.  These tests can be used stand-alone or in any test runner like Jest, Mocha, etc.  There are a few ways to test `effects-as-data` functions demonstrated below.
 
 Semantic test example:
@@ -57,7 +57,7 @@ testFn(getPeople, () => {
 })()
 ```
 
-#### Third, write your business logic.
+### Third, write your business logic.
 Effects-as-data uses a generator function's ability to give up execution flow and to pass a value to an outside process using the `yield` keyword.  You create `command` objects in your business logic and `yield` them to `effects-as-data`.  It is important to understand that when using effects-as-data that your business logic never actually `httpGet`'s anything.  It ONLY creates plain JSON objects and `yield`'s them out (`cmds.httpGet()` simply returns the JSON object from step 1).  This is one of the main reasons `effects-as-data` functions are easy to test.
 ```js
 function* getPeople() {
@@ -67,7 +67,7 @@ function* getPeople() {
 }
 ```
 
-#### Fourth, create a command handler.
+### Fourth, create a command handler.
 After the `command` object is `yield`ed, effects-as-data will pass it to a handler function that will perform the side-effect producing operation (in this case, an HTTP GET request).  This is the function mentioned in step 1 that actually performs the HTTP GET request.  Notice that the business logic does not call this function directly; the business logic in step 1 simply `yield`s the `httpGet` `command` out, and `effects-as-data` takes care of getting it to the handler.  The handler does the `effect` in `effects-as-data`.
 ```js
 const handlers = {
@@ -77,7 +77,7 @@ const handlers = {
 }
 ```
 
-#### Fifth, optionally setting up monitoring / telemetry.
+### Fifth, optionally setting up monitoring / telemetry.
 The effects-as-data config accepts an `onCommandComplete` callback which will be called every time a `command` completes, giving detailed information about the operation.  This data can be logged to the console or sent to a logging service.  *Note*, this step is optional.
 ```js
 const config = {
@@ -100,13 +100,13 @@ const config = {
 }
 ```
 
-#### Sixth, wire everything up.
+### Sixth, wire everything up.
 This will turn your effects-as-data functions into normal, promise-returning functions.  In this case, `functions` will be an object with one key, `getPeople`, which will be a promise-returning function.
 ```js
 const functions = buildFunctions(config, handlers, { getPeople })
 ```
 
-#### Lastly, use your functions.
+### Lastly, use your functions.
 Once you have built your functions, you can use them like normal promise-returning functions anywhere in your application.
 ```js
 functions
@@ -120,13 +120,13 @@ functions
 
 ```
 
-#### Full Example
+### Full Example
 
 See full example in the `effects-as-data-examples` repository: [https://github.com/orourkedd/effects-as-data-examples/blob/master/basic](https://github.com/orourkedd/effects-as-data-examples/blob/master/basic).
 
 You can run this example by cloning `https://github.com/orourkedd/effects-as-data-examples` and running `npm run basic`.
 
-### Getting Starting Using Existing Commands and Handlers
+## Getting Starting Using Existing Commands and Handlers
 This example demonstrates using the `effects-as-data-universal` module which contains commands/handler that can be used anywhere Javascript runs.
 
 ```js
@@ -167,7 +167,7 @@ functions
   .catch(console.error)
 ```
 
-### Error handling
+## Error handling
 
 This example demonstrates handling errors with `either`.  Unlike the above examples, this example has been separated into a few files showing more what production code looks like.
 
@@ -238,7 +238,7 @@ functions
 
 ```
 
-### Parallelization of commands
+## Parallelization of commands
 
 Full example: [https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization](https://github.com/orourkedd/effects-as-data-examples/tree/master/parallelization).
 
@@ -295,10 +295,10 @@ functions
   .catch(console.error)
 ```
 
-### Telemetry
+## Telemetry
 
 Coming soon
 
-### Testing
+## Testing
 
 Coming soon
