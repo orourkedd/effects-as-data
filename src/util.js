@@ -1,16 +1,16 @@
 function isGenerator(fn) {
-  return fn && fn.constructor && fn.constructor.name === 'GeneratorFunction'
+  return fn && fn.constructor && fn.constructor.name === "GeneratorFunction";
 }
 
 function toArray(a) {
-  return Array.isArray(a) ? a : [a]
+  return Array.isArray(a) ? a : [a];
 }
 
-const isPromise = v => v && v.then
-const toPromise = v => (isPromise(v) ? v : Promise.resolve(v))
+const isPromise = v => v && v.then;
+const toPromise = v => (isPromise(v) ? v : Promise.resolve(v));
 
 const delay =
-  typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate
+  typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate;
 
 //  @see https://gist.github.com/LeverOne/1308368
 function uuid(
@@ -19,7 +19,7 @@ function uuid(
 ) {
   for (
     // loop :)
-    b = a = ''; // b - result , a - numeric variable
+    b = a = ""; // b - result , a - numeric variable
     a++ < 36; //
     b +=
       (a * 51) & 52 // if "a" is not 9 or 14 or 19 or 24
@@ -29,9 +29,9 @@ function uuid(
               8 ^ (Math.random() * (a ^ 20 ? 16 : 4)) // unless "a" is 20, in which case a random number from 8 to 11
             : 4) //  otherwise 4
             .toString(16)
-        : '-' //  in other cases (if "a" is 9,14,19,24) insert "-"
+        : "-" //  in other cases (if "a" is 9,14,19,24) insert "-"
   );
-  return b
+  return b;
 }
 
 module.exports = {
@@ -40,4 +40,4 @@ module.exports = {
   toPromise,
   delay,
   uuid
-}
+};

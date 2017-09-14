@@ -14,7 +14,7 @@
     "transpile": "babel src --out-dir es5 --source-maps",
     "deploy": "npm run transpile && npm test && npm publish; rm -rf es5",
     "perf": "node src/perf/fs",
-    "prettier": "prettier --write src/**/*.js"
+    "prettier": "prettier --write {src/*.js,src/**/*.js}"
   },
   "author": "orourkedd",
   "license": "MIT",
