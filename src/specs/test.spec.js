@@ -118,7 +118,7 @@ test(
 test(
   "testFn semantic should pass (basic)",
   testFn(basic, () => {
-    //  prettier-ignore
+    // prettier-ignore
     return args('foo')
       .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
       .returns('foo')
@@ -183,7 +183,7 @@ test(
   })
 );
 
-//  Basic with multiple steps
+// Basic with multiple steps
 
 test(
   "testFn should pass (basicMultistep)",
@@ -259,7 +259,7 @@ test(
   })
 );
 
-//  Basic with multiple steps of parallel commands
+// Basic with multiple steps of parallel commands
 
 test(
   "testFn should pass (basicMultistepParallel)",
@@ -303,7 +303,7 @@ test(
   })
 );
 
-//  Basic with empty args
+// Basic with empty args
 
 test(
   "testFn should pass (basicEmpty)",
@@ -373,7 +373,7 @@ test(
   })
 );
 
-//  Handler error handling
+// Handler error handling
 
 test(
   "testFn should handle errors (badHandler)",
@@ -475,7 +475,7 @@ test(
   })
 );
 
-//  Async cmd
+// Async cmd
 
 test(
   "testFn should pass (asyncTest)",
@@ -511,7 +511,7 @@ test(
 );
 
 // Return cmd result
-//  Throw from semantic test builder
+// Throw from semantic test builder
 
 function* returnCmdResult() {
   return yield cmds.echo("foo");
@@ -520,13 +520,13 @@ function* returnCmdResult() {
 test(
   "testFn semantic should return cmd result",
   testFn(returnCmdResult, () => {
-    //  prettier-ignore
+    // prettier-ignore
     return args()
       .yieldCmd(cmds.echo('foo')).returns("foo")
   })
 );
 
-//  Throw from semantic test builder
+// Throw from semantic test builder
 
 function* throwSemantic() {
   const value = yield cmds.echo("foo");
@@ -536,7 +536,7 @@ function* throwSemantic() {
 test(
   "testFn semantic should throw if .throws is used",
   testFn(throwSemantic, () => {
-    //  prettier-ignore
+    // prettier-ignore
     return args()
       .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
       .throws(new Error("oops"))
@@ -546,7 +546,7 @@ test(
 test("testFn should throw proper error if function throws incorrect error", () => {
   try {
     testFn(throwSemantic, () => {
-      //  prettier-ignore
+      // prettier-ignore
       return args()
         .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
         .throws(new Error("wrong"))
@@ -558,12 +558,12 @@ test("testFn should throw proper error if function throws incorrect error", () =
   throw new Error("Failed: Did not throw");
 });
 
-//  Single line
+// Single line
 
 test(
   "single line should pass",
   testSingleLine(() => {
-    //  prettier-ignore
+    // prettier-ignore
     return [
       [['123'], cmds.httpGet('http://example.com/api/v1/users/123')],
       [{ foo: 'bar' }, { foo: 'bar' }]
@@ -584,7 +584,7 @@ test(
 test("testFn should give proper error message if yielding array but no results", () => {
   try {
     testYieldArray(() => {
-      //  prettier-ignore
+      // prettier-ignore
       return [
         [[], [{ type: 'test' }]]
       ]

@@ -12,7 +12,7 @@ const toPromise = v => (isPromise(v) ? v : Promise.resolve(v));
 const delay =
   typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate;
 
-//  @see https://gist.github.com/LeverOne/1308368
+// @see https://gist.github.com/LeverOne/1308368
 function uuid(a, b) {
   for (
     b = a = "";
