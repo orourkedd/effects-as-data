@@ -1,4 +1,4 @@
-const assert = require("assert")
+const assert = require('assert')
 
 function errorToJson(e) {
   const props = Object.getOwnPropertyNames(e).concat('name')
@@ -47,16 +47,16 @@ function deepEqual(actual, expected) {
 function normalizeError(v) {
   const isError = v instanceof Error
   if (!isError) return v
-  const props = Object.getOwnPropertyNames(v).concat("name")
+  const props = Object.getOwnPropertyNames(v).concat('name')
   return props.reduce((p, c) => {
-    if (c === "stack") return p
+    if (c === 'stack') return p
     p[c] = v[c]
     return p
   }, {})
 }
 
 function usingJest() {
-  return typeof expect !== "undefined" && expect.extend && expect.anything
+  return typeof expect !== 'undefined' && expect.extend && expect.anything
 }
 
 module.exports = {

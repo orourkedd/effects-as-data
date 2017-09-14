@@ -1,7 +1,7 @@
-const { isGenerator, toArray, toPromise, delay, uuid } = require("./util")
+const { isGenerator, toArray, toPromise, delay, uuid } = require('./util')
 
 function call(config, handlers, fn, ...args) {
-  if (!fn) return Promise.reject(new Error("A function is required."))
+  if (!fn) return Promise.reject(new Error('A function is required.'))
   const gen = fn.apply(null, args)
   const el = newExecutionLog()
   const childConfig = Object.assign({}, config)
@@ -44,7 +44,7 @@ function call(config, handlers, fn, ...args) {
     })
 }
 
-function run(config, handlers, fn, gen, input, el, genOperation = "next") {
+function run(config, handlers, fn, gen, input, el, genOperation = 'next') {
   try {
     const { output, done } = getNextOutput(gen, input, genOperation)
     if (done) return toPromise(output)
@@ -54,11 +54,11 @@ function run(config, handlers, fn, gen, input, el, genOperation = "next") {
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results)
         el.step++
-        return run(config, handlers, fn, gen, unwrappedResults, el, "next")
+        return run(config, handlers, fn, gen, unwrappedResults, el, 'next')
       })
       .catch(e => {
         el.step++
-        return run(config, handlers, fn, gen, e, el, "throw")
+        return run(config, handlers, fn, gen, e, el, 'throw')
       })
   } catch (e) {
     return Promise.reject(e)
@@ -75,7 +75,7 @@ function unwrapResults(isList, results) {
   return isList ? results : results[0]
 }
 
-function getNextOutput(fn, input, op = "next") {
+function getNextOutput(fn, input, op = 'next') {
   const { value: output, done } = fn[op](input)
   return { output, done }
 }
@@ -143,7 +143,7 @@ function processCommand(config, handlers, fn, command, el, index) {
 }
 
 function onCommand({ command, index, step, config, start, fn }) {
-  if (!config.onCommand || typeof config.onCommand !== "function") return
+  if (!config.onCommand || typeof config.onCommand !== 'function') return
   const r = {
     command,
     start,
@@ -168,7 +168,7 @@ function onCommandComplete({
 }) {
   if (
     !config.onCommandComplete ||
-    typeof config.onCommandComplete !== "function"
+    typeof config.onCommandComplete !== 'function'
   )
     return
   const r = {
@@ -187,7 +187,7 @@ function onCommandComplete({
 }
 
 function onCall({ args, fn, config }) {
-  if (!config.onCall || typeof config.onCall !== "function") return
+  if (!config.onCall || typeof config.onCall !== 'function') return
   const r = {
     args,
     fn,
@@ -197,7 +197,7 @@ function onCall({ args, fn, config }) {
 }
 
 function onCallComplete({ success, result, fn, config, start, end, latency }) {
-  if (!config.onCallComplete || typeof config.onCallComplete !== "function")
+  if (!config.onCallComplete || typeof config.onCallComplete !== 'function')
     return
   const r = {
     success,
