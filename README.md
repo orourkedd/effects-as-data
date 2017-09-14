@@ -12,6 +12,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 
 ## Table of Contents
 * [Examples of How to Do Things](#examples-of-how-to-do-things)
+* [Live Demo](#live-demo)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
 * [Usage with React and Redux](#usage-with-react-and-redux)
@@ -29,6 +30,11 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 ## Examples of How to Do Things
 
 There are several working examples in [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples).
+
+## Live Demo
+
+An example of a React/Redux application using effects-as-data: [Open Live Demo](http://effects-as-data-todo-app.s3-website-us-west-2.amazonaws.com/)  
+The repo for this demo: [Open Repo](https://github.com/orourkedd/effects-as-data-examples/tree/master/todoapp)
 
 ## Pure Functions, Generators, and Effects-as-data
 
@@ -56,6 +62,9 @@ When using in the browser (or in an old version of node): `require('effects-as-d
 ## Usage with React and Redux
 
 See [effects-as-data-redux](https://github.com/orourkedd/effects-as-data-redux) for how to use effects-as-data with React and Redux.
+
+An example of a React/Redux application using effects-as-data: [Open Live Demo](http://effects-as-data-todo-app.s3-website-us-west-2.amazonaws.com/)  
+The repo for this demo: [Open Repo](https://github.com/orourkedd/effects-as-data-examples/tree/master/todoapp)
 
 ## Installation
 ```
