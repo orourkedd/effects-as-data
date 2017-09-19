@@ -52,7 +52,6 @@ const testRunner = (fn, expected, index = 0, previousOutput = null) => {
     if (endOnError) return;
   } catch (e) {
     const stepError = `Error on Step ${index + 1}`;
-    e.name = stepError;
     e.stack = `${stepError}\n\n${e.stack}`;
     throw e;
   }
