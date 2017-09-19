@@ -66,7 +66,7 @@ test("testFn should fail if the function error is different than the test error"
         ]
     })();
   } catch (e) {
-    deepEqual(e.name, "Error on Step 1");
+    deepEqual(e.stack.includes("Error on Step 1"), true);
     return;
   }
   throw new Error("Failed: Did not compare error messages");
@@ -552,7 +552,7 @@ test("testFn should throw proper error if function throws incorrect error", () =
         .throws(new Error("wrong"))
     })();
   } catch (e) {
-    deepEqual(e.name, "Error on Step 2");
+    deepEqual(e.stack.includes("Error on Step 2"), true);
     return;
   }
   throw new Error("Failed: Did not throw");
