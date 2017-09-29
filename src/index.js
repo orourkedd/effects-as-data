@@ -40,7 +40,7 @@ function call(config, handlers, fn, ...args) {
         end,
         latency: end - start
       });
-      throw e;
+      return Promise.reject(e);
     });
 }
 
@@ -104,7 +104,9 @@ function processCommand(config, handlers, fn, command, el, index) {
   try {
     const handler = handlers[command.type];
     if (!handler)
-      throw new Error(`Handler of type "${command.type}" is not registered.`);
+      return Promise.reject(
+        new Error(`Handler of type "${command.type}" is not registered.`)
+      );
     result = handler(command, { call, config, handlers });
   } catch (e) {
     result = Promise.reject(e);
@@ -138,7 +140,7 @@ function processCommand(config, handlers, fn, command, el, index) {
         start,
         end
       });
-      throw e;
+      return Promise.reject(e);
     });
 }
 
