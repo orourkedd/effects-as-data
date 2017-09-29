@@ -24,7 +24,7 @@ export default function* getPerson(id) {
 };
 ```
 
-With effects-as-data, everything is tested declaratively.  Also, all code is inherently testable so you never have to "figure out how to test it".
+With effects-as-data, everything is tested declaratively.  All code is inherently testable so you never have to "figure out how to test it".
 
 ```js
 import { testFn, args } from "effects-as-data/test";
