@@ -10,6 +10,43 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Anywhere you can use promises, you can use effects-as-data.
 * The effects-as-data runtime is a stateless function call.
 
+### Yes, all of your code in node and in the browser can be this simple
+
+Even with error handling and multiple asynchronous steps, your code can be this simple:
+
+```js
+import { cmds } from "effects-as-data-universal"
+
+export default function* getPerson(id) {
+  const httpGet = cmds.httpGet(`https://swapi.co/api/people/${id}`);
+  const result = yield cmds.either(httpGet, { name: "Luke Skywalker" });
+  return result.name;
+};
+```
+
+With effects-as-data, everything is tested declaratively.  Also, all code is inherently testable so you never have to "figure out how to test it".
+
+```js
+import { testFn, args } from "effects-as-data/test";
+import { cmds } from "effects-as-data-universal";
+import getPerson from "./get-person";
+
+const testGetPerson = testFn(getPerson);
+
+test(
+  "getPerson() should return list of names and default to Luke Skywalker on error",
+  testGetPerson(() => {
+    const apiResult = { name: "C-3P0" };
+    const defaultPerson = { name: "Luke Skywalker" };
+    const expectedHttpGet = cmds.httpGet("https://swapi.co/api/people/2");
+
+    return args(2)
+      .yieldCmd(cmds.either(expectedHttpGet, defaultPerson)).yieldReturns(apiResult)
+      .returns('C-3P0')
+  })
+);
+```
+
 ## Table of Contents
 * [Examples of How to Do Things](#examples-of-how-to-do-things)
 * [Live Demo](#live-demo)
