@@ -10,7 +10,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing, 
 * Anywhere you can use promises, you can use effects-as-data.
 * The effects-as-data runtime is a stateless function call.
 
-### Yes, all of your code in node and in the browser can be this simple
+### Yes, all of your code in node and in the browser can be this simple:
 
 Even with error handling and multiple asynchronous steps, your code can be this simple:
 
