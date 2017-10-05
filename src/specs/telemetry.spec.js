@@ -1,4 +1,4 @@
-const { call } = require("../index");
+const { call, buildFunctions } = require("../index");
 const { handlers, functions, cmds } = require("./effects");
 const { basicMultistep, badHandler, basic } = functions;
 const { sleep } = require("./test-util");
@@ -170,7 +170,7 @@ test("onCallComplete", done => {
   call(config, handlers, basic, "foo");
 });
 
-test("onCallComplete for errors", done => {
+test("onCallComplete for errors from handlers", done => {
   const now = Date.now();
   const onCallComplete = complete => {
     expect(complete.success).toEqual(false);
@@ -183,4 +183,42 @@ test("onCallComplete for errors", done => {
   };
   const config = { onCallComplete, name: "telemetry" };
   call(config, handlers, badHandler, "foo").catch(e => e);
+});
+
+test("onCallComplete for errors from function body", done => {
+  const now = Date.now();
+  const onCallComplete = complete => {
+    expect(complete.success).toEqual(false);
+    expect(complete.fn).toEqual(throwFromBody);
+    expect(complete.result.message).toEqual("oops");
+    expect(typeof complete.latency).toEqual("number");
+    expect(complete.start).toBeGreaterThanOrEqual(now);
+    expect(complete.end).toBeGreaterThanOrEqual(complete.start);
+    done();
+  };
+  function* throwFromBody() {
+    throw new Error("oops");
+  }
+  const config = { onCallComplete, name: "telemetry" };
+  call(config, handlers, throwFromBody).catch(e => e);
+});
+
+test("onCallComplete for errors from function body when using buildFunctions", done => {
+  const now = Date.now();
+  const onCallComplete = complete => {
+    expect(complete.success).toEqual(false);
+    expect(complete.fn).toEqual(throwFromBody);
+    expect(complete.result.message).toEqual("oops");
+    expect(typeof complete.latency).toEqual("number");
+    expect(complete.start).toBeGreaterThanOrEqual(now);
+    expect(complete.end).toBeGreaterThanOrEqual(complete.start);
+    done();
+  };
+  function* throwFromBody() {
+    yield cmds.echo("foo");
+    throw new Error("oops");
+  }
+  const config = { onCallComplete, name: "telemetry" };
+  const built = buildFunctions(config, handlers, { throwFromBody });
+  built.throwFromBody().catch(e => e);
 });
