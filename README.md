@@ -49,6 +49,7 @@ test(
 
 ## Table of Contents
 * [Examples of How to Do Things](#examples-of-how-to-do-things)
+* [Building Servers](#building-servers)
 * [Live Demo](#live-demo)
 * [Pure Functions, Generators, and Effects-as-data](#pure-functions-generators-and-effects-as-data)
 * [Usage in Node and the Browser](#usage-in-node-and-the-browser-es6-and-es5)
@@ -67,6 +68,10 @@ test(
 ## Examples of How to Do Things
 
 There are several working examples in [effects-as-data-examples](https://github.com/orourkedd/effects-as-data-examples).
+
+## Building Servers
+
+You can use `effects-as-data-server` to easily create web applications with `effects-as-data`.  [effects-as-data-server](https://github.com/orourkedd/effects-as-data-server).
 
 ## Live Demo
 
