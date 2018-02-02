@@ -8,17 +8,17 @@ function call(fn, ...args) {
   };
 }
 
-function callPromise(fn, ...args) {
+function callFn(fn, ...args) {
   return {
-    type: "callPromise",
+    type: "callFn",
     fn,
     args
   };
 }
 
-function callPromiseBound(bindThis, fn, ...args) {
+function callFnBound(bindThis, fn, ...args) {
   return {
-    type: "callPromise",
+    type: "callFn",
     fn,
     bindThis,
     args
@@ -50,15 +50,15 @@ function echo(message) {
 }
 
 // Call Shortcuts
-call.promise = callPromise;
-call.promiseBound = callPromiseBound;
+call.fn = callFn;
+call.fnBound = callFnBound;
 call.callback = callCallback;
 call.callbackBound = callCallbackBound;
 
 module.exports = {
   call,
-  callPromise,
-  callPromiseBound,
+  callFn,
+  callFnBound,
   callCallback,
   callCallbackBound,
   echo

@@ -1,7 +1,7 @@
 const {
   call,
-  callPromise,
-  callPromiseBound,
+  callFn,
+  callFnBound,
   callCallback,
   callCallbackBound,
   echo
@@ -47,27 +47,27 @@ test("call should run validator on promisified function", () => {
   fail("call did not throw");
 });
 
-test("callPromise should return a callPromise cmd", () => {
+test("callFn should return a callFn cmd", () => {
   const fn = function() {};
-  const actual = callPromise(fn, "foo", "bar");
+  const actual = callFn(fn, "foo", "bar");
   const expected = {
-    type: "callPromise",
+    type: "callFn",
     fn,
     args: ["foo", "bar"]
   };
   expect(actual).toEqual(expected);
 });
 
-test("call.promise === callPromise", () => {
-  expect(call.promise).toEqual(callPromise);
+test("call.fn === callFn", () => {
+  expect(call.fn).toEqual(callFn);
 });
 
-test("callPromiseBound should return a callPromiseBound cmd", () => {
+test("callFnBound should return a callFnBound cmd", () => {
   const fn = function() {};
   const bindThis = {};
-  const actual = callPromiseBound(bindThis, fn, "foo", "bar");
+  const actual = callFnBound(bindThis, fn, "foo", "bar");
   const expected = {
-    type: "callPromise",
+    type: "callFn",
     fn,
     bindThis,
     args: ["foo", "bar"]
@@ -75,8 +75,8 @@ test("callPromiseBound should return a callPromiseBound cmd", () => {
   expect(actual).toEqual(expected);
 });
 
-test("call.promiseBound === callPromiseBound", () => {
-  expect(call.promiseBound).toEqual(callPromiseBound);
+test("call.fnBound === callFnBound", () => {
+  expect(call.fnBound).toEqual(callFnBound);
 });
 
 test("callCallback should return a callCallback cmd", () => {

@@ -111,9 +111,9 @@ test("[error handling] call should call promisified function", async () => {
   fail("promisify did not reject");
 });
 
-test("call.promise should call promisified function", async () => {
+test("call.fn should call promisified function", async () => {
   function* test1(message) {
-    return yield call.promise(test2, message);
+    return yield call.fn(test2, message);
   }
 
   const test2 = promisify(function*(message) {
@@ -124,9 +124,9 @@ test("call.promise should call promisified function", async () => {
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call.promise should call promisified function", async () => {
+test("[error handling] call.fn should call promisified function", async () => {
   function* test1(message) {
-    return yield call.promise(test2, message);
+    return yield call.fn(test2, message);
   }
 
   const test2 = promisify(function*(message) {
@@ -142,9 +142,9 @@ test("[error handling] call.promise should call promisified function", async () 
   fail("promisify did not reject");
 });
 
-test("call.promise should call promise returning function", async () => {
+test("call.fn should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.promise(test2, message);
+    return yield call.fn(test2, message);
   }
 
   function test2(message) {
@@ -155,9 +155,9 @@ test("call.promise should call promise returning function", async () => {
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call.promise should call promise returning function", async () => {
+test("[error handling] call.fn should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.promise(test2, message);
+    return yield call.fn(test2, message);
   }
 
   function test2(message) {
@@ -173,9 +173,9 @@ test("[error handling] call.promise should call promise returning function", asy
   fail("promisify did not reject");
 });
 
-test("call.promiseBound should call promise returning function", async () => {
+test("call.fnBound should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.promiseBound(obj, obj.test2, message);
+    return yield call.fnBound(obj, obj.test2, message);
   }
 
   const obj = {
@@ -189,9 +189,9 @@ test("call.promiseBound should call promise returning function", async () => {
   expect(result).toEqual("foobar");
 });
 
-test("[error handling] call.promiseBound should call promise returning function", async () => {
+test("[error handling] call.fnBound should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.promiseBound(obj, obj.test2, message);
+    return yield call.fnBound(obj, obj.test2, message);
   }
 
   const obj = {

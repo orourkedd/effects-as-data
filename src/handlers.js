@@ -2,7 +2,7 @@ function call({ fn, args }, c) {
   return c.call(c.context, c.handlers, fn.fn || fn, ...args);
 }
 
-function callPromise({ fn, bindThis, args }, c) {
+function callFn({ fn, bindThis, args }, c) {
   if (fn.fn) {
     return call({ fn, args }, c);
   } else {
@@ -32,7 +32,7 @@ function echo({ message }) {
 
 module.exports = {
   call,
-  callPromise,
+  callFn,
   callCallback,
   echo
 };
