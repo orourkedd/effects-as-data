@@ -13,6 +13,9 @@ test("telemetry - should add a correlation id to the context", async () => {
   await call(context, handlers, basic, "foo");
   await sleep(10);
   expect(telemetry.context.cid.length).toEqual(36);
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry - should use an existing correlation id if on the context", async () => {
@@ -25,6 +28,9 @@ test("telemetry - should use an existing correlation id if on the context", asyn
   await call(context, handlers, basic, "bar");
   await sleep(10);
   expect(telemetry.context.cid).toEqual("foo");
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry - should add a stack to the context and push the current frame", async () => {
@@ -42,6 +48,9 @@ test("telemetry - should add a stack to the context and push the current frame",
   expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
   expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
   expect(telemetry.context.stack[0].context.stack).toEqual(undefined);
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry - should add a stack to the context for child calls", async () => {
@@ -60,6 +69,9 @@ test("telemetry - should add a stack to the context for child calls", async () =
   expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
   expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
   expect(telemetry.context.stack[0].context.stack).toEqual(undefined);
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry - onCommand", async () => {
@@ -82,6 +94,9 @@ test("telemetry - onCommand", async () => {
     expect(t.context.name).toEqual("telemetry");
     expect(t.context.stack[0].fn).toEqual(basicMultistep);
   });
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry - onCommandComplete", async () => {
@@ -108,6 +123,9 @@ test("telemetry - onCommandComplete", async () => {
     expect(t.context.stack[0].fn).toEqual(basicMultistep);
     expect(t.fn).toEqual(basicMultistep);
   });
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("telemetry on error - onCommandComplete", async () => {
@@ -133,6 +151,9 @@ test("telemetry on error - onCommandComplete", async () => {
   expect(telemetry.context.name).toEqual("badHandler");
   expect(telemetry.context.stack[0].fn).toEqual(badHandler);
   expect(telemetry.fn).toEqual(badHandler);
+
+  // Should be serializable
+  JSON.stringify(telemetry);
 });
 
 test("onCall", done => {
