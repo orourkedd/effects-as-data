@@ -73,5 +73,7 @@ module.exports = {
   setHandlers,
   getHandlers,
   addToHandlers,
-  reset
+  reset,
+  cmds: coreCmds,
+  handlers: coreHandlers
 };
