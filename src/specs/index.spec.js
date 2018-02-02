@@ -11,6 +11,21 @@ const {
   reset
 } = require("../index");
 
+test("promisify should tag function", async () => {
+  function* test1(message) {
+    return yield echo(message);
+  }
+  expect(promisify(test1).promisified).toEqual(true);
+});
+
+test("promisify should not double wrap", async () => {
+  function* test1(message) {
+    return yield echo(message);
+  }
+  const p = promisify(test1);
+  expect(p).toEqual(promisify(p));
+});
+
 test("promisify should wrap up an effects-as-data function", async () => {
   function* test1(message) {
     return yield echo(message);

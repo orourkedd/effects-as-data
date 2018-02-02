@@ -6,6 +6,7 @@ let handlers = Object.assign({}, coreHandlers);
 let context = {};
 
 function promisify(fn) {
+  if (fn.promisified) return fn;
   const validator = fn.validator;
   const promised = function(...args) {
     if (validator) {
@@ -30,6 +31,8 @@ function promisify(fn) {
     }
     return core.call(Object.assign({}, context, c), handlers, fn, ...args);
   };
+
+  promised.promisified = true;
 
   return promised;
 }
