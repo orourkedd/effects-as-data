@@ -41,15 +41,7 @@ test("telemetry - should add a stack to the context and push the current frame",
   expect(telemetry.context.stack[0].args).toEqual(["foo"]);
   expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
   expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
-  expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
-  expect(telemetry.context.stack[0].context.stack[0].handlers).toEqual(
-    handlers
-  );
-  expect(telemetry.context.stack[0].context.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.context.stack[0].context.stack[0].fn).toEqual(basic);
-  expect(telemetry.context.stack[0].context.stack[0].context.name).toEqual(
-    "telemetry"
-  );
+  expect(telemetry.context.stack[0].context.stack).toEqual(undefined);
 });
 
 test("telemetry - should add a stack to the context for child calls", async () => {
@@ -67,14 +59,7 @@ test("telemetry - should add a stack to the context for child calls", async () =
   expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
   expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
   expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
-  expect(telemetry.context.stack[0].context.stack[0].handlers).toEqual(
-    handlers
-  );
-  expect(telemetry.context.stack[0].context.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.context.stack[0].context.stack[0].fn).toEqual(basic);
-  expect(telemetry.context.stack[0].context.stack[0].context.name).toEqual(
-    "telemetry"
-  );
+  expect(telemetry.context.stack[0].context.stack).toEqual(undefined);
 });
 
 test("telemetry - onCommand", async () => {

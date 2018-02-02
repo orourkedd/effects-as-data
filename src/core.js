@@ -6,17 +6,18 @@ function call(context, handlers, fn, ...args) {
   const gen = fn.apply(null, args);
   const el = newExecutionLog();
   const childContext = Object.assign({}, context);
-  childContext.cid = childContext.cid || uuid();
-  // clean up circular references
-  const stack = (context.stack || []).map(s => {
-    s.context.stack = undefined;
-    return s;
-  });
-  childContext.stack = stack.concat({
+  childContext.cid = context.cid || uuid();
+  childContext.stack = childContext.stack || [];
+  childContext.stack.push({
     context: childContext,
     handlers,
     fn,
     args
+  });
+  // clean up circular references
+  childContext.stack = childContext.stack.map(s => {
+    s.context = Object.assign({}, s.context, { stack: undefined });
+    return s;
   });
   const start = Date.now();
   onCall({ args, fn, context: childContext });
