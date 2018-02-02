@@ -1,7 +1,3 @@
-function isGenerator(fn) {
-  return fn && fn.constructor && fn.constructor.name === "GeneratorFunction";
-}
-
 function toArray(a) {
   return Array.isArray(a) ? a : [a];
 }
@@ -26,7 +22,6 @@ function uuid(a, b) {
 }
 
 module.exports = {
-  isGenerator,
   toArray,
   toPromise,
   delay,

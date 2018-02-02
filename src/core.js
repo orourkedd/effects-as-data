@@ -1,12 +1,17 @@
-const { isGenerator, toArray, toPromise, delay, uuid } = require("./util");
+const { toArray, toPromise, delay, uuid } = require("./util");
 
 function call(context, handlers, fn, ...args) {
+  if (!context) throw new Error("context is required.");
   if (!fn) return Promise.reject(new Error("A function is required."));
   const gen = fn.apply(null, args);
   const el = newExecutionLog();
   const childContext = Object.assign({}, context);
   childContext.cid = childContext.cid || uuid();
-  const stack = context.stack || [];
+  // clean up circular references
+  const stack = (context.stack || []).map(s => {
+    s.context.stack = undefined;
+    return s;
+  });
   childContext.stack = stack.concat({
     context: childContext,
     handlers,
