@@ -1,18 +1,18 @@
 function echo(value) {
   return {
-    type: 'echo',
+    type: "echo",
     value
-  }
+  };
 }
 
 function echoPromise(value) {
   return {
-    type: 'echoPromise',
+    type: "echoPromise",
     value
-  }
+  };
 }
 
 module.exports = {
   echo,
   echoPromise
-}
+};

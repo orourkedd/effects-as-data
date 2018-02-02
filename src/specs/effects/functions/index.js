@@ -5,17 +5,17 @@ const {
   basicParallel,
   basicMultistepParallel,
   basicEmpty
-} = require('./basic')
+} = require("./basic");
 const {
   badHandler,
   badHandlerRejection,
   valueReturningHandler,
   promiseReturningHandler
-} = require('./handlers')
-const { eitherTestError, eitherTestEmpty } = require('./either-test')
-const { throwAtYield, throwAtYieldRecovery } = require('./throw-at-yield')
-const { functionErrorTest } = require('./function-error-test')
-const { asyncTest } = require('./async-test')
+} = require("./handlers");
+const { eitherTestError, eitherTestEmpty } = require("./either-test");
+const { throwAtYield, throwAtYieldRecovery } = require("./throw-at-yield");
+const { functionErrorTest } = require("./function-error-test");
+const { asyncTest } = require("./async-test");
 
 module.exports = {
   basic,
@@ -34,4 +34,4 @@ module.exports = {
   throwAtYieldRecovery,
   functionErrorTest,
   asyncTest
-}
+};

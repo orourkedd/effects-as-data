@@ -1,12 +1,12 @@
 function echo({ value }) {
-  return value
+  return value;
 }
 
 function echoPromise({ value }) {
-  return Promise.resolve(value)
+  return Promise.resolve(value);
 }
 
 module.exports = {
   echo,
   echoPromise
-}
+};

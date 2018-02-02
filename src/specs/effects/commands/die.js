@@ -1,18 +1,18 @@
-function die(message = '') {
+function die(message = "") {
   return {
-    type: 'die',
+    type: "die",
     message
-  }
+  };
 }
 
-function dieFromRejection(message = '') {
+function dieFromRejection(message = "") {
   return {
-    type: 'dieFromRejection',
+    type: "dieFromRejection",
     message
-  }
+  };
 }
 
 module.exports = {
   die,
   dieFromRejection
-}
+};

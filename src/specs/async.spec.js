@@ -1,4 +1,4 @@
-const { call } = require("../index");
+const { call } = require("../core");
 const { functions, handlers } = require("./effects");
 const { async } = handlers;
 const { asyncTest } = functions;

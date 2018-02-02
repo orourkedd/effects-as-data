@@ -1,19 +1,19 @@
-const cmds = require('../commands')
+const cmds = require("../commands");
 
 function* badHandler() {
-  return yield cmds.die('oops')
+  return yield cmds.die("oops");
 }
 
 function* badHandlerRejection() {
-  return yield cmds.dieFromRejection('oops')
+  return yield cmds.dieFromRejection("oops");
 }
 
 function* promiseReturningHandler(value) {
-  return yield cmds.echoPromise(value)
+  return yield cmds.echoPromise(value);
 }
 
 function* valueReturningHandler(value) {
-  return yield cmds.echo(value)
+  return yield cmds.echo(value);
 }
 
 module.exports = {
@@ -21,4 +21,4 @@ module.exports = {
   badHandlerRejection,
   valueReturningHandler,
   promiseReturningHandler
-}
+};

@@ -1,74 +1,78 @@
-const { call, buildFunctions } = require("../index");
+const { call, buildFunctions } = require("../core");
 const { handlers, functions, cmds } = require("./effects");
 const { basicMultistep, badHandler, basic } = functions;
 const { sleep } = require("./test-util");
 
-test("telemetry - should add a correlation id to the config", async () => {
+test("telemetry - should add a correlation id to the context", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
   };
-  const config = { onCommand, name: "telemetry" };
+  const context = { onCommand, name: "telemetry" };
   const now = Date.now();
-  await call(config, handlers, basic, "foo");
+  await call(context, handlers, basic, "foo");
   await sleep(10);
-  expect(telemetry.config.cid.length).toEqual(36);
+  expect(telemetry.context.cid.length).toEqual(36);
 });
 
-test("telemetry - should use an existing correlation id if on the config", async () => {
+test("telemetry - should use an existing correlation id if on the context", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
   };
-  const config = { onCommand, name: "telemetry", cid: "foo" };
+  const context = { onCommand, name: "telemetry", cid: "foo" };
   const now = Date.now();
-  await call(config, handlers, basic, "bar");
+  await call(context, handlers, basic, "bar");
   await sleep(10);
-  expect(telemetry.config.cid).toEqual("foo");
+  expect(telemetry.context.cid).toEqual("foo");
 });
 
-test("telemetry - should add a stack to the config and push the current frame", async () => {
+test("telemetry - should add a stack to the context and push the current frame", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
   };
-  const config = { onCommand, name: "telemetry" };
+  const context = { onCommand, name: "telemetry" };
   const now = Date.now();
-  await call(config, handlers, basic, "foo");
+  await call(context, handlers, basic, "foo");
   await sleep(10);
-  expect(telemetry.config.stack[0].fn).toEqual(basic);
-  expect(telemetry.config.stack[0].handlers).toEqual(handlers);
-  expect(telemetry.config.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.config.stack[0].config.onCommand).toEqual(onCommand);
-  expect(telemetry.config.stack[0].config.name).toEqual("telemetry");
-  expect(telemetry.config.stack[0].config.cid.length).toEqual(36);
-  expect(telemetry.config.stack[0].config.stack[0].handlers).toEqual(handlers);
-  expect(telemetry.config.stack[0].config.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.config.stack[0].config.stack[0].fn).toEqual(basic);
-  expect(telemetry.config.stack[0].config.stack[0].config.name).toEqual(
+  expect(telemetry.context.stack[0].fn).toEqual(basic);
+  expect(telemetry.context.stack[0].handlers).toEqual(handlers);
+  expect(telemetry.context.stack[0].args).toEqual(["foo"]);
+  expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
+  expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
+  expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
+  expect(telemetry.context.stack[0].context.stack[0].handlers).toEqual(
+    handlers
+  );
+  expect(telemetry.context.stack[0].context.stack[0].args).toEqual(["foo"]);
+  expect(telemetry.context.stack[0].context.stack[0].fn).toEqual(basic);
+  expect(telemetry.context.stack[0].context.stack[0].context.name).toEqual(
     "telemetry"
   );
 });
 
-test("telemetry - should add a stack to the config for child calls", async () => {
+test("telemetry - should add a stack to the context for child calls", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
   };
-  const config = { onCommand, name: "telemetry" };
+  const context = { onCommand, name: "telemetry" };
   const now = Date.now();
-  await call(config, handlers, basic, "foo");
+  await call(context, handlers, basic, "foo");
   await sleep(10);
-  expect(telemetry.config.stack[0].fn).toEqual(basic);
-  expect(telemetry.config.stack[0].handlers).toEqual(handlers);
-  expect(telemetry.config.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.config.stack[0].config.onCommand).toEqual(onCommand);
-  expect(telemetry.config.stack[0].config.name).toEqual("telemetry");
-  expect(telemetry.config.stack[0].config.cid.length).toEqual(36);
-  expect(telemetry.config.stack[0].config.stack[0].handlers).toEqual(handlers);
-  expect(telemetry.config.stack[0].config.stack[0].args).toEqual(["foo"]);
-  expect(telemetry.config.stack[0].config.stack[0].fn).toEqual(basic);
-  expect(telemetry.config.stack[0].config.stack[0].config.name).toEqual(
+  expect(telemetry.context.stack[0].fn).toEqual(basic);
+  expect(telemetry.context.stack[0].handlers).toEqual(handlers);
+  expect(telemetry.context.stack[0].args).toEqual(["foo"]);
+  expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
+  expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
+  expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
+  expect(telemetry.context.stack[0].context.stack[0].handlers).toEqual(
+    handlers
+  );
+  expect(telemetry.context.stack[0].context.stack[0].args).toEqual(["foo"]);
+  expect(telemetry.context.stack[0].context.stack[0].fn).toEqual(basic);
+  expect(telemetry.context.stack[0].context.stack[0].context.name).toEqual(
     "telemetry"
   );
 });
@@ -78,9 +82,9 @@ test("telemetry - onCommand", async () => {
   const onCommand = t => {
     telemetry.push(t);
   };
-  const config = { onCommand, name: "telemetry" };
+  const context = { onCommand, name: "telemetry" };
   const now = Date.now();
-  await call(config, handlers, basicMultistep, "foo");
+  await call(context, handlers, basicMultistep, "foo");
   await sleep(10);
   expect(telemetry.length).toEqual(2);
   telemetry.forEach((t, i) => {
@@ -90,8 +94,8 @@ test("telemetry - onCommand", async () => {
     expect(t.start).toBeGreaterThanOrEqual(now);
     expect(t.index).toEqual(0);
     expect(t.step).toEqual(i);
-    expect(t.config.name).toEqual("telemetry");
-    expect(t.config.stack[0].fn).toEqual(basicMultistep);
+    expect(t.context.name).toEqual("telemetry");
+    expect(t.context.stack[0].fn).toEqual(basicMultistep);
   });
 });
 
@@ -100,9 +104,9 @@ test("telemetry - onCommandComplete", async () => {
   const onCommandComplete = t => {
     telemetry.push(t);
   };
-  const config = { onCommandComplete, name: "telemetry" };
+  const context = { onCommandComplete, name: "telemetry" };
   const now = Date.now();
-  await call(config, handlers, basicMultistep, "foo");
+  await call(context, handlers, basicMultistep, "foo");
   await sleep(10);
   expect(telemetry.length).toEqual(2);
   telemetry.forEach((t, i) => {
@@ -115,8 +119,8 @@ test("telemetry - onCommandComplete", async () => {
     expect(t.index).toEqual(0);
     expect(t.step).toEqual(i);
     expect(t.result).toEqual(message);
-    expect(t.config.name).toEqual("telemetry");
-    expect(t.config.stack[0].fn).toEqual(basicMultistep);
+    expect(t.context.name).toEqual("telemetry");
+    expect(t.context.stack[0].fn).toEqual(basicMultistep);
     expect(t.fn).toEqual(basicMultistep);
   });
 });
@@ -126,11 +130,11 @@ test("telemetry on error - onCommandComplete", async () => {
   const onCommandComplete = t => {
     telemetry = t;
   };
-  const config = { onCommandComplete, name: "badHandler" };
+  const context = { onCommandComplete, name: "badHandler" };
   const now = Date.now();
   const message = "oops";
   try {
-    await call(config, handlers, badHandler, message);
+    await call(context, handlers, badHandler, message);
   } catch (e) {}
   await sleep(10);
   expect(telemetry.success).toEqual(false);
@@ -141,8 +145,8 @@ test("telemetry on error - onCommandComplete", async () => {
   expect(telemetry.index).toEqual(0);
   expect(telemetry.step).toEqual(0);
   expect(telemetry.result.message).toEqual("oops");
-  expect(telemetry.config.name).toEqual("badHandler");
-  expect(telemetry.config.stack[0].fn).toEqual(badHandler);
+  expect(telemetry.context.name).toEqual("badHandler");
+  expect(telemetry.context.stack[0].fn).toEqual(badHandler);
   expect(telemetry.fn).toEqual(badHandler);
 });
 
@@ -151,8 +155,8 @@ test("onCall", done => {
     expect(called.args).toEqual(["foo", "bar", "baz"]);
     done();
   };
-  const config = { onCall };
-  call(config, handlers, basicMultistep, "foo", "bar", "baz");
+  const context = { onCall };
+  call(context, handlers, basicMultistep, "foo", "bar", "baz");
 });
 
 test("onCallComplete", done => {
@@ -166,8 +170,8 @@ test("onCallComplete", done => {
     expect(complete.end).toBeGreaterThanOrEqual(complete.start);
     done();
   };
-  const config = { onCallComplete, name: "telemetry" };
-  call(config, handlers, basic, "foo");
+  const context = { onCallComplete, name: "telemetry" };
+  call(context, handlers, basic, "foo");
 });
 
 test("onCallComplete for errors from handlers", done => {
@@ -181,8 +185,8 @@ test("onCallComplete for errors from handlers", done => {
     expect(complete.end).toBeGreaterThanOrEqual(complete.start);
     done();
   };
-  const config = { onCallComplete, name: "telemetry" };
-  call(config, handlers, badHandler, "foo").catch(e => e);
+  const context = { onCallComplete, name: "telemetry" };
+  call(context, handlers, badHandler, "foo").catch(e => e);
 });
 
 test("onCallComplete for errors from function body", done => {
@@ -199,8 +203,8 @@ test("onCallComplete for errors from function body", done => {
   function* throwFromBody() {
     throw new Error("oops");
   }
-  const config = { onCallComplete, name: "telemetry" };
-  call(config, handlers, throwFromBody).catch(e => e);
+  const context = { onCallComplete, name: "telemetry" };
+  call(context, handlers, throwFromBody).catch(e => e);
 });
 
 test("onCallComplete for errors from function body when using buildFunctions", done => {
@@ -218,7 +222,7 @@ test("onCallComplete for errors from function body when using buildFunctions", d
     yield cmds.echo("foo");
     throw new Error("oops");
   }
-  const config = { onCallComplete, name: "telemetry" };
-  const built = buildFunctions(config, handlers, { throwFromBody });
+  const context = { onCallComplete, name: "telemetry" };
+  const built = buildFunctions(context, handlers, { throwFromBody });
   built.throwFromBody().catch(e => e);
 });

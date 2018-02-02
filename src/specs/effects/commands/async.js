@@ -1,10 +1,10 @@
 function async(cmd) {
   return {
-    type: 'async',
+    type: "async",
     cmd
-  }
+  };
 }
 
 module.exports = {
   async
-}
+};

@@ -1,28 +1,28 @@
 function readFile(path, options) {
   return {
-    type: 'readFile',
+    type: "readFile",
     path,
     options
-  }
+  };
 }
 
 function writeFile(path, content, options) {
   return {
-    type: 'writeFile',
+    type: "writeFile",
     path,
     content,
     options
-  }
+  };
 }
 
 function now() {
   return {
-    type: 'now'
-  }
+    type: "now"
+  };
 }
 
 module.exports = {
   readFile,
   writeFile,
   now
-}
+};

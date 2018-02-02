@@ -1,4 +1,4 @@
-const { call } = require("../index");
+const { call } = require("../core");
 const { handlers, functions, cmds } = require("./effects");
 const {
   badHandler,

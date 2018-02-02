@@ -3,7 +3,8 @@ const curry = require("lodash/curry");
 const chunk = require("lodash/chunk");
 const { deepEqual } = require("./specs/test-util");
 
-const testRunner = (fn, expected, index = 0, previousOutput = null) => {
+const testRunner = (subject, expected, index = 0, previousOutput = null) => {
+  const fn = subject.fn || subject;
   checkForExpectedTypeMismatches(expected);
 
   assert(fn, "The function you are trying to test is undefined.");
@@ -17,6 +18,10 @@ const testRunner = (fn, expected, index = 0, previousOutput = null) => {
   }
 
   const [input, expectedOutput] = step;
+
+  if (index === 0 && fn.validator) {
+    fn.validator.apply(null, input);
+  }
 
   if (index === 0 && !Array.isArray(input)) {
     throw new Error(

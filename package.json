@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "2.14.10",
+  "version": "3.0.0",
   "description":
     "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
@@ -12,7 +12,8 @@
     "test": "jest",
     "test:mocha": "mocha --opts mocha.opts",
     "transpile": "babel src --out-dir es5 --source-maps",
-    "deploy": "npm run transpile && npm test && npm publish; rm -rf es5",
+    "deploy":
+      "npm run transpile && npm test && npm run test:mocha && npm publish --tag beta; rm -rf es5",
     "perf": "node src/perf/fs",
     "prettier": "prettier --write {src/*.js,src/**/*.js}"
   },
@@ -23,12 +24,12 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-jest": "^21.0.2",
+    "babel-jest": "^22.1.0",
     "babel-preset-es2015": "^6.24.1",
-    "jest": "^21.0.2",
-    "jest-cli": "^21.1.0",
-    "mocha": "^3.5.0",
-    "prettier": "^1.6.1"
+    "jest": "^22.1.4",
+    "jest-cli": "^22.1.4",
+    "mocha": "^5.0.0",
+    "prettier": "^1.10.2"
   },
   "jest": {
     "testPathIgnorePatterns": [

@@ -1,14 +1,14 @@
-function either({ cmd, defaultValue }, { config, handlers, call }) {
-  return call(config, handlers, function*() {
+function either({ cmd, defaultValue }, { context, handlers, call }) {
+  return call(context, handlers, function*() {
     try {
-      const result = yield cmd
-      return result || defaultValue
+      const result = yield cmd;
+      return result || defaultValue;
     } catch (e) {
-      return defaultValue
+      return defaultValue;
     }
-  })
+  });
 }
 
 module.exports = {
   either
-}
+};

@@ -1,22 +1,22 @@
-const cmds = require('../commands')
+const cmds = require("../commands");
 
 function* throwAtYield() {
   try {
-    yield cmds.die()
+    yield cmds.die();
   } catch (e) {
-    return 'caught!'
+    return "caught!";
   }
-  return 'not caught'
+  return "not caught";
 }
 
 function* throwAtYieldRecovery() {
   try {
-    yield cmds.die()
+    yield cmds.die();
   } catch (e) {}
-  return yield cmds.echo('foo')
+  return yield cmds.echo("foo");
 }
 
 module.exports = {
   throwAtYield,
   throwAtYieldRecovery
-}
+};

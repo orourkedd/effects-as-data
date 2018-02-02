@@ -1,4 +1,4 @@
-const { call } = require("../index");
+const { call } = require("../core");
 const handlers = require("./effects/handlers");
 const { eadBenchmark } = require("./effects/functions");
 const { standardBenchmark } = require("./standard");

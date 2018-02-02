@@ -1,10 +1,10 @@
 function httpGet(url) {
   return {
-    type: 'httpGet',
+    type: "httpGet",
     url
-  }
+  };
 }
 
 module.exports = {
   httpGet
-}
+};
