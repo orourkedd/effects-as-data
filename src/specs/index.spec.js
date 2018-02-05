@@ -15,7 +15,14 @@ test("promisify should tag function", async () => {
   function* test1(message) {
     return yield echo(message);
   }
-  expect(promisify(test1).promisified).toEqual(true);
+  expect(promisify(test1).eadPromisified).toEqual(true);
+});
+
+test("promisify should name function", async () => {
+  function* testName(message) {
+    return yield echo(message);
+  }
+  expect(promisify(testName).name).toEqual("testName");
 });
 
 test("promisify should not double wrap", async () => {

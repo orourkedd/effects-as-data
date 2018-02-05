@@ -1,9 +1,9 @@
 function call({ fn, args }, c) {
-  return c.call(c.context, c.handlers, fn.fn || fn, ...args);
+  return c.call(c.context, c.handlers, fn.eadFn || fn, ...args);
 }
 
 function callFn({ fn, bindThis, args }, c) {
-  if (fn.fn) {
+  if (fn.eadFn) {
     return call({ fn, args }, c);
   } else {
     return fn.call(bindThis, ...args);

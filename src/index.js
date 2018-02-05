@@ -6,7 +6,7 @@ let handlers = Object.assign({}, coreHandlers);
 let context = {};
 
 function promisify(fn) {
-  if (fn.promisified) return fn;
+  if (fn.eadPromisified) return fn;
   const validator = fn.validator;
   const promised = function(...args) {
     if (validator) {
@@ -18,8 +18,17 @@ function promisify(fn) {
     }
     return core.call(context, handlers, fn, ...args);
   };
-  // promised.name = fn.name;
-  promised.fn = fn;
+  // try/catch because this is nice, but not necessary
+  // Note: there is a unit test to validate this behavior
+  // so errors, although swallowed here, would be picked
+  // up in the unit test.
+  try {
+    Object.defineProperty(promised, "name", {
+      value: fn.name,
+      writable: false
+    });
+  } catch (e) {}
+  promised.eadFn = fn;
 
   promised.callWithContext = function(c, ...args) {
     if (validator) {
@@ -32,7 +41,7 @@ function promisify(fn) {
     return core.call(Object.assign({}, context, c), handlers, fn, ...args);
   };
 
-  promised.promisified = true;
+  promised.eadPromisified = true;
 
   return promised;
 }

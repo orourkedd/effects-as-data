@@ -1,5 +1,5 @@
 function call(fn, ...args) {
-  const validator = (fn.fn || fn).validator;
+  const validator = (fn.eadFn || fn).validator;
   if (validator) validator(...args);
   return {
     type: "call",
