@@ -4,7 +4,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing a
 
 ## Effects-as-data Example
 
-Consider this function that reads a config file based on a base path and `NODE_ENV`:
+Consider this function that reads a config file based on a base path and `NODE_ENV`.  This function would be difficult to unit test.
 
 ```js
 const { promisify } = require("util");
@@ -30,8 +30,8 @@ const { promisify, call, globalVariable } = require("effects-as-data");
 const { readFile } = require('fs');
 
 function* readConfig(basePath) {
-  const process = yield globalVariable('process')
-  const config = yield call.callback(`${basePath}/${process.env.NODE_ENV}.json`, path, { encoding: 'utf8' });
+  const { env } = yield globalVariable('process')
+  const config = yield call.callback(readFile, `${basePath}/${env.NODE_ENV}.json`, { encoding: 'utf8' });
   return JSON.parse(config);
 }
 
