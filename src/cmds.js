@@ -49,6 +49,95 @@ function echo(message) {
   };
 }
 
+function globalVariable(name) {
+  if (!name) throw new Error("name required.");
+  return {
+    type: "globalVariable",
+    name
+  };
+}
+
+function log(...args) {
+  return {
+    type: "log",
+    level: "info",
+    args
+  };
+}
+
+function logError(...args) {
+  return {
+    type: "error",
+    args
+  };
+}
+
+function setImmediateCmd(cmd) {
+  return {
+    type: "setImmediate",
+    cmd
+  };
+}
+
+function setTimeoutCmd(cmd, time) {
+  return {
+    type: "setTimeout",
+    cmd,
+    time
+  };
+}
+
+function clearTimeoutCmd(id) {
+  return {
+    type: "clearTimeout",
+    id
+  };
+}
+
+function setIntervalCmd(cmd, time) {
+  return {
+    type: "setInterval",
+    cmd,
+    time
+  };
+}
+
+function clearIntervalCmd(id) {
+  return {
+    type: "clearInterval",
+    id
+  };
+}
+
+function sleep(time) {
+  return {
+    type: "sleep",
+    time
+  };
+}
+
+function series(cmdList, delay) {
+  return {
+    type: "series",
+    cmdList,
+    delay
+  };
+}
+
+function parallel(cmdList) {
+  return {
+    type: "parallel",
+    cmdList
+  };
+}
+
+function envelope(cmd) {
+  return {
+    type: "envelope  ",
+    cmd
+  };
+}
+
 // Call Shortcuts
 call.fn = callFn;
 call.fnBound = callFnBound;
@@ -61,5 +150,17 @@ module.exports = {
   callFnBound,
   callCallback,
   callCallbackBound,
-  echo
+  echo,
+  globalVariable,
+  log,
+  logError,
+  setImmediate: setImmediateCmd,
+  setTimeout: setTimeoutCmd,
+  clearTimeout: clearTimeoutCmd,
+  setInterval: setIntervalCmd,
+  clearInterval: clearIntervalCmd,
+  sleep,
+  series,
+  parallel,
+  envelope
 };

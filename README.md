@@ -1,10 +1,10 @@
 # Effects-as-data
 
-Effects-as-data is a micro abstraction layer for Javascript that makes writing and testing Javascript easier.  Using effects-as-data can dramatically reduce the time it takes to deliver highly tested code.
+Effects-as-data is a micro abstraction layer for Javascript that makes writing and testing Javascript easier.  Using effects-as-data dramatically reduces the time it takes to deliver highly tested code.
 
 ## Effects-as-data Example
 
-Consider this function that reads a config file based on a base path passed in as an argument and `NODE_ENV`:
+Consider this function that reads a config file based on a base path and `NODE_ENV`:
 
 ```js
 const { promisify } = require("util");
@@ -26,12 +26,12 @@ module.exports = {
 This is a drop-in replacement written using `effects-as-data`:
 
 ```js
-const { promisify, call } = require("effects-as-data");
+const { promisify, call, globalVariable } = require("effects-as-data");
 const { readFile } = require('fs');
 
 function* readConfig(basePath) {
-  const NODE_ENV = yield global('process.env.NODE_ENV')
-  const config = yield call.callback(`${basePath}/${NODE_ENV}.json`, path, { encoding: 'utf8' });
+  const process = yield globalVariable('process')
+  const config = yield call.callback(`${basePath}/${process.env.NODE_ENV}.json`, path, { encoding: 'utf8' });
   return JSON.parse(config);
 }
 
@@ -43,14 +43,16 @@ What normally requires mocks, spies, and other tricks for unit testing, `effects
 
 ```js
 const { testFn, args } = require('effects-as-data/test');
+const { globalVariable, call } = require('effects-as-data');
 
 const testReadConfig = testFn(readConfig);
 
 test("readConfig()", testReadConfig(() => {
   const basePath = '/foo'
+  const testProcess = { env: { NODE_ENV: 'development' } }
   return args(basePath)
-    .yieldCmd(global('process.env.NODE_ENV'))
-      .yieldReturns('development')
+    .yieldCmd(globalVariable('process'))
+      .yieldReturns(testProcess)
     .yieldCmd(call.callback(readFile, `${basePath}/development.json`, { encoding: 'utf8' }))
       .yieldReturns(`{"foo": "bar"}`)
     .returns({ foo: 'bar' })

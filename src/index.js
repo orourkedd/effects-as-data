@@ -76,8 +76,9 @@ function reset() {
 }
 
 module.exports = {
-  call: coreCmds.call,
-  echo: coreCmds.echo,
+  ...coreCmds,
+  cmds: coreCmds,
+  handlers: coreHandlers,
   promisify,
   setContext,
   getContext,
@@ -85,7 +86,5 @@ module.exports = {
   setHandlers,
   getHandlers,
   addToHandlers,
-  reset,
-  cmds: coreCmds,
-  handlers: coreHandlers
+  reset
 };

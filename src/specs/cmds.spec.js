@@ -4,7 +4,8 @@ const {
   callFnBound,
   callCallback,
   callCallbackBound,
-  echo
+  echo,
+  globalVariable
 } = require("../cmds");
 const { promisify } = require("../index");
 
@@ -114,4 +115,11 @@ test("call.callbackBound === callCallbackBound", () => {
 
 test("echo()", () => {
   expect(echo("foo")).toEqual({ type: "echo", message: "foo" });
+});
+
+test("globalVariable()", () => {
+  expect(globalVariable("process")).toEqual({
+    type: "globalVariable",
+    name: "process"
+  });
 });

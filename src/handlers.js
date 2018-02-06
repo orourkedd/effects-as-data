@@ -30,9 +30,109 @@ function echo({ message }) {
   return message;
 }
 
+function globalVariable({ name }) {
+  const g = typeof window === undefined ? global : window;
+  return g[name];
+}
+
+function log({ args }) {
+  console.log(...args);
+}
+
+function logError({ args }) {
+  console.error(...args);
+}
+
+const delay =
+  typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate;
+
+function setImmediateHandler({ cmd }, { call, context, handlers }) {
+  delay(() => {
+    call(context, handlers, function*() {
+      yield cmd;
+    }).catch(e => e);
+  });
+}
+
+function setTimeoutHandler({ cmd, time }, { call, context, handlers }) {
+  return setTimeout(() => {
+    call(context, handlers, function*() {
+      yield cmd;
+    }).catch(e => e);
+  }, time);
+}
+
+function clearTimeoutHandler({ id }) {
+  return clearTimeout(id);
+}
+
+function setIntervalHandler({ cmd, time }, { call, context, handlers }) {
+  return setInterval(() => {
+    call(context, handlers, function*() {
+      yield cmd;
+    }).catch(e => e);
+  }, time);
+}
+function clearIntervalHandler({ id }) {
+  return clearInterval(id);
+}
+
+function sleep({ time }) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+function series({ cmdList, delay }, { call, context, handlers }) {
+  if (cmdList.length === 0) return [];
+  return call(context, handlers, function*() {
+    const results = [];
+    for (let i = 0; i < cmdList.length; i++) {
+      const result = yield cmdList[i];
+      results.push(result);
+      if (delay && i < cmdList.length - 1) yield sleep(delay);
+    }
+    return results;
+  });
+}
+
+function parallel({ cmdList }, { call, context, handlers }) {
+  return call(context, handlers, function*() {
+    return yield cmdList;
+  });
+}
+
+function envelope({ cmd }, { call, context, handlers }) {
+  return call(context, handlers, function*() {
+    return yield cmd;
+  })
+    .then(result => {
+      return {
+        success: true,
+        result
+      };
+    })
+    .catch(e => {
+      return {
+        success: false,
+        result: e
+      };
+    });
+}
+
 module.exports = {
   call,
   callFn,
   callCallback,
-  echo
+  echo,
+  globalVariable,
+  log,
+  logError,
+  setImmediate: setImmediateHandler,
+  setTimeout: setTimeoutHandler,
+  clearTimeout: clearTimeoutHandler,
+  setInterval: setIntervalHandler,
+  clearInterval: clearIntervalHandler,
+  sleep,
+  series,
+  parallel,
+  envelope
 };
