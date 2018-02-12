@@ -4,7 +4,7 @@ Effects-as-data is a micro abstraction layer for Javascript that makes writing a
 
 ## Effects-as-data Example
 
-Consider this function that reads a config file based on a base path and `NODE_ENV`.  This function would be difficult to unit test.
+Consider this function that reads a config file based on a base path and `NODE_ENV`.  This simple function is hard to unit test and will probably take you a long time.  It would require mocking `process.env.NODE_ENV`, mocking/injecting `readFile`, mocking `logger.error`, and somehow forcing an error to test the error handling logic.
 
 ```js
 const { promisify } = require("util");
@@ -14,7 +14,14 @@ const readFile = promisify(fs.readFile)
 async function readConfig(basePath) {
   const { NODE_ENV } = process.env
   const config = await readFile(`${basePath}/${NODE_ENV}.json`, { encoding: 'utf8' });
-  return JSON.parse(config);
+  try {
+    return JSON.parse(config);
+  } catch (e) {
+    logger.error(e);
+    return {
+      default: 'config'
+    }
+  }
 }
 
 module.exports = {
@@ -26,20 +33,27 @@ module.exports = {
 This is a drop-in replacement written using `effects-as-data`:
 
 ```js
-const { promisify, call, globalVariable } = require("effects-as-data");
+const { promisify, call, globalVariable, logError } = require("effects-as-data");
 const { readFile } = require('fs');
 
 function* readConfig(basePath) {
   const { env } = yield globalVariable('process')
   const config = yield call.callback(readFile, `${basePath}/${env.NODE_ENV}.json`, { encoding: 'utf8' });
-  return JSON.parse(config);
+  try {
+    JSON.parse(config);
+  } catch (e) {
+    yield logError(e)
+    return {
+      default: 'config'
+    }
+  }
 }
 
 module.exports = {
   readConfig: promisify(readConfig)
 }
 ```
-What normally requires mocks, spies, and other tricks for unit testing, `effects-as-data` does simply and declaratively.  The test below tests a complete code path through the function, tests the order in which side-effects occur and tests that everything is called the expected number of times and with the expected arguments:
+What normally requires mocks, spies, and other tricks for unit testing, `effects-as-data` does simply and declaratively.  The tests below tests all code branches in the function, tests the order in which side-effects occur and tests that everything is called the expected number of times and with the expected arguments:
 
 ```js
 const { testFn, args } = require('effects-as-data/test');
@@ -47,7 +61,7 @@ const { globalVariable, call } = require('effects-as-data');
 
 const testReadConfig = testFn(readConfig);
 
-test("readConfig()", testReadConfig(() => {
+test("readConfig() should return parsed config", testReadConfig(() => {
   const basePath = '/foo'
   const testProcess = { env: { NODE_ENV: 'development' } }
   return args(basePath)
@@ -57,6 +71,27 @@ test("readConfig()", testReadConfig(() => {
       .yieldReturns(`{"foo": "bar"}`)
     .returns({ foo: 'bar' })
 }))
+
+test("readConfig() should log parse error and return default config", testReadConfig(() => {
+  const basePath = '/foo'
+  const testProcess = { env: { NODE_ENV: 'development' } }
+  return args(basePath)
+    .yieldCmd(globalVariable('process'))
+      .yieldReturns(testProcess)
+    .yieldCmd(call.callback(readFile, `${basePath}/development.json`, { encoding: 'utf8' }))
+      .yieldReturns(`INVALID JSON`)
+    .yieldCmd(logError(jsonParseError(`INVALID JSON`)))
+      .yieldReturns()
+    .returns({ default: 'config' })
+}))
+
+function jsonParseError (s) {
+  try {
+    JSON.parse(s)
+  } catch (e) {
+    return e
+  }
+}
 ```
 
 ## Why Generators?  Why not async/await?

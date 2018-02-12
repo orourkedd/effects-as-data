@@ -138,6 +138,10 @@ function envelope(cmd) {
   };
 }
 
+function now() {
+  return call.fn(Date.now);
+}
+
 // Call Shortcuts
 call.fn = callFn;
 call.fnBound = callFnBound;
@@ -151,6 +155,7 @@ module.exports = {
   callCallback,
   callCallbackBound,
   echo,
+  now,
   globalVariable,
   log,
   logError,
