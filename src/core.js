@@ -23,6 +23,7 @@ function call(context, handlers, fn, ...args) {
   onCall({ args, fn, context: childContext });
   return run(childContext, handlers, fn, gen, null, el)
     .then(result => {
+      if (!childContext.onCallComplete) return result;
       const end = Date.now();
       onCallComplete({
         success: true,
@@ -36,6 +37,8 @@ function call(context, handlers, fn, ...args) {
       return result;
     })
     .catch(e => {
+      onError(e, childContext);
+      if (!childContext.onCallComplete) return Promise.reject(e);
       const end = Date.now();
       onCallComplete({
         success: false,
@@ -120,6 +123,7 @@ function processCommand(context, handlers, fn, command, el, index) {
   }
   return toPromise(result)
     .then(r => {
+      if (!context.onCommandComplete) return r;
       const end = Date.now();
       onCommandComplete({
         success: true,
@@ -135,6 +139,8 @@ function processCommand(context, handlers, fn, command, el, index) {
       return r;
     })
     .catch(e => {
+      onError(e, context);
+      if (!context.onCommandComplete) return Promise.reject(e);
       const end = Date.now();
       onCommandComplete({
         success: false,
@@ -164,6 +170,15 @@ function onCommand({ command, index, step, context, start, fn }) {
   delay(() => context.onCommand(r));
 }
 
+function onError(error, context) {
+  if (!context.onError) return;
+  if (error.eadReported) return;
+  // tag error to prevent multiple reports as the error bubbles up
+  error.eadReported = true;
+  error.context = context;
+  delay(() => context.onError(error));
+}
+
 function onCommandComplete({
   success,
   command,
@@ -175,11 +190,6 @@ function onCommandComplete({
   end,
   fn
 }) {
-  if (
-    !context.onCommandComplete ||
-    typeof context.onCommandComplete !== "function"
-  )
-    return;
   const r = {
     success,
     command,
@@ -206,8 +216,6 @@ function onCall({ args, fn, context }) {
 }
 
 function onCallComplete({ success, result, fn, context, start, end, latency }) {
-  if (!context.onCallComplete || typeof context.onCallComplete !== "function")
-    return;
   const r = {
     success,
     fn,

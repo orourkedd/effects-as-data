@@ -75,8 +75,7 @@ function reset() {
   context = {};
 }
 
-module.exports = {
-  ...coreCmds,
+module.exports = Object.assign({}, coreCmds, {
   cmds: coreCmds,
   handlers: coreHandlers,
   promisify,
@@ -87,4 +86,4 @@ module.exports = {
   getHandlers,
   addToHandlers,
   reset
-};
+});

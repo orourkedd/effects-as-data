@@ -232,3 +232,54 @@ test("onCallComplete for errors from function body when using buildFunctions", d
   const built = buildFunctions(context, handlers, { throwFromBody });
   built.throwFromBody().catch(e => e);
 });
+
+test("telemetry onError - handler", async () => {
+  let error;
+  let callCount = 0;
+  const onError = e => {
+    error = e;
+    callCount++;
+  };
+  const context = { onError, name: "badHandler" };
+  const now = Date.now();
+  const message = "oops";
+  try {
+    await call(context, handlers, badHandler, message);
+  } catch (e) {}
+  await sleep(10);
+  expect(error.message).toEqual("oops");
+  expect(error.context.name).toEqual("badHandler");
+  expect(error.context.stack[0].fn).toEqual(badHandler);
+  expect(error.context.stack[0].args).toEqual([message]);
+  expect(callCount).toEqual(1);
+
+  // Should be serializable
+  JSON.stringify(error);
+});
+
+test("telemetry onError - function body", async () => {
+  let error;
+  let callCount = 0;
+  const onError = e => {
+    error = e;
+    callCount++;
+  };
+  const context = { onError, name: "throwFromBody" };
+  const now = Date.now();
+  function* throwFromBody() {
+    yield cmds.echo("foo");
+    throw new Error("oops");
+  }
+  try {
+    await call(context, handlers, throwFromBody, "arg1", "arg2");
+  } catch (e) {}
+  await sleep(10);
+  expect(error.message).toEqual("oops");
+  expect(error.context.name).toEqual("throwFromBody");
+  expect(error.context.stack[0].fn).toEqual(throwFromBody);
+  expect(error.context.stack[0].args).toEqual(["arg1", "arg2"]);
+  expect(callCount).toEqual(1);
+
+  // Should be serializable
+  JSON.stringify(error);
+});

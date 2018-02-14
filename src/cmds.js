@@ -133,13 +133,21 @@ function parallel(cmdList) {
 
 function envelope(cmd) {
   return {
-    type: "envelope  ",
+    type: "envelope",
     cmd
   };
 }
 
 function now() {
   return call.fn(Date.now);
+}
+
+function either(cmd, defaultValue) {
+  return {
+    type: "either",
+    cmd,
+    defaultValue
+  };
 }
 
 // Call Shortcuts
@@ -151,8 +159,10 @@ call.callbackBound = callCallbackBound;
 module.exports = {
   call,
   callFn,
+  fn: callFn,
   callFnBound,
   callCallback,
+  callback: callCallback,
   callCallbackBound,
   echo,
   now,
@@ -167,5 +177,6 @@ module.exports = {
   sleep,
   series,
   parallel,
-  envelope
+  envelope,
+  either
 };
