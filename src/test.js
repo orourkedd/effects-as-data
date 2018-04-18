@@ -1,7 +1,7 @@
 const assert = require("assert");
 const curry = require("lodash/curry");
 const chunk = require("lodash/chunk");
-const { deepEqual } = require("./specs/test-util");
+const { deepEqual, isError } = require("./specs/test-util");
 
 const testRunner = (subject, expected, index = 0, previousOutput = null) => {
   const fn = subject.fn || subject;
@@ -65,11 +65,6 @@ const testRunner = (subject, expected, index = 0, previousOutput = null) => {
     testRunner(g, expected, index + 1, output.value);
   }
 };
-
-function isError(e) {
-  if (!e) return false;
-  return e instanceof Error;
-}
 
 const checkForExpectedTypeMismatches = expected => {
   if (!Array.isArray(expected)) {

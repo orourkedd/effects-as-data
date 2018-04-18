@@ -45,8 +45,7 @@ function deepEqual(actual, expected) {
 }
 
 function normalizeError(v) {
-  const isError = v instanceof Error;
-  if (!isError) return v;
+  if (!isError(v)) return v;
   const props = Object.getOwnPropertyNames(v).concat("name");
   return props.reduce((p, c) => {
     if (c === "stack") return p;
@@ -55,12 +54,22 @@ function normalizeError(v) {
   }, {});
 }
 
+function isError(e) {
+  if (!e) return false;
+  return e instanceof Error || e.code === "ERR_ASSERTION";
+}
+
 function usingJest() {
-  return typeof expect !== "undefined" && expect.extend && expect.anything;
+  return (
+    typeof expect !== "undefined" &&
+    Boolean(expect.extend) &&
+    Boolean(expect.anything)
+  );
 }
 
 module.exports = {
   expectError,
   sleep,
-  deepEqual
+  deepEqual,
+  isError
 };
