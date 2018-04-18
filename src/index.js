@@ -66,7 +66,7 @@ function getHandlers() {
   return handlers;
 }
 
-function addToHandlers(h) {
+function addHandlers(h) {
   handlers = Object.assign({}, handlers, h);
 }
 
@@ -84,6 +84,6 @@ module.exports = Object.assign({}, coreCmds, {
   addToContext,
   setHandlers,
   getHandlers,
-  addToHandlers,
+  addHandlers,
   reset
 });

@@ -7,7 +7,7 @@ const {
   addToContext,
   setHandlers,
   getHandlers,
-  addToHandlers,
+  addHandlers,
   reset
 } = require("../index");
 
@@ -331,7 +331,7 @@ test("promisify(fn).callWithContext({...}) should call function with context pat
     return context.configProperty;
   }
 
-  addToHandlers({ testEffect });
+  addHandlers({ testEffect });
 
   function* test1(message) {
     const result = yield { type: "testEffect" };
@@ -350,7 +350,7 @@ test("promisify(fn).callWithContext({...}) should call function with context pat
   expect(result2).toEqual("barbar");
 });
 
-test("addToHandlers(), getHandlers(), setHandlers()", () => {
+test("addHandlers(), getHandlers(), setHandlers()", () => {
   reset();
 
   function testEffect1() {
@@ -363,10 +363,10 @@ test("addToHandlers(), getHandlers(), setHandlers()", () => {
 
   expect(getHandlers()).toEqual({});
 
-  addToHandlers({ testEffect1 });
+  addHandlers({ testEffect1 });
   expect(getHandlers()).toEqual({ testEffect1 });
 
-  addToHandlers({ testEffect2 });
+  addHandlers({ testEffect2 });
   expect(getHandlers()).toEqual({ testEffect1, testEffect2 });
 
   setHandlers({});

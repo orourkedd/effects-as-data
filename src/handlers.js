@@ -121,8 +121,7 @@ function envelope({ cmd }, { call, context, handlers }) {
 function either({ cmd, defaultValue }, { call, context, handlers }) {
   return call(context, handlers, function*() {
     try {
-      const result = yield cmd;
-      return result || defaultValue;
+      return yield cmd;
     } catch (e) {
       return defaultValue;
     }

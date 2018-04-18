@@ -67,7 +67,7 @@ function log(...args) {
 
 function logError(...args) {
   return {
-    type: "error",
+    type: "logError",
     args
   };
 }
