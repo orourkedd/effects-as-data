@@ -34,7 +34,8 @@ test("validator get called inside call function inside unit test", () => {
     testFn(test, () => {
       // prettier-ignore
       return args()
-        .yieldCmd(call(subject)).returns("foo");
+        .cmd(call(subject))
+        .returns("foo");
     })();
   } catch (e) {
     expect(e.message).toEqual("User required.");
@@ -58,7 +59,8 @@ test("validator get called inside call function from inside ead function", () =>
     testFn(test, () => {
       // prettier-ignore
       return args()
-        .yieldCmd(call(subject, user)).returns("foo");
+        .cmd(call(subject, user))
+        .returns("foo");
     })();
   } catch (e) {
     expect(e.message.match(/expect/gi)).toBeTruthy();

@@ -118,7 +118,8 @@ test(
   testFn(basic, () => {
     // prettier-ignore
     return args('foo')
-      .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
+      .cmd(cmds.echo('foo'))
+        .result('foo')
       .returns('foo')
   })
 );
@@ -164,7 +165,8 @@ test(
   testFn(basicMultiArg, () => {
     // prettier-ignore
     return args('foo', 'bar')
-      .yieldCmd(cmds.echo('foobar')).yieldReturns('foobar')
+      .cmd(cmds.echo('foobar'))
+        .result('foobar')
       .returns('foobar')
   })
 );
@@ -200,8 +202,10 @@ test(
   testFn(basicMultistep, () => {
     // prettier-ignore
     return args('foo')
-      .yieldCmd(cmds.echo('foo1')).yieldReturns('foo1')
-      .yieldCmd(cmds.echo('foo2')).yieldReturns('foo2')
+      .cmd(cmds.echo('foo1'))
+        .result('foo1')
+      .cmd(cmds.echo('foo2'))
+        .result('foo2')
       .returns({ s1: 'foo1', s2: 'foo2' })
   })
 );
@@ -239,7 +243,8 @@ test(
     const c = [cmds.echo("foo"), cmds.echo("foo")];
     // prettier-ignore
     return args('foo')
-      .yieldCmd(c).yieldReturns(['foo', 'foo'])
+      .cmd(c)
+        .result(['foo', 'foo'])
       .returns({ s1: 'foo1', s2: 'foo2' })
   })
 );
@@ -280,8 +285,10 @@ test(
     const c2 = [cmds.echo("foo"), cmds.echo("foo")];
     // prettier-ignore
     return args('foo')
-      .yieldCmd(c1).yieldReturns(['foo', 'foo'])
-      .yieldCmd(c2).yieldReturns(['foo', 'foo'])
+      .cmd(c1)
+        .result(['foo', 'foo'])
+      .cmd(c2)
+        .result(['foo', 'foo'])
       .returns({ s1: 'foo1', s2: 'foo2', s3: 'foo3', s4: 'foo4' })
   })
 );
@@ -319,7 +326,8 @@ test(
   testFn(basicEmpty, () => {
     // prettier-ignore
     return args(null)
-      .yieldCmd([]).yieldReturns([])
+      .cmd([])
+        .result([])
       .returns([])
   })
 );
@@ -354,17 +362,19 @@ test(
   testFn(badHandler, () => {
     // prettier-ignore
     return args([null])
-      .yieldCmd(cmds.die('oops')).yieldReturns(new Error('oops!'))
+      .cmd(cmds.die('oops'))
+        .result(new Error('oops!'))
       .returns(new Error('oops!'))
   })
 );
 
 test(
-  "testFn semantic should handle errors using yieldThrows and throws (badHandler)",
+  "testFn semantic should handle errors using handlerThrows and throws (badHandler)",
   testFn(badHandler, () => {
     // prettier-ignore
     return args([null])
-      .yieldCmd(cmds.die('oops')).yieldThrows(new Error('oops!'))
+      .cmd(cmds.die('oops'))
+        .handlerThrows(new Error('oops!'))
       .throws(new Error('oops!'))
   })
 );
@@ -387,7 +397,7 @@ test(
   testFn(badHandler, () => {
     // prettier-ignore
     return args([null])
-      .yieldCmd(cmds.die('oops')).throws(new Error('oops!'))
+      .cmd(cmds.die('oops')).throws(new Error('oops!'))
   })
 );
 
@@ -415,7 +425,7 @@ test(
   testFn(returnCmdResult, () => {
     // prettier-ignore
     return args()
-      .yieldCmd(cmds.echo('foo')).returns("foo")
+      .cmd(cmds.echo('foo')).returns("foo")
   })
 );
 
@@ -431,7 +441,8 @@ test(
   testFn(throwSemantic, () => {
     // prettier-ignore
     return args()
-      .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
+      .cmd(cmds.echo('foo'))
+        .result('foo')
       .throws(new Error("oops"))
   })
 );
@@ -441,7 +452,8 @@ test("testFn should throw proper error if function throws incorrect error", () =
     testFn(throwSemantic, () => {
       // prettier-ignore
       return args()
-        .yieldCmd(cmds.echo('foo')).yieldReturns('foo')
+        .cmd(cmds.echo('foo'))
+          .result('foo')
         .throws(new Error("wrong"))
     })();
   } catch (e) {
@@ -469,7 +481,8 @@ test(
   testSingleLine(() => {
     // prettier-ignore
     return args('123')
-      .yieldCmd(cmds.httpGet('http://example.com/api/v1/users/123')).yieldReturns({ foo: 'bar' })
+      .cmd(cmds.httpGet('http://example.com/api/v1/users/123'))
+        .result({ foo: 'bar' })
       .returns({ foo: 'bar' })
   })
 );
