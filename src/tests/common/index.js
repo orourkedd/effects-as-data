@@ -1,9 +1,9 @@
 const cmds = require("./cmds");
-const handlers = require("./handlers");
+const interpreters = require("./interpreters");
 const functions = require("./functions");
 
 module.exports = {
   cmds,
-  handlers,
+  interpreters,
   functions
 };

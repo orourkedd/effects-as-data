@@ -1,17 +1,9 @@
-const {
-  call,
-  callFn,
-  callFnBound,
-  callCallback,
-  callCallbackBound,
-  echo,
-  globalVariable
-} = require("../cmds");
+const cmds = require("../cmds");
 const { promisify } = require("../index");
 
 test("call should return a call cmd", () => {
   const fn = function*() {};
-  const actual = call(fn, "foo", "bar");
+  const actual = cmds.call(fn, "foo", "bar");
   const expected = {
     type: "call",
     fn,
@@ -26,7 +18,7 @@ test("call should run validator", () => {
     throw new Error("oops");
   };
   try {
-    call(fn, "foo", "bar");
+    cmds.call(fn, "foo", "bar");
   } catch (e) {
     expect(e.message).toEqual("oops");
     return;
@@ -40,7 +32,7 @@ test("call should run validator on promisified function", () => {
     throw new Error("oops");
   };
   try {
-    call(promisify(fn), "foo", "bar");
+    cmds.call(promisify(fn), "foo", "bar");
   } catch (e) {
     expect(e.message).toEqual("oops");
     return;
@@ -50,7 +42,7 @@ test("call should run validator on promisified function", () => {
 
 test("callFn should return a callFn cmd", () => {
   const fn = function() {};
-  const actual = callFn(fn, "foo", "bar");
+  const actual = cmds.callFn(fn, "foo", "bar");
   const expected = {
     type: "callFn",
     fn,
@@ -60,13 +52,13 @@ test("callFn should return a callFn cmd", () => {
 });
 
 test("call.fn === callFn", () => {
-  expect(call.fn).toEqual(callFn);
+  expect(cmds.call.fn).toEqual(cmds.callFn);
 });
 
 test("callFnBound should return a callFnBound cmd", () => {
   const fn = function() {};
   const bindThis = {};
-  const actual = callFnBound(bindThis, fn, "foo", "bar");
+  const actual = cmds.callFnBound(bindThis, fn, "foo", "bar");
   const expected = {
     type: "callFn",
     fn,
@@ -77,13 +69,13 @@ test("callFnBound should return a callFnBound cmd", () => {
 });
 
 test("call.fnBound === callFnBound", () => {
-  expect(call.fnBound).toEqual(callFnBound);
+  expect(cmds.call.fnBound).toEqual(cmds.callFnBound);
 });
 
 test("callCallback should return a callCallback cmd", () => {
   const fn = function() {};
   const bindThis = {};
-  const actual = callCallback(fn, "foo", "bar");
+  const actual = cmds.callCallback(fn, "foo", "bar");
   const expected = {
     type: "callCallback",
     fn,
@@ -93,13 +85,13 @@ test("callCallback should return a callCallback cmd", () => {
 });
 
 test("call.callback === callCallback", () => {
-  expect(call.callback).toEqual(callCallback);
+  expect(cmds.call.callback).toEqual(cmds.callCallback);
 });
 
 test("callCallbackBound should return a callCallbackBound cmd", () => {
   const fn = function() {};
   const bindThis = {};
-  const actual = callCallbackBound(bindThis, fn, "foo", "bar");
+  const actual = cmds.callCallbackBound(bindThis, fn, "foo", "bar");
   const expected = {
     type: "callCallback",
     fn,
@@ -110,15 +102,15 @@ test("callCallbackBound should return a callCallbackBound cmd", () => {
 });
 
 test("call.callbackBound === callCallbackBound", () => {
-  expect(call.callbackBound).toEqual(callCallbackBound);
+  expect(cmds.call.callbackBound).toEqual(cmds.callCallbackBound);
 });
 
 test("echo()", () => {
-  expect(echo("foo")).toEqual({ type: "echo", message: "foo" });
+  expect(cmds.echo("foo")).toEqual({ type: "echo", message: "foo" });
 });
 
 test("globalVariable()", () => {
-  expect(globalVariable("process")).toEqual({
+  expect(cmds.globalVariable("process")).toEqual({
     type: "globalVariable",
     name: "process"
   });

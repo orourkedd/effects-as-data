@@ -1,5 +1,5 @@
 function call({ fn, args }, c) {
-  return c.call(c.context, c.handlers, fn.eadFn || fn, ...args);
+  return c.call(c.context, c.interpreters, fn.eadFn || fn, ...args);
 }
 
 function callFn({ fn, bindThis, args }, c) {
@@ -46,35 +46,38 @@ function logError({ args }) {
 const delay =
   typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate;
 
-function setImmediateHandler({ cmd }, { call, context, handlers }) {
+function setImmediateInterpreter({ cmd }, { call, context, interpreters }) {
   delay(() => {
-    call(context, handlers, function*() {
+    call(context, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   });
 }
 
-function setTimeoutHandler({ cmd, time }, { call, context, handlers }) {
+function setTimeoutInterpreter({ cmd, time }, { call, context, interpreters }) {
   return setTimeout(() => {
-    call(context, handlers, function*() {
+    call(context, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   }, time);
 }
 
-function clearTimeoutHandler({ id }) {
+function clearTimeoutInterpreter({ id }) {
   return clearTimeout(id);
 }
 
-function setIntervalHandler({ cmd, time }, { call, context, handlers }) {
+function setIntervalInterpreter(
+  { cmd, time },
+  { call, context, interpreters }
+) {
   return setInterval(() => {
-    call(context, handlers, function*() {
+    call(context, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   }, time);
 }
 
-function clearIntervalHandler({ id }) {
+function clearIntervalInterpreter({ id }) {
   return clearInterval(id);
 }
 
@@ -82,9 +85,9 @@ function sleep({ time }) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
-function series({ cmdList, delay }, { call, context, handlers }) {
+function series({ cmdList, delay }, { call, context, interpreters }) {
   if (cmdList.length === 0) return [];
-  return call(context, handlers, function*() {
+  return call(context, interpreters, function*() {
     const results = [];
     for (let i = 0; i < cmdList.length; i++) {
       const result = yield cmdList[i];
@@ -95,14 +98,14 @@ function series({ cmdList, delay }, { call, context, handlers }) {
   });
 }
 
-function parallel({ cmdList }, { call, context, handlers }) {
-  return call(context, handlers, function*() {
+function parallel({ cmdList }, { call, context, interpreters }) {
+  return call(context, interpreters, function*() {
     return yield cmdList;
   });
 }
 
-function envelope({ cmd }, { call, context, handlers }) {
-  return call(context, handlers, function*() {
+function envelope({ cmd }, { call, context, interpreters }) {
+  return call(context, interpreters, function*() {
     return yield cmd;
   })
     .then(result => {
@@ -119,8 +122,8 @@ function envelope({ cmd }, { call, context, handlers }) {
     });
 }
 
-function either({ cmd, defaultValue }, { call, context, handlers }) {
-  return call(context, handlers, function*() {
+function either({ cmd, defaultValue }, { call, context, interpreters }) {
+  return call(context, interpreters, function*() {
     try {
       return yield cmd;
     } catch (e) {
@@ -137,11 +140,11 @@ module.exports = {
   globalVariable,
   log,
   logError,
-  setImmediate: setImmediateHandler,
-  setTimeout: setTimeoutHandler,
-  clearTimeout: clearTimeoutHandler,
-  setInterval: setIntervalHandler,
-  clearInterval: clearIntervalHandler,
+  setImmediate: setImmediateInterpreter,
+  setTimeout: setTimeoutInterpreter,
+  clearTimeout: clearTimeoutInterpreter,
+  setInterval: setIntervalInterpreter,
+  clearInterval: clearIntervalInterpreter,
   sleep,
   series,
   parallel,

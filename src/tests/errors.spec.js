@@ -1,7 +1,7 @@
 const { call } = require("../core");
-const { handlers, functions, cmds } = require("./common");
-const { badHandler, thrower } = functions;
-const { expectError } = require("./test-util");
+const { interpreters, functions, cmds } = require("./common");
+const { badInterpreter, thrower } = functions;
+const { expectError } = require("./util");
 
 function* throwInFn() {
   throw new Error("oops!");
@@ -25,7 +25,7 @@ function* throwAtYieldRecovery() {
 
 test("call should reject for an undefined function", async () => {
   try {
-    await call({}, handlers, undefined);
+    await call({}, interpreters, undefined);
   } catch (actual) {
     const message = "A function is required.";
     return expectError(actual, message);
@@ -35,7 +35,7 @@ test("call should reject for an undefined function", async () => {
 
 test("call should catch function errors", async () => {
   try {
-    await call({}, handlers, throwInFn);
+    await call({}, interpreters, throwInFn);
   } catch (actual) {
     const message = "oops!";
     return expectError(actual, message);
@@ -44,25 +44,25 @@ test("call should catch function errors", async () => {
 });
 
 test("call should throw error at the yield", async () => {
-  const actual = await call({}, handlers, throwAtYield);
+  const actual = await call({}, interpreters, throwAtYield);
   const expected = "caught!";
   expect(actual).toEqual(expected);
 });
 
 test("call should throw error at the yield and recover", async () => {
-  const actual = await call({}, handlers, throwAtYieldRecovery);
+  const actual = await call({}, interpreters, throwAtYieldRecovery);
   const expected = "foo";
   expect(actual).toEqual(expected);
 });
 
-test("call should throw error for unregistered handler", async () => {
+test("call should throw error for unregistered interpreter", async () => {
   const fn = function*() {
     yield { type: "dne" };
   };
   try {
-    await call({}, handlers, fn);
+    await call({}, interpreters, fn);
   } catch (e) {
-    expect(e.message).toEqual('Handler of type "dne" is not registered.');
+    expect(e.message).toEqual('Interpreter of type "dne" is not registered.');
     return;
   }
   fail("Did not throw.");

@@ -5,9 +5,9 @@ const {
   setContext,
   getContext,
   addToContext,
-  setHandlers,
-  getHandlers,
-  addHandlers,
+  setInterpreters,
+  getInterpreters,
+  addInterpreters,
   reset
 } = require("../index");
 
@@ -326,12 +326,12 @@ test("[error handling] call.callbackBound should call callback function", async 
 
 test("promisify(fn).callWithContext({...}) should call function with context patch", async () => {
   setContext({ configProperty: "foo" });
-  // Handler
+  // Interpreter
   function testEffect(cmd, { context }) {
     return context.configProperty;
   }
 
-  addHandlers({ testEffect });
+  addInterpreters({ testEffect });
 
   function* test1(message) {
     const result = yield { type: "testEffect" };
@@ -350,7 +350,7 @@ test("promisify(fn).callWithContext({...}) should call function with context pat
   expect(result2).toEqual("barbar");
 });
 
-test("addHandlers(), getHandlers(), setHandlers()", () => {
+test("addInterpreters(), getInterpreters(), setInterpreters()", () => {
   reset();
 
   function testEffect1() {
@@ -361,16 +361,16 @@ test("addHandlers(), getHandlers(), setHandlers()", () => {
     return "test2";
   }
 
-  expect(getHandlers()).toEqual({});
+  expect(getInterpreters()).toEqual({});
 
-  addHandlers({ testEffect1 });
-  expect(getHandlers()).toEqual({ testEffect1 });
+  addInterpreters({ testEffect1 });
+  expect(getInterpreters()).toEqual({ testEffect1 });
 
-  addHandlers({ testEffect2 });
-  expect(getHandlers()).toEqual({ testEffect1, testEffect2 });
+  addInterpreters({ testEffect2 });
+  expect(getInterpreters()).toEqual({ testEffect1, testEffect2 });
 
-  setHandlers({});
-  expect(getHandlers()).toEqual({});
+  setInterpreters({});
+  expect(getInterpreters()).toEqual({});
 });
 
 test("addToContext(), getContext(), setContext()", () => {

@@ -1,6 +1,6 @@
 const { toArray, toPromise, delay } = require("./util");
 
-function call(context, handlers, fn, ...args) {
+function call(context, interpreters, fn, ...args) {
   if (!context) throw new Error("context is required.");
   if (!fn) return Promise.reject(new Error("A function is required."));
   const gen = fn.apply(null, args);
@@ -9,18 +9,18 @@ function call(context, handlers, fn, ...args) {
   childContext.stack = childContext.stack || [];
   childContext.stack.push({
     context: childContext,
-    handlers,
+    interpreters,
     fn,
     args
   });
-  // clean up circular references
+  // clean up circular references to allow for serialization
   childContext.stack = childContext.stack.map(s => {
     s.context = Object.assign({}, s.context, { stack: undefined });
     return s;
   });
   const start = Date.now();
   onCall({ args, fn, context: childContext });
-  return run(childContext, handlers, fn, gen, null, el)
+  return run(childContext, interpreters, fn, gen, null, el)
     .then(result => {
       if (!childContext.onCallComplete) return result;
       const end = Date.now();
@@ -52,21 +52,29 @@ function call(context, handlers, fn, ...args) {
     });
 }
 
-function run(context, handlers, fn, gen, input, el, genOperation = "next") {
+function run(context, interpreters, fn, gen, input, el, genOperation = "next") {
   try {
     const { output, done } = getNextOutput(gen, input, genOperation);
     if (done) return toPromise(output);
     const isList = Array.isArray(output);
     const commandsList = toArray(output);
-    return processCommands(context, handlers, fn, commandsList, el)
+    return processCommands(context, interpreters, fn, commandsList, el)
       .then(results => {
         const unwrappedResults = unwrapResults(isList, results);
         el.step++;
-        return run(context, handlers, fn, gen, unwrappedResults, el, "next");
+        return run(
+          context,
+          interpreters,
+          fn,
+          gen,
+          unwrappedResults,
+          el,
+          "next"
+        );
       })
       .catch(e => {
         el.step++;
-        return run(context, handlers, fn, gen, e, el, "throw");
+        return run(context, interpreters, fn, gen, e, el, "throw");
       });
   } catch (e) {
     return Promise.reject(e);
@@ -88,10 +96,10 @@ function getNextOutput(fn, input, op = "next") {
   return { output, done };
 }
 
-function processCommands(context, handlers, fn, commands, el) {
+function processCommands(context, interpreters, fn, commands, el) {
   try {
     const pc = (c, index) =>
-      processCommand(context, handlers, fn, c, el, index);
+      processCommand(context, interpreters, fn, c, el, index);
     const promises = commands.map(pc);
     return Promise.all(promises);
   } catch (e) {
@@ -99,7 +107,7 @@ function processCommands(context, handlers, fn, commands, el) {
   }
 }
 
-function processCommand(context, handlers, fn, command, el, index) {
+function processCommand(context, interpreters, fn, command, el, index) {
   const start = Date.now();
   onCommand({
     command,
@@ -111,12 +119,12 @@ function processCommand(context, handlers, fn, command, el, index) {
   });
   let result;
   try {
-    const handler = handlers[command.type];
-    if (!handler)
+    const interpreter = interpreters[command.type];
+    if (!interpreter)
       return Promise.reject(
-        new Error(`Handler of type "${command.type}" is not registered.`)
+        new Error(`Interpreter of type "${command.type}" is not registered.`)
       );
-    result = handler(command, { call, context, handlers });
+    result = interpreter(command, { call, context, interpreters });
   } catch (e) {
     result = Promise.reject(e);
   }
@@ -227,12 +235,12 @@ function onCallComplete({ success, result, fn, context, start, end, latency }) {
   delay(() => context.onCallComplete(r));
 }
 
-function buildFunctions(context, handlers, functions) {
+function buildFunctions(context, interpreters, functions) {
   let promiseFunctions = {};
   for (let i in functions) {
     promiseFunctions[i] = function(...args) {
       const localContext = Object.assign({ name: i }, context);
-      return call(localContext, handlers, functions[i], ...args);
+      return call(localContext, interpreters, functions[i], ...args);
     };
   }
   return promiseFunctions;

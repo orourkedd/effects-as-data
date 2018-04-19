@@ -1,8 +1,8 @@
 const core = require("./core");
 const coreCmds = require("./cmds");
-const coreHandlers = require("./handlers");
+const coreInterpreters = require("./interpreters");
 
-let handlers = Object.assign({}, coreHandlers);
+let interpreters = Object.assign({}, coreInterpreters);
 let context = {};
 
 function promisify(fn) {
@@ -16,7 +16,7 @@ function promisify(fn) {
         return Promise.reject(e);
       }
     }
-    return core.call(context, handlers, fn, ...args);
+    return core.call(context, interpreters, fn, ...args);
   };
   // try/catch because this is nice for reporting, but not
   // necessary for the system to function
@@ -39,7 +39,7 @@ function promisify(fn) {
         return Promise.reject(e);
       }
     }
-    return core.call(Object.assign({}, context, c), handlers, fn, ...args);
+    return core.call(Object.assign({}, context, c), interpreters, fn, ...args);
   };
 
   promised.eadPromisified = true;
@@ -59,32 +59,32 @@ function addToContext(c) {
   context = Object.assign({}, context, c);
 }
 
-function setHandlers(h) {
-  handlers = h;
+function setInterpreters(h) {
+  interpreters = h;
 }
 
-function getHandlers() {
-  return handlers;
+function getInterpreters() {
+  return interpreters;
 }
 
-function addHandlers(h) {
-  handlers = Object.assign({}, handlers, h);
+function addInterpreters(h) {
+  interpreters = Object.assign({}, interpreters, h);
 }
 
 function reset() {
-  handlers = {};
+  interpreters = {};
   context = {};
 }
 
 module.exports = Object.assign({}, coreCmds, {
   cmds: coreCmds,
-  handlers: coreHandlers,
+  interpreters: coreInterpreters,
   promisify,
   setContext,
   getContext,
   addToContext,
-  setHandlers,
-  getHandlers,
-  addHandlers,
+  setInterpreters,
+  getInterpreters,
+  addInterpreters,
   reset
 });

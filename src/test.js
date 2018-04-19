@@ -1,7 +1,7 @@
 const assert = require("assert");
 const curry = require("lodash/curry");
 const chunk = require("lodash/chunk");
-const { deepEqual, isError } = require("./specs/test-util");
+const { deepEqual, isError } = require("./tests/util");
 
 const testRunner = (subject, expected, index = 0, previousOutput = null) => {
   const fn = subject.fn || subject;
@@ -128,7 +128,7 @@ const yieldCmd = t => v => {
     yieldReturns: yieldReturns(t),
     result: yieldReturns(t),
     yieldThrows: yieldReturns(t),
-    handlerThrows: yieldReturns(t),
+    interpreterThrows: yieldReturns(t),
     throws: yieldReturnThrows(t),
     returns: returnCmdResult(t)
   };

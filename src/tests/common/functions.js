@@ -37,11 +37,11 @@ function* basicEmpty() {
   return yield [];
 }
 
-function* badHandler() {
+function* badInterpreter() {
   return yield cmds.die("oops");
 }
 
-function* badHandlerRejection() {
+function* badInterpreterRejection() {
   return yield cmds.dieFromRejection("oops");
 }
 
@@ -52,6 +52,6 @@ module.exports = {
   basicParallel,
   basicMultistepParallel,
   basicEmpty,
-  badHandler,
-  badHandlerRejection
+  badInterpreter,
+  badInterpreterRejection
 };

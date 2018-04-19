@@ -7,10 +7,10 @@ const {
   basicEmpty,
   basicMultiArg,
   asyncTest,
-  badHandler
+  badInterpreter
 } = functions;
 const { testFn, testFnV2, args } = require("../test");
-const { deepEqual } = require("./test-util");
+const { deepEqual } = require("./util");
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`);
@@ -344,11 +344,11 @@ test(
   })
 );
 
-// Handler error handling
+// Interpreter error handling
 
 test(
-  "testFn should handle errors (badHandler)",
-  testFn(badHandler, () => {
+  "testFn should handle errors (badInterpreter)",
+  testFn(badInterpreter, () => {
     // prettier-ignore
     return [
       [[null], cmds.die('oops')],
@@ -358,8 +358,8 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors (badHandler)",
-  testFn(badHandler, () => {
+  "testFn semantic should handle errors (badInterpreter)",
+  testFn(badInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops'))
@@ -369,12 +369,12 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors using handlerThrows and throws (badHandler)",
-  testFn(badHandler, () => {
+  "testFn semantic should handle errors using interpreterThrows and throws (badInterpreter)",
+  testFn(badInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops'))
-        .handlerThrows(new Error('oops!'))
+        .interpreterThrows(new Error('oops!'))
       .throws(new Error('oops!'))
   })
 );
@@ -393,8 +393,8 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors without returns (badHandler)",
-  testFn(badHandler, () => {
+  "testFn semantic should handle errors without returns (badInterpreter)",
+  testFn(badInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops')).throws(new Error('oops!'))
@@ -402,8 +402,8 @@ test(
 );
 
 test(
-  "testFnV2 should handle errors (badHandler)",
-  testFnV2(badHandler, () => {
+  "testFnV2 should handle errors (badInterpreter)",
+  testFnV2(badInterpreter, () => {
     // prettier-ignore
     return [
       [null],

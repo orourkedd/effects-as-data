@@ -150,7 +150,7 @@ function either(cmd, defaultValue) {
   };
 }
 
-// Call Shortcuts
+// Friendly aliases
 call.fn = callFn;
 call.fnBound = callFnBound;
 call.callback = callCallback;
