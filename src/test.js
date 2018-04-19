@@ -116,6 +116,7 @@ const args = (...fnArgs) => {
   const t = [[fnArgs]];
   return {
     yieldCmd: yieldCmd(t),
+    cmd: yieldCmd(t),
     throws: throwAfterCmdReturns(t),
     returns: returns(t)
   };
@@ -125,7 +126,9 @@ const yieldCmd = t => v => {
   t[t.length - 1][1] = v;
   return {
     yieldReturns: yieldReturns(t),
+    result: yieldReturns(t),
     yieldThrows: yieldReturns(t),
+    handlerThrows: yieldReturns(t),
     throws: yieldReturnThrows(t),
     returns: returnCmdResult(t)
   };
@@ -136,6 +139,7 @@ const yieldReturns = t => v => {
 
   return {
     yieldCmd: yieldCmd(t),
+    cmd: yieldCmd(t),
     throws: throwAfterCmdReturns(t),
     returns: returns(t)
   };
