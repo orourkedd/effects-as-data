@@ -1,4 +1,4 @@
-const cmds = require("./commands");
+const cmds = require("./cmds");
 const handlers = require("./handlers");
 const functions = require("./functions");
 

@@ -73,6 +73,7 @@ function setIntervalHandler({ cmd, time }, { call, context, handlers }) {
     }).catch(e => e);
   }, time);
 }
+
 function clearIntervalHandler({ id }) {
   return clearInterval(id);
 }

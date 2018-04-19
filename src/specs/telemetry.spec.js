@@ -1,37 +1,7 @@
 const { call, buildFunctions } = require("../core");
-const { handlers, functions, cmds } = require("./effects");
+const { handlers, functions, cmds } = require("./common");
 const { basicMultistep, badHandler, basic } = functions;
 const { sleep } = require("./test-util");
-
-test("telemetry - should add a correlation id to the context", async () => {
-  let telemetry;
-  const onCommand = t => {
-    telemetry = t;
-  };
-  const context = { onCommand, name: "telemetry" };
-  const now = Date.now();
-  await call(context, handlers, basic, "foo");
-  await sleep(10);
-  expect(telemetry.context.cid.length).toEqual(36);
-
-  // Should be serializable
-  JSON.stringify(telemetry);
-});
-
-test("telemetry - should use an existing correlation id if on the context", async () => {
-  let telemetry;
-  const onCommand = t => {
-    telemetry = t;
-  };
-  const context = { onCommand, name: "telemetry", cid: "foo" };
-  const now = Date.now();
-  await call(context, handlers, basic, "bar");
-  await sleep(10);
-  expect(telemetry.context.cid).toEqual("foo");
-
-  // Should be serializable
-  JSON.stringify(telemetry);
-});
 
 test("telemetry - should add a stack to the context and push the current frame", async () => {
   let telemetry;
@@ -67,7 +37,6 @@ test("telemetry - should add a stack to the context for child calls", async () =
   expect(telemetry.context.stack[0].args).toEqual(["foo"]);
   expect(telemetry.context.stack[0].context.onCommand).toEqual(onCommand);
   expect(telemetry.context.stack[0].context.name).toEqual("telemetry");
-  expect(telemetry.context.stack[0].context.cid.length).toEqual(36);
   expect(telemetry.context.stack[0].context.stack).toEqual(undefined);
 
   // Should be serializable

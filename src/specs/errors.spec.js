@@ -1,12 +1,27 @@
 const { call } = require("../core");
-const { handlers, functions } = require("./effects");
-const {
-  badHandler,
-  throwAtYield,
-  throwAtYieldRecovery,
-  functionErrorTest
-} = functions;
+const { handlers, functions, cmds } = require("./common");
+const { badHandler, thrower } = functions;
 const { expectError } = require("./test-util");
+
+function* throwInFn() {
+  throw new Error("oops!");
+}
+
+function* throwAtYield() {
+  try {
+    yield cmds.die();
+  } catch (e) {
+    return "caught!";
+  }
+  return "not caught";
+}
+
+function* throwAtYieldRecovery() {
+  try {
+    yield cmds.die();
+  } catch (e) {}
+  return yield cmds.echo("foo");
+}
 
 test("call should reject for an undefined function", async () => {
   try {
@@ -20,7 +35,7 @@ test("call should reject for an undefined function", async () => {
 
 test("call should catch function errors", async () => {
   try {
-    await call({}, handlers, functionErrorTest);
+    await call({}, handlers, throwInFn);
   } catch (actual) {
     const message = "oops!";
     return expectError(actual, message);

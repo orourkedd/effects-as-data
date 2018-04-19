@@ -1,4 +1,4 @@
-const { toArray, toPromise, delay, uuid } = require("./util");
+const { toArray, toPromise, delay } = require("./util");
 
 function call(context, handlers, fn, ...args) {
   if (!context) throw new Error("context is required.");
@@ -6,7 +6,6 @@ function call(context, handlers, fn, ...args) {
   const gen = fn.apply(null, args);
   const el = newExecutionLog();
   const childContext = Object.assign({}, context);
-  childContext.cid = context.cid || uuid();
   childContext.stack = childContext.stack || [];
   childContext.stack.push({
     context: childContext,

@@ -1,4 +1,4 @@
-const { functions, cmds } = require("./effects");
+const { functions, cmds } = require("./common");
 const {
   basic,
   basicMultistep,
@@ -6,8 +6,6 @@ const {
   basicMultistepParallel,
   basicEmpty,
   basicMultiArg,
-  eitherTestError,
-  eitherTestEmpty,
   asyncTest,
   badHandler
 } = functions;
@@ -338,41 +336,6 @@ test(
   })
 );
 
-// Either test with error
-
-test(
-  "testFn should pass (eitherTestError)",
-  testFn(eitherTestError, () => {
-    // prettier-ignore
-    return [
-      [[null], cmds.either(cmds.die('oops'), 'foo')],
-      ['foo', 'foo']
-    ]
-  })
-);
-
-test(
-  "testFn semantic should pass (eitherTestError)",
-  testFn(eitherTestError, () => {
-    // prettier-ignore
-    return args(null)
-      .yieldCmd(cmds.either(cmds.die('oops'), 'foo')).yieldReturns('foo')
-      .returns('foo')
-  })
-);
-
-test(
-  "testFnV2 semantic should pass (eitherTestError)",
-  testFnV2(eitherTestError, () => {
-    // prettier-ignore
-    return [
-      [null],
-      [cmds.either(cmds.die('oops'), 'foo'), 'foo'],
-      'foo'
-    ]
-  })
-);
-
 // Handler error handling
 
 test(
@@ -436,76 +399,6 @@ test(
       [null],
       [cmds.die('oops'), new Error('oops!')],
       new Error('oops!')
-    ]
-  })
-);
-
-// Either test empty
-
-test(
-  "testFn should pass (eitherTestEmpty)",
-  testFn(eitherTestEmpty, () => {
-    // prettier-ignore
-    return [
-      [[null], cmds.either(cmds.echo(null), 'foo')],
-      ['foo', 'foo']
-    ]
-  })
-);
-
-test(
-  "testFn semantic should pass (eitherTestEmpty)",
-  testFn(eitherTestEmpty, () => {
-    // prettier-ignore
-    return args(null)
-      .yieldCmd(cmds.either(cmds.echo(null), 'foo')).yieldReturns('foo')
-      .returns('foo')
-  })
-);
-
-test(
-  "testFnV2 should pass (eitherTestEmpty)",
-  testFnV2(eitherTestEmpty, () => {
-    // prettier-ignore
-    return [
-      [null],
-      [cmds.either(cmds.echo(null), 'foo'), 'foo'],
-      'foo'
-    ]
-  })
-);
-
-// Async cmd
-
-test(
-  "testFn should pass (asyncTest)",
-  testFn(asyncTest, () => {
-    // prettier-ignore
-    return [
-      [[null], cmds.async({ type: 'test' })],
-      [null, null]
-    ]
-  })
-);
-
-test(
-  "testFn semantic should pass (asyncTest)",
-  testFn(asyncTest, () => {
-    // prettier-ignore
-    return args(null)
-      .yieldCmd(cmds.async({ type: 'test' })).yieldReturns(null)
-      .returns(null)
-  })
-);
-
-test(
-  "testFnV2 should pass (asyncTest)",
-  testFnV2(asyncTest, () => {
-    // prettier-ignore
-    return [
-      [null],
-      [cmds.async({ type: 'test' }), null],
-      null
     ]
   })
 );

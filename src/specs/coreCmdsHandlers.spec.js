@@ -3,14 +3,14 @@ const cmds = require("../cmds");
 const { sleep } = require("./test-util");
 
 test("globalVariable() should return a global variable", async () => {
-  const testValue = Math.random();
+  const testValue = Math.random().toString();
   process.env.testValue = testValue;
   function* testGlobalVariable() {
     const { env } = yield cmds.globalVariable("process");
     return env.testValue;
   }
   const actual = await promisify(testGlobalVariable)();
-  expect(actual).toEqual(testValue.toString());
+  expect(actual).toEqual(testValue);
 });
 
 test("call() should call an effects-as-data function", async () => {

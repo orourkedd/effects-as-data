@@ -18,7 +18,8 @@ function promisify(fn) {
     }
     return core.call(context, handlers, fn, ...args);
   };
-  // try/catch because this is nice, but not necessary
+  // try/catch because this is nice for reporting, but not
+  // necessary for the system to function
   // Note: there is a unit test to validate this behavior
   // so errors, although swallowed here, would be picked
   // up in the unit test.

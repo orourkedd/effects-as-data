@@ -1,4 +1,4 @@
-const cmds = require("../commands");
+const cmds = require("./cmds");
 
 function* basic(message) {
   return yield cmds.echo(message);
@@ -37,11 +37,21 @@ function* basicEmpty() {
   return yield [];
 }
 
+function* badHandler() {
+  return yield cmds.die("oops");
+}
+
+function* badHandlerRejection() {
+  return yield cmds.dieFromRejection("oops");
+}
+
 module.exports = {
   basic,
   basicMultiArg,
   basicMultistep,
   basicParallel,
   basicMultistepParallel,
-  basicEmpty
+  basicEmpty,
+  badHandler,
+  badHandlerRejection
 };

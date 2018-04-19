@@ -1,12 +1,15 @@
 const { call } = require("../core");
-const { handlers, functions, cmds } = require("./effects");
-const {
-  badHandler,
-  badHandlerRejection,
-  valueReturningHandler,
-  promiseReturningHandler
-} = functions;
+const { handlers, functions, cmds } = require("./common");
+const { badHandler, badHandlerRejection } = functions;
 const { expectError } = require("./test-util");
+
+function* valueReturningHandler(value) {
+  return yield cmds.echo(value);
+}
+
+function* promiseReturningHandler(value) {
+  return yield cmds.echoPromise(value);
+}
 
 test("handlers should be able to return non-promise values", async () => {
   const actual = await call({}, handlers, valueReturningHandler, "bar");
