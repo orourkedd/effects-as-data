@@ -60,7 +60,6 @@ function globalVariable(name) {
 function log(...args) {
   return {
     type: "log",
-    level: "info",
     args
   };
 }
@@ -139,7 +138,9 @@ function envelope(cmd) {
 }
 
 function now() {
-  return call.fn(Date.now);
+  return {
+    type: "now"
+  };
 }
 
 function either(cmd, defaultValue) {

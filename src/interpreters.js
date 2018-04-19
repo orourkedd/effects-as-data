@@ -132,6 +132,10 @@ function either({ cmd, defaultValue }, { call, context, interpreters }) {
   });
 }
 
+function now() {
+  return Date.now();
+}
+
 module.exports = {
   call,
   callFn,
@@ -149,5 +153,6 @@ module.exports = {
   series,
   parallel,
   envelope,
-  either
+  either,
+  now
 };
