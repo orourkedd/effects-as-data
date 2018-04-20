@@ -214,9 +214,11 @@ test("onCallComplete for errors from function body when using buildFunctions", d
 
 test("telemetry onError - interpreter", async () => {
   let error;
+  let errorContext;
   let callCount = 0;
-  const onError = e => {
+  const onError = (e, c) => {
     error = e;
+    errorContext = c;
     callCount++;
   };
   const context = { onError, name: "usesThrowingInterpreter" };
@@ -227,9 +229,9 @@ test("telemetry onError - interpreter", async () => {
   } catch (e) {}
   await sleep(10);
   expect(error.message).toEqual("oops");
-  expect(error.context.name).toEqual("usesThrowingInterpreter");
-  expect(error.context.stack[0].fn).toEqual(usesThrowingInterpreter);
-  expect(error.context.stack[0].args).toEqual([message]);
+  expect(errorContext.name).toEqual("usesThrowingInterpreter");
+  expect(errorContext.stack[0].fn).toEqual(usesThrowingInterpreter);
+  expect(errorContext.stack[0].args).toEqual([message]);
   expect(callCount).toEqual(1);
 
   // Should be serializable
@@ -238,9 +240,11 @@ test("telemetry onError - interpreter", async () => {
 
 test("telemetry onError - function body", async () => {
   let error;
+  let errorContext;
   let callCount = 0;
-  const onError = e => {
+  const onError = (e, c) => {
     error = e;
+    errorContext = c;
     callCount++;
   };
   const context = { onError, name: "throwFromBody" };
@@ -254,9 +258,9 @@ test("telemetry onError - function body", async () => {
   } catch (e) {}
   await sleep(10);
   expect(error.message).toEqual("oops");
-  expect(error.context.name).toEqual("throwFromBody");
-  expect(error.context.stack[0].fn).toEqual(throwFromBody);
-  expect(error.context.stack[0].args).toEqual(["arg1", "arg2"]);
+  expect(errorContext.name).toEqual("throwFromBody");
+  expect(errorContext.stack[0].fn).toEqual(throwFromBody);
+  expect(errorContext.stack[0].args).toEqual(["arg1", "arg2"]);
   expect(callCount).toEqual(1);
 
   // Should be serializable

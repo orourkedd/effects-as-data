@@ -183,8 +183,7 @@ function onError(error, context) {
   if (error.eadReported) return;
   // tag error to prevent multiple reports as the error bubbles up
   error.eadReported = true;
-  error.context = context;
-  delay(() => context.onError(error));
+  delay(() => context.onError(error, context));
 }
 
 function onCommandComplete({
