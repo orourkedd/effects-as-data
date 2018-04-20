@@ -49,6 +49,12 @@ function echo(message) {
   };
 }
 
+function noop() {
+  return {
+    type: "noop"
+  };
+}
+
 function globalVariable(name) {
   if (!name) throw new Error("name required");
   return {
@@ -165,6 +171,7 @@ module.exports = {
   callback: callCallback,
   callCallbackBound,
   echo,
+  noop,
   now,
   globalVariable,
   log,

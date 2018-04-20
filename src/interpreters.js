@@ -32,6 +32,8 @@ function echo({ message }) {
   return message;
 }
 
+function noop() {}
+
 function globalVariable({ name }) {
   // istanbul ignore next
   const g = typeof window === undefined ? global : window;
@@ -140,6 +142,7 @@ module.exports = {
   callFn,
   callCallback,
   echo,
+  noop,
   globalVariable,
   log,
   logError,

@@ -21,7 +21,7 @@ function promisify(fn) {
   // try/catch because this is nice for reporting, but not
   // necessary for the system to function
   // Note: there is a unit test to validate this behavior
-  // so errors, although swallowed here, would be picked
+  // so errors, although swallowed here, are picked
   // up in the unit test.
   try {
     Object.defineProperty(promised, "name", {

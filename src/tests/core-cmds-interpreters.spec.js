@@ -261,6 +261,15 @@ test("echo() should return the echoed value", async () => {
   expect(actual).toEqual(expected);
 });
 
+test("noop() should noop", async () => {
+  function* testCall() {
+    return yield cmds.noop();
+  }
+  const actual = await promisify(testCall)();
+  const expected = undefined;
+  expect(actual).toEqual(expected);
+});
+
 test("now() should return a timestamp", async () => {
   const now = Date.now();
   function* testCall() {
