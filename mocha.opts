@@ -2,4 +2,4 @@
 --require babel-polyfill
 --ui tdd
 
-src/tests/test.spec.js
+src/tests/test-framework.spec.js
