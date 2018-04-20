@@ -1,7 +1,7 @@
 const assert = require("assert");
 const { call } = require("../core");
 const { interpreters, cmds, functions } = require("./common");
-const { expectErrorEquality } = require("./util");
+const { expectErrorEquality } = require("./test-util");
 
 const { basic, usesThrowingInterpreter, usesRejectingInterpreter } = functions;
 

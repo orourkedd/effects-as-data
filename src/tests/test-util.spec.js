@@ -1,4 +1,4 @@
-const { errorToJson, expectErrorEquality } = require("./util");
+const { errorToJson, expectErrorEquality } = require("./test-util");
 
 test("errorToJson()", () => {
   const error = new Error("oops");

@@ -1,7 +1,7 @@
 const { call } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
 const { usesThrowingInterpreter, thrower } = functions;
-const { expectErrorEquality } = require("./util");
+const { expectErrorEquality } = require("./test-util");
 
 function* throwInFn() {
   throw new Error("oops!");

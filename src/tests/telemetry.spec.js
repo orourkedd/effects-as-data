@@ -1,7 +1,7 @@
 const { call, buildFunctions } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
 const { usesThrowingInterpreter } = functions;
-const { sleep } = require("./util");
+const { sleep } = require("./test-util");
 
 function* basic(message) {
   return yield cmds.echo(message);

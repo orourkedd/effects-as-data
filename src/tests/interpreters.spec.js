@@ -7,7 +7,7 @@ const {
 } = require("../interpreters");
 const { call } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
-const { sleep } = require("./util");
+const { sleep } = require("./test-util");
 
 test("setImmediate() should swallow errors to prevent node uncaught rejection errors", async () => {
   const context = {};

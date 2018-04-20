@@ -1,6 +1,6 @@
 const { promisify } = require("../index");
 const cmds = require("../cmds");
-const { sleep } = require("./util");
+const { sleep } = require("./test-util");
 
 test("globalVariable() should return a global variable", async () => {
   const testValue = Math.random().toString();
