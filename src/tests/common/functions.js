@@ -37,11 +37,11 @@ function* basicEmpty() {
   return yield [];
 }
 
-function* badInterpreter() {
+function* usesThrowingInterpreter() {
   return yield cmds.die("oops");
 }
 
-function* badInterpreterRejection() {
+function* usesRejectingInterpreter() {
   return yield cmds.dieFromRejection("oops");
 }
 
@@ -52,6 +52,6 @@ module.exports = {
   basicParallel,
   basicMultistepParallel,
   basicEmpty,
-  badInterpreter,
-  badInterpreterRejection
+  usesThrowingInterpreter,
+  usesRejectingInterpreter
 };

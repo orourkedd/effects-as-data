@@ -50,7 +50,7 @@ function echo(message) {
 }
 
 function globalVariable(name) {
-  if (!name) throw new Error("name required.");
+  if (!name) throw new Error("name required");
   return {
     type: "globalVariable",
     name
@@ -115,11 +115,10 @@ function sleep(time) {
   };
 }
 
-function series(cmdList, delay) {
+function series(cmdList) {
   return {
     type: "series",
-    cmdList,
-    delay
+    cmdList
   };
 }
 

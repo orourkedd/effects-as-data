@@ -5,7 +5,7 @@ function die(message = "") {
   };
 }
 
-function dieFromRejection(message = "") {
+function dieFromRejection(message) {
   return {
     type: "dieFromRejection",
     message

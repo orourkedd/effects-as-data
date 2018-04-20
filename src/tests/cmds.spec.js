@@ -116,6 +116,10 @@ test("globalVariable()", () => {
   });
 });
 
+test("globalVariable() should throw key is falsey", () => {
+  expect(() => cmds.globalVariable()).toThrow("name required");
+});
+
 test("now()", () => {
   expect(cmds.now()).toEqual({ type: "now" });
 });
@@ -177,15 +181,6 @@ test("sleep()", () => {
 test("series()", () => {
   const cmdList = [];
   expect(cmds.series(cmdList)).toEqual({ type: "series", cmdList });
-});
-
-test("series() with delay", () => {
-  const cmdList = [];
-  expect(cmds.series(cmdList, 100)).toEqual({
-    type: "series",
-    cmdList,
-    delay: 100
-  });
 });
 
 test("parallel()", () => {

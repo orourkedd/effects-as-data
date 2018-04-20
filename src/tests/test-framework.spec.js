@@ -6,8 +6,7 @@ const {
   basicMultistepParallel,
   basicEmpty,
   basicMultiArg,
-  asyncTest,
-  badInterpreter
+  usesThrowingInterpreter
 } = functions;
 const { testFn, testFnV2, args } = require("../test");
 const { deepEqual } = require("./util");
@@ -347,8 +346,8 @@ test(
 // Interpreter error handling
 
 test(
-  "testFn should handle errors (badInterpreter)",
-  testFn(badInterpreter, () => {
+  "testFn should handle errors (usesThrowingInterpreter)",
+  testFn(usesThrowingInterpreter, () => {
     // prettier-ignore
     return [
       [[null], cmds.die('oops')],
@@ -358,8 +357,8 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors (badInterpreter)",
-  testFn(badInterpreter, () => {
+  "testFn semantic should handle errors (usesThrowingInterpreter)",
+  testFn(usesThrowingInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops'))
@@ -369,8 +368,8 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors using interpreterThrows and throws (badInterpreter)",
-  testFn(badInterpreter, () => {
+  "testFn semantic should handle errors using interpreterThrows and throws (usesThrowingInterpreter)",
+  testFn(usesThrowingInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops'))
@@ -393,8 +392,8 @@ test(
 );
 
 test(
-  "testFn semantic should handle errors without returns (badInterpreter)",
-  testFn(badInterpreter, () => {
+  "testFn semantic should handle errors without returns (usesThrowingInterpreter)",
+  testFn(usesThrowingInterpreter, () => {
     // prettier-ignore
     return args([null])
       .cmd(cmds.die('oops')).throws(new Error('oops!'))
@@ -402,8 +401,8 @@ test(
 );
 
 test(
-  "testFnV2 should handle errors (badInterpreter)",
-  testFnV2(badInterpreter, () => {
+  "testFnV2 should handle errors (usesThrowingInterpreter)",
+  testFnV2(usesThrowingInterpreter, () => {
     // prettier-ignore
     return [
       [null],

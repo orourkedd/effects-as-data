@@ -1,7 +1,17 @@
 const { call, buildFunctions } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
-const { basicMultistep, badInterpreter, basic } = functions;
+const { usesThrowingInterpreter } = functions;
 const { sleep } = require("./util");
+
+function* basic(message) {
+  return yield cmds.echo(message);
+}
+
+function* basicMultistep(message) {
+  const s1 = yield cmds.echo(message + "1");
+  const s2 = yield cmds.echo(message + "2");
+  return { s1, s2 };
+}
 
 test("telemetry - should add a stack to the context and push the current frame", async () => {
   let telemetry;
@@ -102,11 +112,11 @@ test("telemetry on error - onCommandComplete", async () => {
   const onCommandComplete = t => {
     telemetry = t;
   };
-  const context = { onCommandComplete, name: "badInterpreter" };
+  const context = { onCommandComplete, name: "usesThrowingInterpreter" };
   const now = Date.now();
   const message = "oops";
   try {
-    await call(context, interpreters, badInterpreter, message);
+    await call(context, interpreters, usesThrowingInterpreter, message);
   } catch (e) {}
   await sleep(10);
   expect(telemetry.success).toEqual(false);
@@ -117,9 +127,9 @@ test("telemetry on error - onCommandComplete", async () => {
   expect(telemetry.index).toEqual(0);
   expect(telemetry.step).toEqual(0);
   expect(telemetry.result.message).toEqual("oops");
-  expect(telemetry.context.name).toEqual("badInterpreter");
-  expect(telemetry.context.stack[0].fn).toEqual(badInterpreter);
-  expect(telemetry.fn).toEqual(badInterpreter);
+  expect(telemetry.context.name).toEqual("usesThrowingInterpreter");
+  expect(telemetry.context.stack[0].fn).toEqual(usesThrowingInterpreter);
+  expect(telemetry.fn).toEqual(usesThrowingInterpreter);
 
   // Should be serializable
   JSON.stringify(telemetry);
@@ -153,7 +163,7 @@ test("onCallComplete for errors from interpreters", done => {
   const now = Date.now();
   const onCallComplete = complete => {
     expect(complete.success).toEqual(false);
-    expect(complete.fn).toEqual(badInterpreter);
+    expect(complete.fn).toEqual(usesThrowingInterpreter);
     expect(complete.result.message).toEqual("oops");
     expect(typeof complete.latency).toEqual("number");
     expect(complete.start).toBeGreaterThanOrEqual(now);
@@ -161,7 +171,7 @@ test("onCallComplete for errors from interpreters", done => {
     done();
   };
   const context = { onCallComplete, name: "telemetry" };
-  call(context, interpreters, badInterpreter, "foo").catch(e => e);
+  call(context, interpreters, usesThrowingInterpreter, "foo").catch(e => e);
 });
 
 test("onCallComplete for errors from function body", done => {
@@ -209,16 +219,16 @@ test("telemetry onError - interpreter", async () => {
     error = e;
     callCount++;
   };
-  const context = { onError, name: "badInterpreter" };
+  const context = { onError, name: "usesThrowingInterpreter" };
   const now = Date.now();
   const message = "oops";
   try {
-    await call(context, interpreters, badInterpreter, message);
+    await call(context, interpreters, usesThrowingInterpreter, message);
   } catch (e) {}
   await sleep(10);
   expect(error.message).toEqual("oops");
-  expect(error.context.name).toEqual("badInterpreter");
-  expect(error.context.stack[0].fn).toEqual(badInterpreter);
+  expect(error.context.name).toEqual("usesThrowingInterpreter");
+  expect(error.context.stack[0].fn).toEqual(usesThrowingInterpreter);
   expect(error.context.stack[0].args).toEqual([message]);
   expect(callCount).toEqual(1);
 

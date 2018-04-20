@@ -320,6 +320,14 @@ test("series() should execute in series", async () => {
   expect(end - start).toBeGreaterThanOrEqual(150);
 });
 
+test("series() should handle an empty list", async () => {
+  function* testCall() {
+    return yield cmds.series([]);
+  }
+  const actual = await promisify(testCall)();
+  expect(actual).toEqual([]);
+});
+
 test("parellel() should execute in parellel", async () => {
   const start = Date.now();
   function* testCall() {

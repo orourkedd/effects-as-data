@@ -1,3 +1,4 @@
+const assert = require("assert");
 const {
   call,
   echo,
@@ -348,6 +349,38 @@ test("promisify(fn).callWithContext({...}) should call function with context pat
     "bar"
   );
   expect(result2).toEqual("barbar");
+});
+
+test("promisify(fn).callWithContext({...}) should call function with context patch and call validator", async () => {
+  setContext({ configProperty: "foo" });
+  // Interpreter
+  function testEffect(cmd, { context }) {
+    return context.configProperty;
+  }
+
+  addInterpreters({ testEffect });
+
+  function* test1(message) {
+    const result = yield { type: "testEffect" };
+    return `${result}${message}`;
+  }
+
+  test1.validator = () => {
+    throw new Error("not valid");
+  };
+
+  try {
+    await promisify(test1).callWithContext(
+      {
+        configProperty: "bar"
+      },
+      "bar"
+    );
+  } catch (e) {
+    assert.equal(e.message, "not valid");
+    return;
+  }
+  fail("did not throw");
 });
 
 test("addInterpreters(), getInterpreters(), setInterpreters()", () => {

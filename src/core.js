@@ -1,8 +1,8 @@
 const { toArray, toPromise, delay } = require("./util");
 
 function call(context, interpreters, fn, ...args) {
-  if (!context) throw new Error("context is required.");
-  if (!fn) return Promise.reject(new Error("A function is required."));
+  if (!context) return Promise.reject(new Error("context required"));
+  if (!fn) return Promise.reject(new Error("function required"));
   const gen = fn.apply(null, args);
   const el = newExecutionLog();
   const childContext = Object.assign({}, context);
@@ -91,7 +91,7 @@ function unwrapResults(isList, results) {
   return isList ? results : results[0];
 }
 
-function getNextOutput(fn, input, op = "next") {
+function getNextOutput(fn, input, op) {
   const { value: output, done } = fn[op](input);
   return { output, done };
 }
@@ -103,6 +103,7 @@ function processCommands(context, interpreters, fn, commands, el) {
     const promises = commands.map(pc);
     return Promise.all(promises);
   } catch (e) {
+    // istanbul ignore next
     return Promise.reject(e);
   }
 }

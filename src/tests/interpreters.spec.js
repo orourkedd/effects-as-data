@@ -1,65 +1,47 @@
+const assert = require("assert");
+const {
+  setImmediate,
+  setTimeout,
+  setInterval,
+  globalVariable
+} = require("../interpreters");
 const { call } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
-const { badInterpreter, badInterpreterRejection } = functions;
-const { expectError } = require("./util");
+const { sleep } = require("./util");
 
-function* valueReturningInterpreter(value) {
-  return yield cmds.echo(value);
-}
-
-function* promiseReturningInterpreter(value) {
-  return yield cmds.echoPromise(value);
-}
-
-test("interpreters should be able to return non-promise values", async () => {
-  const actual = await call({}, interpreters, valueReturningInterpreter, "bar");
-  const expected = "bar";
-  expect(actual).toEqual(expected);
+test("setImmediate() should swallow errors to prevent node uncaught rejection errors", async () => {
+  const context = {};
+  // Should not cause a node unhandled rejection error
+  await setImmediate({ cmd: cmds.die() }, { call, context, interpreters });
+  // wait for setImmediate to finish to get code coverage
+  await sleep(10);
 });
 
-test("interpreters should be able to return promises", async () => {
-  const actual = await call(
-    {},
-    interpreters,
-    promiseReturningInterpreter,
-    "bar"
+test("setTimeout() should swallow errors to prevent node uncaught rejection errors", async () => {
+  const context = {};
+  // Should not cause a node unhandled rejection error
+  await setTimeout(
+    { cmd: cmds.die(), time: 0 },
+    { call, context, interpreters }
   );
-  const expected = "bar";
-  expect(actual).toEqual(expected);
+  // wait for setTimeout to finish to get code coverage
+  await sleep(10);
 });
 
-test("call should reject when a interpreter throws and is not caught", async () => {
-  try {
-    await call({}, interpreters, badInterpreter);
-  } catch (actual) {
-    const message = "oops";
-    return expectError(actual, message);
-  }
-  fail("Function did not reject.");
-});
-
-test("call should reject when a interpreter rejects and is not caught", async () => {
-  try {
-    await call({}, interpreters, badInterpreterRejection);
-  } catch (actual) {
-    const message = "oops";
-    return expectError(actual, message);
-  }
-  fail("Function did not reject.");
-});
-
-test("interpreters should be able to return an array of results", async () => {
-  const fn = function*(a, b) {
-    const result = yield [cmds.echo(a), cmds.echo(b)];
-    return result;
-  };
-  const actual = await call(
-    {},
-    interpreters,
-    fn,
-    ["foo", "bar"],
-    ["foo", "baz"]
+test("setInterval() should swallow errors to prevent node uncaught rejection errors", async () => {
+  const context = {};
+  // Should not cause a node unhandled rejection error
+  const id = await setInterval(
+    { cmd: cmds.die(), time: 0 },
+    { call, context, interpreters }
   );
-  const expected = [["foo", "bar"], ["foo", "baz"]];
-  expect(actual).toEqual(expected);
+  // wait for setInterval to finish to get code coverage
+  await sleep(10);
+  clearInterval(id);
+});
+
+test("globalVariable() should use window if available", () => {
+  window.foo = "bar";
+  const value = globalVariable({ name: "foo" });
+  assert.equal(value, "bar");
 });

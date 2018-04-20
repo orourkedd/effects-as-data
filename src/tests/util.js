@@ -8,27 +8,21 @@ function errorToJson(e) {
   }, {});
 }
 
-function expectError(e1, e2) {
-  const ne1 = typeof e1 === "string" ? new Error(e1) : e1;
-  const ne2 = typeof e2 === "string" ? new Error(e2) : e2;
-  const be1 = get(() => e2.constructor.name) ? errorToJson(ne1) : ne1;
-  const be2 = get(() => e1.constructor.name) ? errorToJson(ne2) : ne2;
-  const oe1 = omitStack(be1);
-  const oe2 = omitStack(be2);
-  expect(oe1).toEqual(oe2);
+function expectErrorEquality(e1, e2) {
+  const ne1 = normalizeErrorForEquality(e1);
+  const ne2 = normalizeErrorForEquality(e2);
+  expect(ne1).toEqual(ne2);
+}
+
+function normalizeErrorForEquality(e) {
+  if (!e) return e;
+  if (typeof e === "string") return omitStack(errorToJson(new Error(e)));
+  return omitStack(errorToJson(e));
 }
 
 function omitStack(s) {
   delete s.stack;
   return s;
-}
-
-function get(fn) {
-  try {
-    return fn();
-  } catch (e) {
-    return undefined;
-  }
 }
 
 function sleep(ms) {
@@ -40,6 +34,7 @@ function sleep(ms) {
 function deepEqual(actual, expected) {
   const a = normalizeError(actual);
   const e = normalizeError(expected);
+  // istanbul ignore next
   if (usingJest()) expect(a).toEqual(e);
   else assert.deepEqual(a, e);
 }
@@ -68,7 +63,8 @@ function usingJest() {
 }
 
 module.exports = {
-  expectError,
+  errorToJson,
+  expectErrorEquality,
   sleep,
   deepEqual,
   isError

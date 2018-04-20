@@ -1,7 +1,7 @@
 const { call } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
-const { badInterpreter, thrower } = functions;
-const { expectError } = require("./util");
+const { usesThrowingInterpreter, thrower } = functions;
+const { expectErrorEquality } = require("./util");
 
 function* throwInFn() {
   throw new Error("oops!");
@@ -23,22 +23,12 @@ function* throwAtYieldRecovery() {
   return yield cmds.echo("foo");
 }
 
-test("call should reject for an undefined function", async () => {
-  try {
-    await call({}, interpreters, undefined);
-  } catch (actual) {
-    const message = "A function is required.";
-    return expectError(actual, message);
-  }
-  fail("Function did not reject.");
-});
-
 test("call should catch function errors", async () => {
   try {
     await call({}, interpreters, throwInFn);
   } catch (actual) {
     const message = "oops!";
-    return expectError(actual, message);
+    return expectErrorEquality(actual, message);
   }
   fail("Function did not reject.");
 });
@@ -49,13 +39,13 @@ test("call should throw error at the yield", async () => {
   expect(actual).toEqual(expected);
 });
 
-test("call should throw error at the yield and recover", async () => {
+test("call should reject error at the yield and recover", async () => {
   const actual = await call({}, interpreters, throwAtYieldRecovery);
   const expected = "foo";
   expect(actual).toEqual(expected);
 });
 
-test("call should throw error for unregistered interpreter", async () => {
+test("call should reject error for unregistered interpreter", async () => {
   const fn = function*() {
     yield { type: "dne" };
   };

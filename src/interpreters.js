@@ -1,3 +1,5 @@
+const { delay } = require("./util");
+
 function call({ fn, args }, c) {
   return c.call(c.context, c.interpreters, fn.eadFn || fn, ...args);
 }
@@ -31,6 +33,7 @@ function echo({ message }) {
 }
 
 function globalVariable({ name }) {
+  // istanbul ignore next
   const g = typeof window === undefined ? global : window;
   return g[name];
 }
@@ -42,9 +45,6 @@ function log({ args }) {
 function logError({ args }) {
   console.error(...args);
 }
-
-const delay =
-  typeof setImmediate === undefined ? fn => setTimeout(fn, 0) : setImmediate;
 
 function setImmediateInterpreter({ cmd }, { call, context, interpreters }) {
   delay(() => {
@@ -85,14 +85,13 @@ function sleep({ time }) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
-function series({ cmdList, delay }, { call, context, interpreters }) {
+function series({ cmdList }, { call, context, interpreters }) {
   if (cmdList.length === 0) return [];
   return call(context, interpreters, function*() {
     const results = [];
     for (let i = 0; i < cmdList.length; i++) {
       const result = yield cmdList[i];
       results.push(result);
-      if (delay && i < cmdList.length - 1) yield sleep(delay);
     }
     return results;
   });
