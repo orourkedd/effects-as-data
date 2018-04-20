@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description":
     "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
@@ -20,16 +20,16 @@
   "author": "orourkedd",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.5"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-jest": "^22.1.0",
+    "babel-jest": "^22.4.3",
     "babel-preset-es2015": "^6.24.1",
-    "jest": "^22.1.4",
-    "jest-cli": "^22.1.4",
-    "mocha": "^5.0.0",
-    "prettier": "^1.10.2"
+    "jest": "^22.4.3",
+    "jest-cli": "^22.4.3",
+    "mocha": "^5.1.1",
+    "prettier": "^1.12.1"
   },
   "jest": {
     "testPathIgnorePatterns": [
