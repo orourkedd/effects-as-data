@@ -10,6 +10,7 @@ const {
 } = functions;
 const { testFn, testFnV2, args } = require("../test");
 const { deepEqual } = require("./test-util");
+const { promisify } = require("../index");
 
 function* singleLine(id) {
   const s1 = yield cmds.httpGet(`http://example.com/api/v1/users/${id}`);
@@ -91,6 +92,18 @@ test(
 test(
   "testFn should curry",
   testFn(basic)(() => {
+    // prettier-ignore
+    return [
+      [['foo'], cmds.echo('foo')],
+      ['foo', 'foo']
+    ]
+  })
+);
+
+const basicPromisified = promisify(basic);
+test(
+  "testFn should handle promisified functions",
+  testFn(basicPromisified)(() => {
     // prettier-ignore
     return [
       [['foo'], cmds.echo('foo')],

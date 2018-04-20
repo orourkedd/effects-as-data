@@ -4,7 +4,7 @@ const chunk = require("lodash/chunk");
 const { deepEqual, isError } = require("./tests/test-util");
 
 const testRunner = (subject, expected, index = 0, previousOutput = null) => {
-  const fn = subject.fn || subject;
+  const fn = subject.eadFn || subject;
   checkForExpectedTypeMismatches(expected);
 
   assert(fn, "The function you are trying to test is undefined.");
