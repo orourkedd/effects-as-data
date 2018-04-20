@@ -13,7 +13,7 @@ function* basicMultistep(message) {
   return { s1, s2 };
 }
 
-test("telemetry - should add a stack to the context and push the current frame", async () => {
+test("should add a stack to the context and push the current frame", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
@@ -33,7 +33,7 @@ test("telemetry - should add a stack to the context and push the current frame",
   JSON.stringify(telemetry);
 });
 
-test("telemetry - should add a stack to the context for child calls", async () => {
+test("should add a stack to the context for child calls", async () => {
   let telemetry;
   const onCommand = t => {
     telemetry = t;
@@ -53,7 +53,7 @@ test("telemetry - should add a stack to the context for child calls", async () =
   JSON.stringify(telemetry);
 });
 
-test("telemetry - onCommand", async () => {
+test("onCommand", async () => {
   let telemetry = [];
   const onCommand = t => {
     telemetry.push(t);
@@ -78,7 +78,7 @@ test("telemetry - onCommand", async () => {
   JSON.stringify(telemetry);
 });
 
-test("telemetry - onCommandComplete", async () => {
+test("onCommandComplete", async () => {
   let telemetry = [];
   const onCommandComplete = t => {
     telemetry.push(t);
