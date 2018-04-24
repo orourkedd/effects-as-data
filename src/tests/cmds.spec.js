@@ -231,3 +231,32 @@ test("either()", () => {
     defaultValue
   });
 });
+
+test("getState()", () => {
+  expect(cmds.getState("foo")).toEqual({
+    type: "getState",
+    path: "foo"
+  });
+});
+
+test("getState() with default value", () => {
+  expect(cmds.getState("foo", "bar")).toEqual({
+    type: "getState",
+    path: "foo",
+    defaultValue: "bar"
+  });
+});
+
+test("setState()", () => {
+  expect(cmds.setState("foo", "bar")).toEqual({
+    type: "setState",
+    path: "foo",
+    value: "bar"
+  });
+});
+
+test("clearState()", () => {
+  expect(cmds.clearState()).toEqual({
+    type: "clearState"
+  });
+});

@@ -476,3 +476,45 @@ test("clearInterval() should set an interval", async () => {
   await sleep(20);
   expect(actual).toEqual(0);
 });
+
+test("getState()/setState() should get and set state", async () => {
+  function* t() {
+    yield cmds.clearState();
+    yield cmds.setState("lorem1", "ipsum1");
+    yield cmds.setState("lorem2", "ipsum2");
+    return yield [cmds.getState("lorem1"), cmds.getState("lorem2")];
+  }
+  const value = await promisify(t)();
+  expect(value).toEqual(["ipsum1", "ipsum2"]);
+});
+
+test("getState() should return entire state if no key", async () => {
+  function* t() {
+    yield cmds.clearState();
+    yield cmds.setState("dolor", "sit");
+    return yield cmds.getState();
+  }
+  const state = await promisify(t)();
+  expect(state).toEqual({ dolor: "sit" });
+});
+
+test("getState() should use default value if value is undefined", async () => {
+  function* t() {
+    yield cmds.clearState();
+    return yield cmds.getState("amet", "consectetur");
+  }
+  const value = await promisify(t)();
+  expect(value).toEqual("consectetur");
+});
+
+test("clearState() should clear the state", async () => {
+  function* t() {
+    yield cmds.setState("adipiscing", "elit");
+    const state = yield cmds.getState();
+    expect(state).toEqual({ adipiscing: "elit" });
+    yield cmds.clearState();
+    return yield cmds.getState();
+  }
+  const state = await promisify(t)();
+  expect(state).toEqual({});
+});

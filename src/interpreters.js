@@ -150,6 +150,23 @@ function now() {
   return Date.now();
 }
 
+let state = {};
+
+function getState({ path, defaultValue }) {
+  if (!path) return state;
+  const value = state[path];
+  if (value === undefined) return defaultValue;
+  return value;
+}
+
+function setState({ path, value }) {
+  state[path] = value;
+}
+
+function clearState() {
+  state = {};
+}
+
 module.exports = {
   call,
   callFn,
@@ -169,5 +186,8 @@ module.exports = {
   parallel,
   envelope,
   either,
-  now
+  now,
+  getState,
+  setState,
+  clearState
 };

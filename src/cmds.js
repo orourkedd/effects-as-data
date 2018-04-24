@@ -159,6 +159,28 @@ function either(cmd, defaultValue) {
   };
 }
 
+function getState(path, defaultValue) {
+  return {
+    type: "getState",
+    path,
+    defaultValue
+  };
+}
+
+function setState(path, value) {
+  return {
+    type: "setState",
+    path,
+    value
+  };
+}
+
+function clearState() {
+  return {
+    type: "clearState"
+  };
+}
+
 // Friendly aliases
 call.fn = callFn;
 call.fnBound = callFnBound;
@@ -188,5 +210,8 @@ module.exports = {
   series,
   parallel,
   envelope,
-  either
+  either,
+  getState,
+  setState,
+  clearState
 };
