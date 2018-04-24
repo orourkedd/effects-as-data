@@ -2,6 +2,8 @@ const { call, buildFunctions } = require("../core");
 const { interpreters, functions, cmds } = require("./common");
 const { usesThrowingInterpreter } = functions;
 const { sleep } = require("./test-util");
+const coreInterpreters = require("../interpreters");
+const coreCmds = require("../cmds");
 
 function* basic(message) {
   return yield cmds.echo(message);
@@ -265,4 +267,30 @@ test("telemetry onError - function body", async () => {
 
   // Should be serializable
   JSON.stringify(error);
+});
+
+test("should not mutate stack", async () => {
+  let stack1;
+  let stack2;
+  const onCommand = t => {
+    if (!stack1) {
+      stack1 = t.context.stack;
+      return;
+    }
+    if (!stack2) {
+      stack2 = t.context.stack;
+      return;
+    }
+  };
+  function* nestedCall() {
+    if (stack2) return;
+    yield coreCmds.setImmediate(nestedCall);
+  }
+  const context = { onCommand, name: "telemetry" };
+  const now = Date.now();
+  await call(context, coreInterpreters, nestedCall, "foo");
+  await sleep(10);
+  expect(stack1).toBeTruthy();
+  expect(stack2).toBeTruthy();
+  expect(stack1).not.toBe(stack2);
 });

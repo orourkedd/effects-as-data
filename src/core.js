@@ -6,13 +6,13 @@ function call(context, interpreters, fn, ...args) {
   const gen = fn.apply(null, args);
   const el = newExecutionLog();
   const childContext = Object.assign({}, context);
-  childContext.stack = childContext.stack || [];
-  childContext.stack.push({
+  childContext.stack = (childContext.stack || []).concat({
     context: childContext,
     interpreters,
     fn,
     args
   });
+
   // clean up circular references to allow for serialization
   childContext.stack = childContext.stack.map(s => {
     s.context = Object.assign({}, s.context, { stack: undefined });
