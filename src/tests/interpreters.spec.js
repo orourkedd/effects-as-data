@@ -36,7 +36,7 @@ test("setImmediate() should reset stack, if resetStack is truthy", async () => {
   const context = { onCommand, name: "telemetry" };
   const now = Date.now();
   await call(context, coreInterpreters, nestedCall, "foo");
-  await sleep(20);
+  await sleep(50);
   expect(stack).toBeTruthy();
   expect(stack.length).toEqual(1);
 });
@@ -69,7 +69,7 @@ test("setTimeout() should reset stack, if resetStack is truthy", async () => {
   const context = { onCommand, name: "telemetry" };
   const now = Date.now();
   await call(context, coreInterpreters, nestedCall, "foo");
-  await sleep(20);
+  await sleep(50);
   expect(stack).toBeTruthy();
   expect(stack.length).toEqual(1);
 });
@@ -103,7 +103,7 @@ test("setInterval() should reset stack, if resetStack is truthy", async () => {
   const context = { onCommand, name: "telemetry" };
   const now = Date.now();
   await call(context, coreInterpreters, nestedCall, "foo");
-  await sleep(20);
+  await sleep(50);
   expect(stack).toBeTruthy();
   expect(stack.length).toEqual(1);
 });
