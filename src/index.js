@@ -76,6 +76,11 @@ function reset() {
   context = {};
 }
 
+function onError(fn) {
+  if (typeof fn !== "function") throw new Error("onError requires a function");
+  addToContext({ onError: fn });
+}
+
 module.exports = Object.assign({}, coreCmds, {
   cmds: coreCmds,
   interpreters: coreInterpreters,
@@ -86,5 +91,6 @@ module.exports = Object.assign({}, coreCmds, {
   setInterpreters,
   getInterpreters,
   addInterpreters,
-  reset
+  reset,
+  onError
 });

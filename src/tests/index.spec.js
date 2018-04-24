@@ -9,7 +9,8 @@ const {
   setInterpreters,
   getInterpreters,
   addInterpreters,
-  reset
+  reset,
+  onError
 } = require("../index");
 
 test("promisify should tag function", async () => {
@@ -419,4 +420,15 @@ test("addToContext(), getContext(), setContext()", () => {
 
   setContext({});
   expect(getContext()).toEqual({});
+});
+
+test("onError() should register error handler on context", () => {
+  const handler = () => {};
+  onError(handler);
+  const context = getContext();
+  expect(context.onError).toEqual(handler);
+});
+
+test("onError() should throw if handler is not a function", () => {
+  expect(onError).toThrow("onError requires a function");
 });
