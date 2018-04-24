@@ -48,17 +48,29 @@ function logError({ args }) {
   console.error(...args);
 }
 
-function setImmediateInterpreter({ cmd }, { call, context, interpreters }) {
+function getSubStack(context, resetStack) {
+  return resetStack ? Object.assign({}, context, { stack: [] }) : context;
+}
+
+function setImmediateInterpreter(
+  { cmd, resetStack },
+  { call, context, interpreters }
+) {
   delay(() => {
-    call(context, interpreters, function*() {
+    const subcontext = getSubStack(context, resetStack);
+    call(subcontext, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   });
 }
 
-function setTimeoutInterpreter({ cmd, time }, { call, context, interpreters }) {
+function setTimeoutInterpreter(
+  { cmd, time, resetStack },
+  { call, context, interpreters }
+) {
   return setTimeout(() => {
-    call(context, interpreters, function*() {
+    const subcontext = getSubStack(context, resetStack);
+    call(subcontext, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   }, time);
@@ -69,11 +81,12 @@ function clearTimeoutInterpreter({ id }) {
 }
 
 function setIntervalInterpreter(
-  { cmd, time },
+  { cmd, time, resetStack },
   { call, context, interpreters }
 ) {
   return setInterval(() => {
-    call(context, interpreters, function*() {
+    const subcontext = getSubStack(context, resetStack);
+    call(subcontext, interpreters, function*() {
       yield cmd;
     }).catch(e => e);
   }, time);

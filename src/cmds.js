@@ -77,18 +77,20 @@ function logError(...args) {
   };
 }
 
-function setImmediateCmd(cmd) {
+function setImmediateCmd(cmd, resetStack) {
   return {
     type: "setImmediate",
-    cmd
+    cmd,
+    resetStack
   };
 }
 
-function setTimeoutCmd(cmd, time) {
+function setTimeoutCmd(cmd, time, resetStack) {
   return {
     type: "setTimeout",
     cmd,
-    time
+    time,
+    resetStack
   };
 }
 
@@ -99,11 +101,12 @@ function clearTimeoutCmd(id) {
   };
 }
 
-function setIntervalCmd(cmd, time) {
+function setIntervalCmd(cmd, time, resetStack) {
   return {
     type: "setInterval",
     cmd,
-    time
+    time,
+    resetStack
   };
 }
 

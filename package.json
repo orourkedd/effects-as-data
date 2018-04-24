@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "description":
     "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",

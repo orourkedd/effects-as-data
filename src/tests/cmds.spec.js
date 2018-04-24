@@ -140,12 +140,31 @@ test("setImmediate()", () => {
   expect(cmds.setImmediate(cmd)).toEqual({ type: "setImmediate", cmd });
 });
 
+test("setImmediate() should clear stack, if set", () => {
+  const cmd = cmds.now();
+  expect(cmds.setImmediate(cmd, true)).toEqual({
+    type: "setImmediate",
+    cmd,
+    resetStack: true
+  });
+});
+
 test("setTimeout()", () => {
   const cmd = cmds.now();
   expect(cmds.setTimeout(cmd, 1000)).toEqual({
     type: "setTimeout",
     cmd,
     time: 1000
+  });
+});
+
+test("setTimeout() should clear stack, if set", () => {
+  const cmd = cmds.now();
+  expect(cmds.setTimeout(cmd, 1000, true)).toEqual({
+    type: "setTimeout",
+    cmd,
+    time: 1000,
+    resetStack: true
   });
 });
 
@@ -163,6 +182,16 @@ test("setInterval()", () => {
     type: "setInterval",
     cmd,
     time: 1000
+  });
+});
+
+test("setInterval() should clear stack, if set", () => {
+  const cmd = cmds.now();
+  expect(cmds.setInterval(cmd, 1000, true)).toEqual({
+    type: "setInterval",
+    cmd,
+    time: 1000,
+    resetStack: true
   });
 });
 
