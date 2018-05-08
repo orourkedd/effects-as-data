@@ -1,5 +1,6 @@
 const { testFn, args } = require("../test");
-const { call, promisify } = require("../index");
+const { promisify } = require("../index");
+const { call } = require("../index").cmds;
 
 test("validator get called during unit test", () => {
   function* subject() {

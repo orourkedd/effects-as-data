@@ -47,6 +47,16 @@ function promisify(fn) {
   return promised;
 }
 
+function call(fn, ...args) {
+  return promisify(fn)(...args);
+}
+
+function doCmd(cmd) {
+  return promisify(function* doCmd() {
+    return yield cmd;
+  })();
+}
+
 function setContext(c) {
   context = c;
 }
@@ -81,10 +91,12 @@ function onError(fn) {
   addToContext({ onError: fn });
 }
 
-module.exports = Object.assign({}, coreCmds, {
+module.exports = {
   cmds: coreCmds,
   interpreters: coreInterpreters,
   promisify,
+  call,
+  doCmd,
   setContext,
   getContext,
   addToContext,
@@ -93,4 +105,4 @@ module.exports = Object.assign({}, coreCmds, {
   addInterpreters,
   reset,
   onError
-});
+};

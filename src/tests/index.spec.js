@@ -1,8 +1,8 @@
 const assert = require("assert");
 const {
-  call,
-  echo,
   promisify,
+  call,
+  doCmd,
   setContext,
   getContext,
   addToContext,
@@ -12,24 +12,25 @@ const {
   reset,
   onError
 } = require("../index");
+const { cmds } = require("../index");
 
 test("promisify should tag function", async () => {
   function* test1(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   }
   expect(promisify(test1).eadPromisified).toEqual(true);
 });
 
 test("promisify should name function", async () => {
   function* testName(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   }
   expect(promisify(testName).name).toEqual("testName");
 });
 
 test("promisify should not double wrap", async () => {
   function* test1(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   }
   const p = promisify(test1);
   expect(p).toEqual(promisify(p));
@@ -37,7 +38,7 @@ test("promisify should not double wrap", async () => {
 
 test("promisify should wrap up an effects-as-data function", async () => {
   function* test1(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   }
 
   const result = await promisify(test1)("foo");
@@ -58,22 +59,36 @@ test("promisify should handle errors", async () => {
   fail("promisify did not reject");
 });
 
-test("call should call effects-as-data function", async () => {
+test("call should call a function", async () => {
   function* test1(message) {
-    return yield call(test2, message);
+    return yield cmds.echo(message);
+  }
+
+  const result = await call(test1, "foo");
+  expect(result).toEqual("foo");
+});
+
+test("doCmd should process a command", async () => {
+  const result = await doCmd(cmds.echo("foo"));
+  expect(result).toEqual("foo");
+});
+
+test("cmds.call should call effects-as-data function", async () => {
+  function* test1(message) {
+    return yield cmds.call(test2, message);
   }
 
   function* test2(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   }
 
   const result = await promisify(test1)("foo");
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call should call effects-as-data function", async () => {
+test("[error handling] cmds.call should call effects-as-data function", async () => {
   function* test1(message) {
-    return yield call(test2, message);
+    return yield cmds.call(test2, message);
   }
 
   function* test2(message) {
@@ -89,22 +104,22 @@ test("[error handling] call should call effects-as-data function", async () => {
   fail("promisify did not reject");
 });
 
-test("call should call promisified function", async () => {
+test("cmds.call should call promisified function", async () => {
   function* test1(message) {
-    return yield call(test2, message);
+    return yield cmds.call(test2, message);
   }
 
   const test2 = promisify(function*(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   });
 
   const result = await promisify(test1)("foo");
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call should call promisified function", async () => {
+test("[error handling] cmds.call should call promisified function", async () => {
   function* test1(message) {
-    return yield call(test2, message);
+    return yield cmds.call(test2, message);
   }
 
   const test2 = promisify(function*(message) {
@@ -120,22 +135,22 @@ test("[error handling] call should call promisified function", async () => {
   fail("promisify did not reject");
 });
 
-test("call.fn should call promisified function", async () => {
+test("cmds.call.fn should call promisified function", async () => {
   function* test1(message) {
-    return yield call.fn(test2, message);
+    return yield cmds.call.fn(test2, message);
   }
 
   const test2 = promisify(function*(message) {
-    return yield echo(message);
+    return yield cmds.echo(message);
   });
 
   const result = await promisify(test1)("foo");
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call.fn should call promisified function", async () => {
+test("[error handling] cmds.call.fn should call promisified function", async () => {
   function* test1(message) {
-    return yield call.fn(test2, message);
+    return yield cmds.call.fn(test2, message);
   }
 
   const test2 = promisify(function*(message) {
@@ -151,9 +166,9 @@ test("[error handling] call.fn should call promisified function", async () => {
   fail("promisify did not reject");
 });
 
-test("call.fn should call promise returning function", async () => {
+test("cmds.call.fn should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.fn(test2, message);
+    return yield cmds.call.fn(test2, message);
   }
 
   function test2(message) {
@@ -164,9 +179,9 @@ test("call.fn should call promise returning function", async () => {
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call.fn should call promise returning function", async () => {
+test("[error handling] cmds.call.fn should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.fn(test2, message);
+    return yield cmds.call.fn(test2, message);
   }
 
   function test2(message) {
@@ -182,9 +197,9 @@ test("[error handling] call.fn should call promise returning function", async ()
   fail("promisify did not reject");
 });
 
-test("call.fnBound should call promise returning function", async () => {
+test("cmds.call.fnBound should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.fnBound(obj, obj.test2, message);
+    return yield cmds.call.fnBound(obj, obj.test2, message);
   }
 
   const obj = {
@@ -198,9 +213,9 @@ test("call.fnBound should call promise returning function", async () => {
   expect(result).toEqual("foobar");
 });
 
-test("[error handling] call.fnBound should call promise returning function", async () => {
+test("[error handling] cmds.call.fnBound should call promise returning function", async () => {
   function* test1(message) {
-    return yield call.fnBound(obj, obj.test2, message);
+    return yield cmds.call.fnBound(obj, obj.test2, message);
   }
 
   const obj = {
@@ -219,9 +234,9 @@ test("[error handling] call.fnBound should call promise returning function", asy
   fail("promisify did not reject");
 });
 
-test("call.callback should call callback function", async () => {
+test("cmds.call.callback should call callback function", async () => {
   function* test1(message) {
-    return yield call.callback(test2, message);
+    return yield cmds.call.callback(test2, message);
   }
 
   function test2(message, done) {
@@ -232,9 +247,9 @@ test("call.callback should call callback function", async () => {
   expect(result).toEqual("foo");
 });
 
-test("[error handling] call.callback should call callback function", async () => {
+test("[error handling] cmds.call.callback should call callback function", async () => {
   function* test1(message) {
-    return yield call.callback(test2, message);
+    return yield cmds.call.callback(test2, message);
   }
 
   function test2(message, done) {
@@ -250,9 +265,9 @@ test("[error handling] call.callback should call callback function", async () =>
   fail("promisify did not reject");
 });
 
-test("[error handling 2] call.callback should call callback function", async () => {
+test("[error handling 2] cmds.call.callback should call callback function", async () => {
   function* test1(message) {
-    return yield call.callback(test2, message);
+    return yield cmds.call.callback(test2, message);
   }
 
   function test2(message, done) {
@@ -268,9 +283,9 @@ test("[error handling 2] call.callback should call callback function", async () 
   fail("promisify did not reject");
 });
 
-test("call.callbackBound should call callback function", async () => {
+test("cmds.call.callbackBound should call callback function", async () => {
   function* test1(message) {
-    return yield call.callbackBound(obj, obj.test2, message);
+    return yield cmds.call.callbackBound(obj, obj.test2, message);
   }
 
   const obj = {
@@ -284,9 +299,9 @@ test("call.callbackBound should call callback function", async () => {
   expect(result).toEqual("foobar");
 });
 
-test("[error handling] call.callbackBound should call callback function", async () => {
+test("[error handling] cmds.call.callbackBound should call callback function", async () => {
   function* test1(message) {
-    return yield call.callbackBound(obj, obj.test2, message);
+    return yield cmds.call.callbackBound(obj, obj.test2, message);
   }
 
   const obj = {
@@ -305,9 +320,9 @@ test("[error handling] call.callbackBound should call callback function", async 
   fail("promisify did not reject");
 });
 
-test("[error handling] call.callbackBound should call callback function", async () => {
+test("[error handling] cmds.call.callbackBound should call callback function", async () => {
   function* test1(message) {
-    return yield call.callbackBound(obj, obj.test2, message);
+    return yield cmds.call.callbackBound(obj, obj.test2, message);
   }
 
   const obj = {
