@@ -91,6 +91,12 @@ function onError(fn) {
   addToContext({ onError: fn });
 }
 
+function effect(fn) {
+  return function(...args) {
+    return coreCmds.call.fn(fn, ...args);
+  };
+}
+
 module.exports = {
   cmds: coreCmds,
   interpreters: coreInterpreters,
@@ -104,5 +110,6 @@ module.exports = {
   getInterpreters,
   addInterpreters,
   reset,
-  onError
+  onError,
+  effect
 };

@@ -10,9 +10,11 @@ const {
   getInterpreters,
   addInterpreters,
   reset,
-  onError
+  onError,
+  effect,
+  cmds,
+  interpreters
 } = require("../index");
-const { cmds } = require("../index");
 
 test("promisify should tag function", async () => {
   function* test1(message) {
@@ -446,4 +448,22 @@ test("onError() should register error handler on context", () => {
 
 test("onError() should throw if handler is not a function", () => {
   expect(onError).toThrow("onError requires a function");
+});
+
+test("effect() should return a call cmd", () => {
+  const fn = () => {};
+  const actual = effect(fn)("foo", "bar");
+  const expected = cmds.call.fn(fn, "foo", "bar");
+  expect(actual).toEqual(expected);
+});
+
+test("effect() should call function", async () => {
+  addInterpreters(interpreters);
+  const eadFn = effect(m => m);
+
+  const result = await promisify(function*() {
+    return yield eadFn("foo");
+  })();
+
+  expect(result).toEqual("foo");
 });
