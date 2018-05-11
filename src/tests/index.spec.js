@@ -467,3 +467,19 @@ test("effect() should call function", async () => {
 
   expect(result).toEqual("foo");
 });
+
+test("effect() should call validator, if present", async () => {
+  addInterpreters(interpreters);
+  const validator = m => assert(m, "required");
+  const eadFn = effect(m => m, validator);
+
+  expect(eadFn).toThrow("required");
+});
+
+test("effect() should throw if validator is not a function", async () => {
+  addInterpreters(interpreters);
+  const validator = 0; // validator is not a function
+  expect(() => effect(m => m, validator)).toThrow(
+    "validator must be a function"
+  );
+});

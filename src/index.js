@@ -91,8 +91,14 @@ function onError(fn) {
   addToContext({ onError: fn });
 }
 
-function effect(fn) {
+function effect(fn, validator) {
+  if (validator !== undefined && typeof validator !== "function") {
+    throw new Error("validator must be a function");
+  }
   return function(...args) {
+    if (typeof validator === "function") {
+      validator(...args);
+    }
     return coreCmds.call.fn(fn, ...args);
   };
 }
