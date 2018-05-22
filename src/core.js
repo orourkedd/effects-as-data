@@ -58,8 +58,18 @@ function run(context, interpreters, fn, gen, input, el, genOperation = "next") {
     if (done) return toPromise(output);
     const isList = Array.isArray(output);
     const commandsList = toArray(output);
+    if (context.executionContext && context.executionContext.cancelled) {
+      return Promise.reject(
+        contextCancelError(context.executionContext.message)
+      );
+    }
     return processCommands(context, interpreters, fn, commandsList, el)
       .then(results => {
+        if (context.executionContext && context.executionContext.cancelled) {
+          return Promise.reject(
+            contextCancelError(context.executionContext.message)
+          );
+        }
         const unwrappedResults = unwrapResults(isList, results);
         el.step++;
         return run(
@@ -79,6 +89,12 @@ function run(context, interpreters, fn, gen, input, el, genOperation = "next") {
   } catch (e) {
     return Promise.reject(e);
   }
+}
+
+function contextCancelError(message) {
+  const error = new Error(message || "Execution context cancelled");
+  error.code = "CONTEXT_CANCELLED";
+  return error;
 }
 
 function newExecutionLog() {
