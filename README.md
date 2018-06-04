@@ -12,7 +12,7 @@ See Richard Feldman's presentation on the effects-as-data pattern: [Effects as D
 const { effect } = require("effects-as-data");
 const axios = require("axios");
 
-const get = effect(axios.get, url => assert(url, "url is required"));
+const get = effect(axios.get);
 
 module.exports = {
   get
@@ -58,9 +58,10 @@ test(
         }
       ]
     };
+
     return args(1)
-      .cmd(get("https://randomuser.me/api/?results=1"))
-      .result(response)
+      .cmd(get("https://randomuser.me/api/?results=1")) // yield cmd
+      .result(response) // const result = yield ...
       .returns(response.data.results);
   })
 );
