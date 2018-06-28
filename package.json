@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "3.0.16",
+  "version": "3.0.17",
   "description":
     "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
@@ -32,6 +32,7 @@
     "prettier": "^1.12.1"
   },
   "jest": {
+    "testEnvironment": "node",
     "testPathIgnorePatterns": [
       "<rootDir>/test.js",
       "<rootDir>/src/test.js",

@@ -109,7 +109,16 @@ test("setInterval() should reset stack, if resetStack is truthy", async () => {
 });
 
 test("globalVariable() should use window if available", () => {
-  window.foo = "bar";
-  const value = globalVariable({ name: "foo" });
-  assert.equal(value, "bar");
+  global.window = {
+    foo: "bar window"
+  };
+  const value = globalVariable(coreCmds.globalVariable("foo"));
+  global.window = undefined;
+  assert.equal(value, "bar window");
+});
+
+test("globalVariable() should global if window is not available ", () => {
+  global.foo = "bar global";
+  const value = globalVariable(coreCmds.globalVariable("foo"));
+  assert.equal(value, "bar global");
 });

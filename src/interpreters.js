@@ -36,7 +36,7 @@ function noop() {}
 
 function globalVariable({ name }) {
   // istanbul ignore next
-  const g = typeof window === undefined ? global : window;
+  const g = typeof window === "undefined" ? global : window;
   return g[name];
 }
 
