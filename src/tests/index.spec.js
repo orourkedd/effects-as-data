@@ -1,4 +1,3 @@
-const assert = require("assert");
 const {
   promisify,
   call,
@@ -16,21 +15,21 @@ const {
   interpreters
 } = require("../index");
 
-test("promisify should tag function", async () => {
+test("promisify should tag function", () => {
   function* test1(message) {
     return yield cmds.echo(message);
   }
   expect(promisify(test1).eadPromisified).toEqual(true);
 });
 
-test("promisify should name function", async () => {
+test("promisify should name function", () => {
   function* testName(message) {
     return yield cmds.echo(message);
   }
   expect(promisify(testName).name).toEqual("testName");
 });
 
-test("promisify should not double wrap", async () => {
+test("promisify should not double wrap", () => {
   function* test1(message) {
     return yield cmds.echo(message);
   }
@@ -395,7 +394,7 @@ test("promisify(fn).callWithContext({...}) should call function with context pat
       "bar"
     );
   } catch (e) {
-    assert.equal(e.message, "not valid");
+    expect(e.message).toEqual("not valid");
     return;
   }
   fail("did not throw");
@@ -468,15 +467,17 @@ test("effect() should call function", async () => {
   expect(result).toEqual("foo");
 });
 
-test("effect() should call validator, if present", async () => {
+test("effect() should call validator, if present", () => {
   addInterpreters(interpreters);
-  const validator = m => assert(m, "required");
+  const validator = () => {
+    throw "required";
+  };
   const eadFn = effect(m => m, validator);
 
   expect(eadFn).toThrow("required");
 });
 
-test("effect() should throw if validator is not a function", async () => {
+test("effect() should throw if validator is not a function", () => {
   addInterpreters(interpreters);
   const validator = 0; // validator is not a function
   expect(() => effect(m => m, validator)).toThrow(
