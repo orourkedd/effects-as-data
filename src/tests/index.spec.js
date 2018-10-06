@@ -470,7 +470,7 @@ test("effect() should call function", async () => {
 test("effect() should call validator, if present", () => {
   addInterpreters(interpreters);
   const validator = () => {
-    throw "required";
+    throw new Error("required");
   };
   const eadFn = effect(m => m, validator);
 
