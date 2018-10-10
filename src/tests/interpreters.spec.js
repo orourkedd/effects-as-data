@@ -89,6 +89,7 @@ test("setInterval() should swallow errors to prevent node uncaught rejection err
 test("setInterval() should reset stack, if resetStack is truthy", async () => {
   let count = 0;
   let stack;
+  let interval;
   const onCommand = t => {
     if (t.command.type !== "now") return;
     count++;
@@ -98,12 +99,12 @@ test("setInterval() should reset stack, if resetStack is truthy", async () => {
   };
   function* nestedCall() {
     if (count >= 10) return;
-    yield coreCmds.setInterval(coreCmds.now(), 0, true);
+    interval = yield coreCmds.setInterval(coreCmds.now(), 0, true);
   }
   const context = { onCommand, name: "telemetry" };
-  const now = Date.now();
   await call(context, coreInterpreters, nestedCall, "foo");
   await sleep(50);
+  clearInterval(interval);
   expect(stack).toBeTruthy();
   expect(stack.length).toEqual(1);
 });

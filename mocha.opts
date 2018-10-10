@@ -1,5 +1,0 @@
---reporter spec
---require babel-polyfill
---ui tdd
-
-src/tests/test-framework.spec.js
