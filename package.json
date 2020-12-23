@@ -1,6 +1,6 @@
 {
   "name": "effects-as-data",
-  "version": "3.0.17",
+  "version": "3.0.18",
   "description": "A micro abstraction layer for Javascript that makes writing, testing, and monitoring side-effects easy.",
   "main": "src/index.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/orourkedd/effects-as-data"
   },
   "scripts": {
-    "deploy": "npm run transpile && npm test, && npm publish; rm -rf es5",
+    "deploy": "npm run transpile && npm test && npm publish; rm -rf es5",
     "prettier": "prettier --write {src/*.js,src/**/*.js}",
     "test": "jest",
     "transpile": "babel src --out-dir es5 --source-maps"

@@ -57,3 +57,5 @@ jspm_packages
 yarn.lock
 
 .vscode
+
+.idea

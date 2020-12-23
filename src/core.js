@@ -147,6 +147,10 @@ function processCommand(context, interpreters, fn, command, el, index) {
       return r;
     })
     .catch(e => {
+      e.command = command
+      e.step = el.step
+      e.fn = fn
+      e.index = index
       onError(e, context);
       if (!context.onCommandComplete) return Promise.reject(e);
       const end = Date.now();
